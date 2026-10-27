@@ -1,0 +1,347 @@
+{
+  "format": 1,
+  "provenance": "local_synthetic",
+  "execution_mode": "test",
+  "limits": {
+    "bytes": 32768,
+    "events": 32,
+    "snapshots": 8
+  },
+  "window_seconds": 3600,
+  "coverage_start": "2026-01-01T08:00:00Z",
+  "events": [
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_target",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T12:00:00Z",
+      "available_at": "2026-01-01T12:00:00Z",
+      "currency": "SYN",
+      "amount": "10.02",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_7",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:07Z",
+      "available_at": "2026-01-01T11:30:07Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_6",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:06Z",
+      "available_at": "2026-01-01T11:30:06Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_5",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:05Z",
+      "available_at": "2026-01-01T11:30:05Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_4",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:04Z",
+      "available_at": "2026-01-01T11:30:04Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_3",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:03Z",
+      "available_at": "2026-01-01T11:30:03Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_2",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:02Z",
+      "available_at": "2026-01-01T11:30:02Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_1",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:01Z",
+      "available_at": "2026-01-01T11:30:01Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_0",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:00Z",
+      "available_at": "2026-01-01T11:30:00Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_correction",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:20:00Z",
+      "available_at": "2026-01-01T11:20:00Z",
+      "currency": "SYN",
+      "amount": "3.00",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_hot_0",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:30:00Z",
+      "available_at": "2026-01-01T11:30:00Z",
+      "currency": "SYN",
+      "amount": "0.01",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_boundary",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:00:00Z",
+      "available_at": "2026-01-01T11:00:00Z",
+      "currency": "SYN",
+      "amount": "999.00",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_partial",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:40:00Z",
+      "available_at": "2026-01-01T11:40:00Z",
+      "currency": "SYN",
+      "amount": "2.02",
+      "reversed_amount": "1.01",
+      "status": "partially_reversed"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_reverse",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:45:00Z",
+      "available_at": "2026-01-01T11:45:00Z",
+      "currency": "SYN",
+      "amount": "8.00",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_reverse",
+      "revision_number": 2,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:45:00Z",
+      "available_at": "2026-01-01T11:59:00Z",
+      "currency": "SYN",
+      "amount": "8.00",
+      "reversed_amount": "8.00",
+      "status": "reversed"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_other",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:50:00Z",
+      "available_at": "2026-01-01T11:50:00Z",
+      "currency": "ALT",
+      "amount": "7.00",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_future",
+      "revision_number": 1,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T12:00:01Z",
+      "available_at": "2026-01-01T12:00:01Z",
+      "currency": "SYN",
+      "amount": "999.00",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    },
+    {
+      "namespace": "synthetic_golden",
+      "transaction_id": "synthetic_correction",
+      "revision_number": 2,
+      "sender": "synthetic_hot",
+      "receiver": "synthetic_sink",
+      "occurred_at": "2026-01-01T11:20:00Z",
+      "available_at": "2026-01-01T12:01:00Z",
+      "currency": "SYN",
+      "amount": "2.03",
+      "reversed_amount": "0.00",
+      "status": "succeeded"
+    }
+  ],
+  "snapshots": [
+    {
+      "id": "before_late_correction",
+      "as_of": "2026-01-01T12:00:00Z",
+      "currency": "SYN",
+      "target": "synthetic_target",
+      "evidence": "available",
+      "coverage_complete": true,
+      "flags_available": true,
+      "expected": {
+        "count": "11",
+        "amount": "14.11",
+        "window_start": "2026-01-01T11:00:00Z",
+        "window_end": "2026-01-01T12:00:00Z",
+        "reason": null
+      }
+    },
+    {
+      "id": "after_late_correction",
+      "as_of": "2026-01-01T12:01:00Z",
+      "currency": "SYN",
+      "target": "synthetic_target",
+      "evidence": "available",
+      "coverage_complete": true,
+      "flags_available": true,
+      "expected": {
+        "count": "11",
+        "amount": "13.14",
+        "window_start": "2026-01-01T11:00:00Z",
+        "window_end": "2026-01-01T12:00:00Z",
+        "reason": null
+      }
+    },
+    {
+      "id": "missing_input",
+      "as_of": "2026-01-01T12:01:00Z",
+      "currency": "SYN",
+      "target": "synthetic_target",
+      "evidence": "missing",
+      "coverage_complete": true,
+      "flags_available": true,
+      "expected": {
+        "count": null,
+        "amount": null,
+        "window_start": "2026-01-01T11:00:00Z",
+        "window_end": "2026-01-01T12:00:00Z",
+        "reason": "INPUT_MISSING"
+      }
+    },
+    {
+      "id": "incomplete_history",
+      "as_of": "2026-01-01T12:01:00Z",
+      "currency": "SYN",
+      "target": "synthetic_target",
+      "evidence": "available",
+      "coverage_complete": false,
+      "flags_available": true,
+      "expected": {
+        "count": null,
+        "amount": null,
+        "window_start": "2026-01-01T11:00:00Z",
+        "window_end": "2026-01-01T12:00:00Z",
+        "reason": "HISTORY_INCOMPLETE"
+      }
+    },
+    {
+      "id": "missing_flags",
+      "as_of": "2026-01-01T12:01:00Z",
+      "currency": "SYN",
+      "target": "synthetic_target",
+      "evidence": "available",
+      "coverage_complete": true,
+      "flags_available": false,
+      "expected": {
+        "count": "11",
+        "amount": "13.14",
+        "window_start": "2026-01-01T11:00:00Z",
+        "window_end": "2026-01-01T12:00:00Z",
+        "reason": null
+      }
+    },
+    {
+      "id": "separate_currency",
+      "as_of": "2026-01-01T12:01:00Z",
+      "currency": "ALT",
+      "target": "synthetic_other",
+      "evidence": "available",
+      "coverage_complete": true,
+      "flags_available": true,
+      "expected": {
+        "count": "1",
+        "amount": "7.00",
+        "window_start": "2026-01-01T10:50:00Z",
+        "window_end": "2026-01-01T11:50:00Z",
+        "reason": null
+      }
+    }
+  ],
+  "online_engine_status": "pending"
+}

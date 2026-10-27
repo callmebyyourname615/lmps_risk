@@ -1,0 +1,71 @@
+{
+  "codebook_version": "synthetic-lifecycle-0.1.0-draft.1",
+  "canonical_schema_version": "0.1.0-draft.1",
+  "synthetic_only": true,
+  "execution_mode": "test",
+  "production_mapping_approved": false,
+  "source_field_mapping": null,
+  "codes": {
+    "operation": {
+      "SYNTH_PAYMENT": "payment",
+      "SYNTH_LOOKUP": "lookup"
+    },
+    "status": {
+      "SYNTH_PENDING": "pending",
+      "SYNTH_SUCCEEDED": "succeeded",
+      "SYNTH_FAILED": "failed",
+      "SYNTH_STATUS_UNKNOWN": "unknown"
+    },
+    "reversal": {
+      "SYNTH_REVERSAL_NONE": "none",
+      "SYNTH_REVERSAL_REQUESTED": "requested",
+      "SYNTH_REVERSAL_FAILED": "failed",
+      "SYNTH_REVERSAL_PARTIAL_COMPLETED": "partial_completed",
+      "SYNTH_REVERSAL_FULL_COMPLETED": "full_completed"
+    }
+  },
+  "reversal_status_overrides": {
+    "partial_completed": "partially_reversed",
+    "full_completed": "reversed"
+  },
+  "completion_requirements": [
+    "original_synthetic_payment_link",
+    "original_payment_succeeded",
+    "completed_reversal_evidence",
+    "same_currency",
+    "positive_original_amount",
+    "positive_cumulative_reversed_amount_not_above_original",
+    "reversal_event_deduplication"
+  ],
+  "policies": {
+    "matching": "exact_string",
+    "coerce": false,
+    "trim": false,
+    "case_fold": false,
+    "missing_null_empty_or_unrecognized_code": "unknown",
+    "non_string_non_null_code": "invalid",
+    "wrong_version_or_non_synthetic_context": "invalid_context",
+    "lookup_emits_payment": false,
+    "lookup_allows_reversal": false,
+    "non_none_reversal_requires_original_status": "succeeded",
+    "requested_or_failed_reversal_changes_original_status": false,
+    "unmet_completion_requirements": "unknown_withhold_candidate",
+    "contradictory_known_combination": "invalid_preserve_source",
+    "partial_completion_amount_rule": "0 < cumulative_reversed_amount < original_amount",
+    "full_completion_amount_rule": "cumulative_reversed_amount = original_amount > 0",
+    "amount_representation": "exact_decimal_strings_no_rounding_or_abs",
+    "completed_amount_semantics": "cumulative_per_original_payment_not_per_observation",
+    "source_table_or_row_identity_proves_payment": false,
+    "live_capture_enabled": false,
+    "account_identity_resolved": false
+  },
+  "not_reversal_completion_evidence": [
+    "originalreference",
+    "shouldrevert",
+    "isreconciled",
+    "issettled",
+    "negative_amount",
+    "source_delete",
+    "history_table_membership"
+  ]
+}

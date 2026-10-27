@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "provenance": "local_synthetic",
+  "execution_mode": "test",
+  "workspace_key": "synthetic_local",
+  "source_namespace": "synthetic_lmps",
+  "source_generation": "fixture_v1",
+  "capture_epoch": "fixture_epoch_1",
+  "event_key": "fixture_event_001",
+  "source_table": "transfer",
+  "source_key": {"id": "1", "requesttime": "2026-01-01 00:00:00"},
+  "operation": "snapshot",
+  "observed_at": "2026-01-01T00:00:01.000Z",
+  "fields": {"amount": "123.45", "ccy": "SYNTHETIC_CCY", "result": "SYNTHETIC_RESULT", "txtime": "2026-01-01 00:00:00"}
+}

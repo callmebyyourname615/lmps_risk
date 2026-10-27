@@ -1,0 +1,235 @@
+{
+  "synthetic_only": true,
+  "mapping_design_version": "source-mapping-0.1.0-draft.1",
+  "production_mapping_approved": false,
+  "example_assumptions": [
+    "All handles, capture times and rows are invented.",
+    "LAK is a chosen test-only output, not a mapping from source ccy.",
+    "Examples demonstrate candidate wire shapes, not source conversion or production emission eligibility."
+  ],
+  "source_example": {
+    "id": 7,
+    "requesttime": "2026-10-18 16:00:00",
+    "reference": "00000007",
+    "txtime": "2026-10-18 16:00:00",
+    "frommember": "0001",
+    "tomember": "0002",
+    "fromaccount": "synthetic-account-A",
+    "toaccount": "synthetic-account-B",
+    "amount": "42.50",
+    "ccy": "SYNTHETIC_CCY",
+    "result": "SYNTHETIC_OK"
+  },
+  "canonical_example": {
+    "schema_version": "0.1.0-draft.1",
+    "execution_mode": "test",
+    "run_id": "synthetic-run-001",
+    "correlation_id": "synthetic-correlation-001",
+    "transaction_id": "synthetic-payment-001",
+    "transaction_revision": "synthetic-revision-001",
+    "source_reference": {
+      "namespace": "synthetic-source",
+      "record_ref": "synthetic-row-001",
+      "mapping_version": null
+    },
+    "occurred_at": null,
+    "observed_at": "2026-10-18T09:10:00Z",
+    "sender": {
+      "status": "unresolved",
+      "source_representation": "unknown",
+      "reason_code": "STABLE_IDENTITY_UNVERIFIED"
+    },
+    "receiver": {
+      "status": "unresolved",
+      "source_representation": "unknown",
+      "reason_code": "STABLE_IDENTITY_UNVERIFIED"
+    },
+    "source_bank_id": null,
+    "destination_bank_id": null,
+    "amount": "42.50",
+    "currency": "LAK",
+    "transaction_type": null,
+    "channel": null,
+    "transaction_status": "unknown"
+  },
+  "cases": [
+    {
+      "id": "source-unverified-status-and-time",
+      "source_set": {},
+      "canonical_set": {},
+      "wire_valid": true
+    },
+    {
+      "id": "source-zero-money",
+      "source_set": {
+        "amount": "0.00"
+      },
+      "canonical_set": {
+        "amount": "0.00"
+      },
+      "wire_valid": true
+    },
+    {
+      "id": "source-max-decimal-24-2",
+      "source_set": {
+        "amount": "9999999999999999999999.99"
+      },
+      "canonical_set": {
+        "amount": "9999999999999999999999.99"
+      },
+      "wire_valid": true
+    },
+    {
+      "id": "source-long-reference-is-not-wire-handle",
+      "source_set": {
+        "reference": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "canonical_set": {},
+      "wire_valid": true
+    },
+    {
+      "id": "source-full-looking-is-not-resolved",
+      "source_set": {
+        "fromaccount": "0000000000000001",
+        "toaccount": "0000000000000002"
+      },
+      "canonical_set": {},
+      "wire_valid": true
+    },
+    {
+      "id": "source-same-masked-text-is-not-resolved",
+      "source_set": {
+        "fromaccount": "0000xxxxx0001",
+        "toaccount": "0000xxxxx0001"
+      },
+      "canonical_set": {},
+      "wire_valid": true
+    },
+    {
+      "id": "reject-raw-source-reference-as-wire-handle",
+      "source_set": {
+        "reference": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "canonical_set": {
+        "source_reference": {
+          "namespace": "synthetic-source",
+          "record_ref": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001",
+          "mapping_version": null
+        }
+      },
+      "wire_valid": false
+    },
+    {
+      "id": "reject-raw-account-in-wire",
+      "source_set": {},
+      "canonical_set": {
+        "sender": {
+          "status": "unresolved",
+          "source_representation": "unknown",
+          "reason_code": "STABLE_IDENTITY_UNVERIFIED",
+          "fromaccount": "synthetic-account-A"
+        }
+      },
+      "wire_valid": false
+    },
+    {
+      "id": "reject-direct-source-currency-copy",
+      "source_set": {},
+      "canonical_set": {
+        "currency": "SYNTHETIC_CCY"
+      },
+      "wire_valid": false
+    },
+    {
+      "id": "reject-naive-source-time-copy",
+      "source_set": {},
+      "canonical_set": {
+        "occurred_at": "2026-10-18 16:00:00"
+      },
+      "wire_valid": false
+    }
+  ],
+  "money_boundaries": [
+    {
+      "value": "0.00",
+      "fits_declared_decimal": true
+    },
+    {
+      "value": "9999999999999999999999.99",
+      "fits_declared_decimal": true
+    },
+    {
+      "value": "10000000000000000000000.00",
+      "fits_declared_decimal": false
+    },
+    {
+      "value": "1.001",
+      "fits_declared_decimal": false
+    },
+    {
+      "value": "-1.00",
+      "fits_declared_decimal": true
+    }
+  ],
+  "identity_examples": [
+    {
+      "id": "same-id-different-request-time",
+      "left_table": "transfer",
+      "right_table": "transfer",
+      "left_key": {
+        "id": 7,
+        "requesttime": "2026-10-18 16:00:00"
+      },
+      "right_key": {
+        "id": 7,
+        "requesttime": "2026-10-18 16:01:00"
+      },
+      "same_scoped_source_key": false,
+      "business_relation": "UNVERIFIED"
+    },
+    {
+      "id": "same-composite-key-in-history",
+      "left_table": "transfer",
+      "right_table": "transfer_hist",
+      "left_key": {
+        "id": 7,
+        "requesttime": "2026-10-18 16:00:00"
+      },
+      "right_key": {
+        "id": 7,
+        "requesttime": "2026-10-18 16:00:00"
+      },
+      "same_scoped_source_key": false,
+      "business_relation": "UNVERIFIED"
+    },
+    {
+      "id": "old-table-key-has-no-request-time",
+      "left_table": "transfer_old",
+      "right_table": "transfer_old",
+      "left_key": {
+        "id": 7
+      },
+      "right_key": {
+        "id": 7
+      },
+      "same_scoped_source_key": true,
+      "business_relation": "UNVERIFIED"
+    },
+    {
+      "id": "same-reference-different-request-time-is-not-global-key",
+      "left_table": "transfer",
+      "right_table": "transfer",
+      "left_key": {
+        "id": 7,
+        "requesttime": "2026-10-18 16:00:00"
+      },
+      "right_key": {
+        "id": 8,
+        "requesttime": "2026-10-18 16:01:00"
+      },
+      "shared_reference": "00000007",
+      "same_scoped_source_key": false,
+      "business_relation": "UNVERIFIED"
+    }
+  ]
+}

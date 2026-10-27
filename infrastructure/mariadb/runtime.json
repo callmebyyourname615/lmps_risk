@@ -1,0 +1,8 @@
+{
+  "series": "11.8",
+  "server_version": "11.8.9",
+  "bottle_version": "11.8.9_1",
+  "formula": "mariadb@11.8",
+  "bottle_tag": "arm64_tahoe",
+  "sha256": "3b0ba25beb97365258efb27ba91680d86fa4928e0094d3760f09e761f6534659"
+}

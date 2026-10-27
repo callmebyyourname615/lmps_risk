@@ -1,0 +1,146 @@
+{
+  "name": "RLP-B06 — bounded synthetic Kafka feature consumer",
+  "description": "Five user-approved ordered P04 candidate tasks, existing Kafka/Java and unchanged golden/reference; no production adoption or real source/account identity.",
+  "branchName": "main",
+  "userStories": [
+    {
+      "id": "US-601",
+      "title": "Define bounded synthetic feature-stream contracts",
+      "description": "Approved RLP-B06 bounded P04 local synthetic consumer candidate; current isolated story only.",
+      "acceptanceCriteria": [
+        "Add strict typed plan, delivery, state and snapshot contracts, validators and documented exported API for following stories. Expose a typed fixed-code error. Add ONLY exports[\"./feature-stream\"]=\"./dist/feature-stream.js\" to the existing package manifest; all other fields identical.",
+        "Delivery binds synthetic event namespace/payment/revision/content plus Kafka topic/partition0/offset. Strict integers, exact two-place unsigned amounts/reversed amounts, real UTC calendar timestamps, explicit lifecycle and invented sender/receiver. Reject unknown fields/coercion/unsafe/nonfinite numbers/ambiguous keys and real provenance.",
+        "Plan binds version/run/namespace/topic/window/coverage/snapshot queries and finite limits. Namespace/topic must be synthetic and scoped; a checkpoint cannot be reused under changed plan/input identity. Queries retain all required golden target/as_of/currency/evidence/coverage metadata.",
+        "State is JSON serializable, bounded and sufficient for identical-offset and same-revision conflict detection, out-of-order higher/lower revision retention, contiguous next offset, as_of snapshots and immutable snapshot evidence. Validators reject malformed/inconsistent/oversized state; never trust caller success/hash without recomputation by later store.",
+        "Snapshot includes target/as_of/currency/window/source-position/config provenance and exact count/amount strings or explicit missing/incomplete reason. No inferred account ownership/zero fallback/calibrated risk/activation fields.",
+        "Test exact and one-over bounds, invalid shape/encoding/money/time/identity, unavailable states and state/plan mismatch. Contracts typecheck/test and publication guards must pass.",
+        "Authorization: user explicitly confirmed เริ่ม RLP-B06 after the five-story proposal. Implement only the current story in its isolated candidate, preserving all prior code/tests/fixtures/dependencies/locks/automation and all logins. No production adoption, source connection, real identity, provider, payment action or deployment.",
+        "Scope: one bounded TypeScript Kafka-consumer candidate using the unchanged packages/risk/test/fixtures/feature-streams/golden.json and existing offline risk reference. Do not turn the P03 specimens CDC table into canonical payments. All entities are invented synthetic_declared identity only. No Flink/Streams/cache/dependency installation, HTTP endpoint, database migration or Python-engine rewrite.",
+        "Finite experimental limits: golden input <=32 deliveries/8 snapshots/32768 bytes; single Kafka partition; complete run captures <=2000 records and <=2MiB; serialized consumer checkpoint <=1MiB and finite revision/offset maps. Reject overflow, gaps, corruption and unsupported state without truncation. Native host trial <=180s including reserved teardown, owned runtime <=2GiB, >=6GiB free before startup, existing fixed JVM heaps and loopback only. These are fixture bounds, not SLO/capacity claims.",
+        "Use existing TS golden semantics exactly: same-currency outgoing latest available revision in (target.occurred_at-3600s,target.occurred_at], exact decimal/BigInt money, full/partial reversal, missing/incomplete coverage unavailable instead of0. Snapshot as_of/coverage/evidence are explicitly supplied synthetic metadata; never infer historical availability from Kafka arrival/wall clock. Retain future revisions for eligible later as_of, and preserve previously frozen evidence. Not an online event-time/watermark/TTL-adoption proof.",
+        "Meaningful new tests must work both from repo root and package cwd using import.meta.url. Existing golden corpus/reference/tests remain unchanged; independent expected values and reference comparisons must detect broken arithmetic/order/offset/restore. Runtime/IO/invalid CLI tests must not start native services. Do not relax existing assertions or install dependencies.",
+        "Coding-agent sandbox may run scoped unit/subprocess checks and required builds/typechecks available there. Native Java/Kafka/binding and legacy DB integration suites are parent-host only. A host-generated native acceptance after final source checks/promotion is mandatory; fake/test receipts or ready_for_verification never establish native success.",
+        "Run the fixed checkGroup commands and publication/source/plan/Git guards through the unchanged trusted host verifier. No lint command exists: never invent lint PASS. Tests and full host gates are recorded only after actual exit0. Public checksum metadata must use grouped lossless hex as existing pins; never weaken scanner/allowlist/locks. Keep production_ready=false."
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "",
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-602",
+      "title": "Implement bounded incremental feature reducer and reference parity",
+      "description": "Approved RLP-B06 bounded P04 local synthetic consumer candidate; current isolated story only.",
+      "acceptanceCriteria": [
+        "Use US-601 contracts to implement an inert, deterministic, IO-free reducer: initialize/restore state, apply bounded positioned delivery, and materialize typed snapshots. Export only by appending export * from ./feature-stream.js to risk index; preserve its entire old prefix.",
+        "Require contiguous new offsets beginning0, acknowledge identical replayed offsets without applying twice, reject changed content at an existing offset and gaps. Same namespace/payment/revision with changed payload conflicts; identical revision at a new offset advances source position once without double contribution.",
+        "Retain bounded revisions and select the highest revision available at each supplied as_of even when deliveries arrive out of order. Compute current golden one-hour same-sender/same-currency count and exact net amount, including late correction, partial/full reversal and fixed endpoints. Never apply a future correction to an earlier frozen snapshot.",
+        "Enforce finite maps/state/snapshot limits and typed unavailable when evidence/coverage is missing. No silently dropped records, inferred safe zero, approximate money, cross-namespace/currency leakage or guessed real identities.",
+        "Tests independently assert every frozen golden snapshot using unchanged corpus and existing reference calculator. Include prefix/restart state roundtrip, same/changed duplicate, gaps, old-after-new revision, future as_of, reversal, cross-scope, tampered state, caps and failed-apply input immutability.",
+        "Risk typecheck/test and publication/source guards pass; tests must prove incremental state handling rather than simply returning stored expected fixture values or delegating all reducer behavior to the existing whole-corpus calculator.",
+        "Authorization: user explicitly confirmed เริ่ม RLP-B06 after the five-story proposal. Implement only the current story in its isolated candidate, preserving all prior code/tests/fixtures/dependencies/locks/automation and all logins. No production adoption, source connection, real identity, provider, payment action or deployment.",
+        "Scope: one bounded TypeScript Kafka-consumer candidate using the unchanged packages/risk/test/fixtures/feature-streams/golden.json and existing offline risk reference. Do not turn the P03 specimens CDC table into canonical payments. All entities are invented synthetic_declared identity only. No Flink/Streams/cache/dependency installation, HTTP endpoint, database migration or Python-engine rewrite.",
+        "Finite experimental limits: golden input <=32 deliveries/8 snapshots/32768 bytes; single Kafka partition; complete run captures <=2000 records and <=2MiB; serialized consumer checkpoint <=1MiB and finite revision/offset maps. Reject overflow, gaps, corruption and unsupported state without truncation. Native host trial <=180s including reserved teardown, owned runtime <=2GiB, >=6GiB free before startup, existing fixed JVM heaps and loopback only. These are fixture bounds, not SLO/capacity claims.",
+        "Use existing TS golden semantics exactly: same-currency outgoing latest available revision in (target.occurred_at-3600s,target.occurred_at], exact decimal/BigInt money, full/partial reversal, missing/incomplete coverage unavailable instead of0. Snapshot as_of/coverage/evidence are explicitly supplied synthetic metadata; never infer historical availability from Kafka arrival/wall clock. Retain future revisions for eligible later as_of, and preserve previously frozen evidence. Not an online event-time/watermark/TTL-adoption proof.",
+        "Meaningful new tests must work both from repo root and package cwd using import.meta.url. Existing golden corpus/reference/tests remain unchanged; independent expected values and reference comparisons must detect broken arithmetic/order/offset/restore. Runtime/IO/invalid CLI tests must not start native services. Do not relax existing assertions or install dependencies.",
+        "Coding-agent sandbox may run scoped unit/subprocess checks and required builds/typechecks available there. Native Java/Kafka/binding and legacy DB integration suites are parent-host only. A host-generated native acceptance after final source checks/promotion is mandatory; fake/test receipts or ready_for_verification never establish native success.",
+        "Run the fixed checkGroup commands and publication/source/plan/Git guards through the unchanged trusted host verifier. No lint command exists: never invent lint PASS. Tests and full host gates are recorded only after actual exit0. Public checksum metadata must use grouped lossless hex as existing pins; never weaken scanner/allowlist/locks. Keep production_ready=false."
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "",
+      "dependsOn": [
+        "US-601"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-603",
+      "title": "Persist bounded consumer checkpoints with atomic recovery",
+      "description": "Approved RLP-B06 bounded P04 local synthetic consumer candidate; current isolated story only.",
+      "acceptanceCriteria": [
+        "Implement an inert worker adapter around the reducer with a documented API for US-604: new owned private state directory, open/restore, consume positioned deliveries, materialize snapshots, close, and receipt. No arbitrary code/config loading, network, database, provider or native binary work in this adapter.",
+        "Checkpoint binds current plan/config/input identity, reducer state, source cursor, frozen snapshots and recomputed content hashes. Validate every restored field and bounded bytes before use. Exact retry reuses committed evidence; changed config/content/corruption/missing committed files stops without overwriting evidence.",
+        "One cooperating writer with atomic exclusive ownership and no stale-PID takeover. Refuse concurrent writer/unowned existing state, symlink/FIFO/hard-link/traversal or unsafe ancestors. Cleanup touches positively owned live state only. Unresolved ownership remains blocked; no process-name killing or arbitrary existing output overwrite.",
+        "Publish checkpoint effects and next-offset together via bounded private staged file, fsync and atomic replacement/directory fsync. ACK only after durable commit. Fault before publication leaves previous committed state usable; fault after publication is recoverable by validated replay. No skipped predecessor, duplicate totals or false complete marker. Document filesystem-local limits and unresolved crash-owner behavior honestly.",
+        "Use controlled fault injection only as trusted unit seam, never a CLI fake/receipt mode. Test real workspace filesystem publication/restore, exact replay, corruption, changed plan, private modes/links/concurrent writer, before/after commit failures, failed-operation input/state immutability and byte/map limits.",
+        "All worker typecheck/tests and unchanged publication/source guards pass through parent host fixtures. Coding agent runs available current tests/build only and lists host-only/native gates pending.",
+        "Authorization: user explicitly confirmed เริ่ม RLP-B06 after the five-story proposal. Implement only the current story in its isolated candidate, preserving all prior code/tests/fixtures/dependencies/locks/automation and all logins. No production adoption, source connection, real identity, provider, payment action or deployment.",
+        "Scope: one bounded TypeScript Kafka-consumer candidate using the unchanged packages/risk/test/fixtures/feature-streams/golden.json and existing offline risk reference. Do not turn the P03 specimens CDC table into canonical payments. All entities are invented synthetic_declared identity only. No Flink/Streams/cache/dependency installation, HTTP endpoint, database migration or Python-engine rewrite.",
+        "Finite experimental limits: golden input <=32 deliveries/8 snapshots/32768 bytes; single Kafka partition; complete run captures <=2000 records and <=2MiB; serialized consumer checkpoint <=1MiB and finite revision/offset maps. Reject overflow, gaps, corruption and unsupported state without truncation. Native host trial <=180s including reserved teardown, owned runtime <=2GiB, >=6GiB free before startup, existing fixed JVM heaps and loopback only. These are fixture bounds, not SLO/capacity claims.",
+        "Use existing TS golden semantics exactly: same-currency outgoing latest available revision in (target.occurred_at-3600s,target.occurred_at], exact decimal/BigInt money, full/partial reversal, missing/incomplete coverage unavailable instead of0. Snapshot as_of/coverage/evidence are explicitly supplied synthetic metadata; never infer historical availability from Kafka arrival/wall clock. Retain future revisions for eligible later as_of, and preserve previously frozen evidence. Not an online event-time/watermark/TTL-adoption proof.",
+        "Meaningful new tests must work both from repo root and package cwd using import.meta.url. Existing golden corpus/reference/tests remain unchanged; independent expected values and reference comparisons must detect broken arithmetic/order/offset/restore. Runtime/IO/invalid CLI tests must not start native services. Do not relax existing assertions or install dependencies.",
+        "Coding-agent sandbox may run scoped unit/subprocess checks and required builds/typechecks available there. Native Java/Kafka/binding and legacy DB integration suites are parent-host only. A host-generated native acceptance after final source checks/promotion is mandatory; fake/test receipts or ready_for_verification never establish native success.",
+        "Run the fixed checkGroup commands and publication/source/plan/Git guards through the unchanged trusted host verifier. No lint command exists: never invent lint PASS. Tests and full host gates are recorded only after actual exit0. Public checksum metadata must use grouped lossless hex as existing pins; never weaken scanner/allowlist/locks. Keep production_ready=false."
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "",
+      "dependsOn": [
+        "US-602"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-604",
+      "title": "Exercise actual Kafka golden streams against the consumer",
+      "description": "Approved RLP-B06 bounded P04 local synthetic consumer candidate; current isolated story only.",
+      "acceptanceCriteria": [
+        "Add import-safe explicit host runner using existing unchanged cdc-runtime.mjs createRuntime/verifyRuntime/ownedProcessHandles/childEnvironment, exact pinned Kafka/Java and inventoried client jars. No download/install/runtime/pin changes, new npm package, shell execution, existing broker, MariaDB, Connect, cache or real data.",
+        "Create one private owned broker/topic and actual finite producer/reader against loopback (fixed Java source-file helper may use pinned existing Kafka clients). Send the unchanged golden events with deterministic synthetic positioned envelopes; capture actual partition/offset/value and feed the real compiled US-603 consumer. All text/child outputs privately bounded; no payload/credential diagnostic in console/errors.",
+        "Use new project .local evidence and short owned /private/tmp/lmps-feature-* helper scratch if required; keep all existing CDC supervisors/pins/tests unchanged. Strict CLI has one explicit run/output shape, rejects unknown flags/existing destination/unsafe paths and performs no native work on import or invalid arguments.",
+        "Prove initial snapshots match every fixed golden expected count/amount/unavailable reason and existing independent reference. Controlled broker stop/restart and consumer close/reopen preserve topic position/checkpoint; actual reread/replay yields identical snapshots/durable prefix with no extra effects. Observe quiet endOffsets so missing/extra/gap records cannot be silently truncated as success.",
+        "Observe all common finite resource bounds and reserved teardown. Stop every owned helper/broker child on all paths, await close, expose ownership for final acceptance and retain fixed-code failure evidence. No retry loop, automatic stale-owner recovery, global kill or deletion of unknown state. Do not claim SIGKILL/TTL/lateness admission/HA/online production correctness unless actually proved.",
+        "Return only independently checkable count/hash/version/position/cleanup receipts from the actual run; never publish final acceptance here. Unit tests use trusted lifecycle/IO seams only and cover inert import/CLI/errors/bounds/extra capture/conflicts/native failure cleanup. Parent runs actual native trial after final source checks; fake fixtures are not native evidence.",
+        "Authorization: user explicitly confirmed เริ่ม RLP-B06 after the five-story proposal. Implement only the current story in its isolated candidate, preserving all prior code/tests/fixtures/dependencies/locks/automation and all logins. No production adoption, source connection, real identity, provider, payment action or deployment.",
+        "Scope: one bounded TypeScript Kafka-consumer candidate using the unchanged packages/risk/test/fixtures/feature-streams/golden.json and existing offline risk reference. Do not turn the P03 specimens CDC table into canonical payments. All entities are invented synthetic_declared identity only. No Flink/Streams/cache/dependency installation, HTTP endpoint, database migration or Python-engine rewrite.",
+        "Finite experimental limits: golden input <=32 deliveries/8 snapshots/32768 bytes; single Kafka partition; complete run captures <=2000 records and <=2MiB; serialized consumer checkpoint <=1MiB and finite revision/offset maps. Reject overflow, gaps, corruption and unsupported state without truncation. Native host trial <=180s including reserved teardown, owned runtime <=2GiB, >=6GiB free before startup, existing fixed JVM heaps and loopback only. These are fixture bounds, not SLO/capacity claims.",
+        "Use existing TS golden semantics exactly: same-currency outgoing latest available revision in (target.occurred_at-3600s,target.occurred_at], exact decimal/BigInt money, full/partial reversal, missing/incomplete coverage unavailable instead of0. Snapshot as_of/coverage/evidence are explicitly supplied synthetic metadata; never infer historical availability from Kafka arrival/wall clock. Retain future revisions for eligible later as_of, and preserve previously frozen evidence. Not an online event-time/watermark/TTL-adoption proof.",
+        "Meaningful new tests must work both from repo root and package cwd using import.meta.url. Existing golden corpus/reference/tests remain unchanged; independent expected values and reference comparisons must detect broken arithmetic/order/offset/restore. Runtime/IO/invalid CLI tests must not start native services. Do not relax existing assertions or install dependencies.",
+        "Coding-agent sandbox may run scoped unit/subprocess checks and required builds/typechecks available there. Native Java/Kafka/binding and legacy DB integration suites are parent-host only. A host-generated native acceptance after final source checks/promotion is mandatory; fake/test receipts or ready_for_verification never establish native success.",
+        "Run the fixed checkGroup commands and publication/source/plan/Git guards through the unchanged trusted host verifier. No lint command exists: never invent lint PASS. Tests and full host gates are recorded only after actual exit0. Public checksum metadata must use grouped lossless hex as existing pins; never weaken scanner/allowlist/locks. Keep production_ready=false."
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "",
+      "dependsOn": [
+        "US-603"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-605",
+      "title": "Close P04 local consumer with full checks and native acceptance",
+      "description": "Approved RLP-B06 bounded P04 local synthetic consumer candidate; current isolated story only.",
+      "acceptanceCriteria": [
+        "Add import-safe explicit host acceptance CLI invoking the actual default US-604 native runner. No receipt-file input, fake mode, runtime/runner/environment injection or caller-supplied success. Strict output under project .local, new private destination, generic redacted nonzero failure.",
+        "Bind before/after source hashes for current contracts/reducer/worker/supervisor/runner/acceptance/golden/pins, plus actual compiled JS used; verify runtime independently before/after. Compare actual emitted golden snapshots to independent fixed expected outputs/reference and validate durable position/restart/replay counts/hashes. No generated/self-reported expected values may replace checks.",
+        "Verify private persisted pipeline/checkpoint receipt matches current invocation and all owned process handles are empty after successful teardown. Finite elapsed/bytes/state/storage/resource limits are mandatory. Publish final acceptance.json exclusively/atomically only after all checks, with count/hash-only proof, production_ready=false and explicit remaining phase/adoption/identity/operations gates.",
+        "Add meaningful inert-import/invalid CLI/native failure/forged receipt/provenance mismatch/immutable atomic publication tests using test-process substitutes only. Unit proof never counts as actual native success. New tests are cwd-independent and existing tests/fixtures/automation/package locks remain unchanged.",
+        "Document commands/run/status/stop/recovery, exact versions/limits, snapshot semantics, owned cleanup, local checkpoint guarantees and limitations. Append honest implementation handoff to current.md preserving its full current prefix. Coding handoff lists full host/native gates pending; trusted verifier appends only actual standard check results.",
+        "Run fixed full host automation/typecheck/test/build/frozen offline verify:fresh/publication guards, guarded promotion and durable receipts for all five tasks. Parent must then execute node apps/risk-workers/scripts/feature-stream-acceptance.mjs --output <new-project-private-directory> on final promoted source and independently verify current hashes, actual result and zero remaining owned processes before reporting success. Stop queue after US-605.",
+        "Authorization: user explicitly confirmed เริ่ม RLP-B06 after the five-story proposal. Implement only the current story in its isolated candidate, preserving all prior code/tests/fixtures/dependencies/locks/automation and all logins. No production adoption, source connection, real identity, provider, payment action or deployment.",
+        "Scope: one bounded TypeScript Kafka-consumer candidate using the unchanged packages/risk/test/fixtures/feature-streams/golden.json and existing offline risk reference. Do not turn the P03 specimens CDC table into canonical payments. All entities are invented synthetic_declared identity only. No Flink/Streams/cache/dependency installation, HTTP endpoint, database migration or Python-engine rewrite.",
+        "Finite experimental limits: golden input <=32 deliveries/8 snapshots/32768 bytes; single Kafka partition; complete run captures <=2000 records and <=2MiB; serialized consumer checkpoint <=1MiB and finite revision/offset maps. Reject overflow, gaps, corruption and unsupported state without truncation. Native host trial <=180s including reserved teardown, owned runtime <=2GiB, >=6GiB free before startup, existing fixed JVM heaps and loopback only. These are fixture bounds, not SLO/capacity claims.",
+        "Use existing TS golden semantics exactly: same-currency outgoing latest available revision in (target.occurred_at-3600s,target.occurred_at], exact decimal/BigInt money, full/partial reversal, missing/incomplete coverage unavailable instead of0. Snapshot as_of/coverage/evidence are explicitly supplied synthetic metadata; never infer historical availability from Kafka arrival/wall clock. Retain future revisions for eligible later as_of, and preserve previously frozen evidence. Not an online event-time/watermark/TTL-adoption proof.",
+        "Meaningful new tests must work both from repo root and package cwd using import.meta.url. Existing golden corpus/reference/tests remain unchanged; independent expected values and reference comparisons must detect broken arithmetic/order/offset/restore. Runtime/IO/invalid CLI tests must not start native services. Do not relax existing assertions or install dependencies.",
+        "Coding-agent sandbox may run scoped unit/subprocess checks and required builds/typechecks available there. Native Java/Kafka/binding and legacy DB integration suites are parent-host only. A host-generated native acceptance after final source checks/promotion is mandatory; fake/test receipts or ready_for_verification never establish native success.",
+        "Run the fixed checkGroup commands and publication/source/plan/Git guards through the unchanged trusted host verifier. No lint command exists: never invent lint PASS. Tests and full host gates are recorded only after actual exit0. Public checksum metadata must use grouped lossless hex as existing pins; never weaken scanner/allowlist/locks. Keep production_ready=false."
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "",
+      "dependsOn": [
+        "US-604"
+      ],
+      "completionNotes": "Completed by agent"
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-26T00:23:24.846Z",
+    "version": "1.0.0",
+    "sourcePrd": "rlp-b06.md",
+    "updatedAt": "2026-10-26T03:35:59.422Z"
+  }
+}

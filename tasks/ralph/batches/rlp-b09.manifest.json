@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "batchId": "rlp-b09",
+  "predecessor": "rlp-b08",
+  "tracker": "tasks/ralph/batches/rlp-b09.json",
+  "document": "tasks/ralph/batches/rlp-b09.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-009.md",
+  "tasks": [
+    {
+      "id": "US-901",
+      "dependsOn": [],
+      "files": [
+        "packages/contracts/src/feature-engine-comparison.ts",
+        "packages/contracts/test/feature-engine-comparison.test.mjs",
+        "packages/contracts/package.json",
+        "docs/data-dictionary/feature-engine-experiment.md"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./feature-engine-comparison",
+          "value": "./dist/feature-engine-comparison.js"
+        }
+      }
+    },
+    {
+      "id": "US-902",
+      "dependsOn": [
+        "US-901"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-streams-candidate.mjs",
+        "apps/risk-workers/test/feature-streams-candidate.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-903",
+      "dependsOn": [
+        "US-902"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-engine-compare.mjs",
+        "apps/risk-workers/test/feature-engine-compare.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-904",
+      "dependsOn": [
+        "US-903"
+      ],
+      "files": [
+        "apps/risk-workers/test/feature-engine-comparison.test.mjs",
+        "docs/architecture/adr/0018-feature-engine-candidates.md"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-905",
+      "dependsOn": [
+        "US-904"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-engine-acceptance.mjs",
+        "apps/risk-workers/test/feature-engine-acceptance.test.mjs",
+        "docs/operations/local-feature-engine-comparison.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

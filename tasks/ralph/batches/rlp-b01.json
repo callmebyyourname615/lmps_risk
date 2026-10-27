@@ -1,0 +1,115 @@
+{
+  "name": "RLP-B01 — approved synthetic implementation queue",
+  "description": "Approved by the user's instruction to start on 2026-10-25. Execute US-101 through US-105 sequentially without further per-task permission. Stop on a failed check, decision, usage limit or scope conflict. Never log out, rotate accounts, commit, push, deploy or access real datasets/databases. PLAN.md and the sibling plan directory remain the source of truth and unchanged. Runner A0-A2 must pass before activating this queue.",
+  "branchName": "main",
+  "userStories": [
+    {
+      "id": "US-101",
+      "title": "Define strict synthetic pre-transfer simulation contracts",
+      "description": "Define strict synthetic pre-transfer simulation contracts",
+      "acceptanceCriteria": [
+        "Input/output มี explicit local_synthetic/test/simulation_only/enforcement=false boundaries",
+        "Caller context แยกจาก body; reject unknown/coerced fields, non-synthetic IDs, invalid dates/expiry, malformed decimals และเกิน64KiB/200 commands",
+        "Exact decimal round-trip รวมขอบเขตใหญ่กว่า JS safe integer ผ่านโดยไม่ใช้ Number เก็บเงิน",
+        "Contract validationไม่สร้าง state, risk score, identity link, DB/network/provider effect หรือ claim production authorization",
+        "`pnpm --filter @lmps/contracts typecheck` และ `pnpm --filter @lmps/contracts test` ผ่าน",
+        "Host allowlist/manifest-field guard, unchanged protected source และ publication/secret checks ผ่าน"
+      ],
+      "priority": 1,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-102",
+      "title": "Implement deterministic binding and scoped idempotency",
+      "description": "Implement deterministic binding and scoped idempotency",
+      "acceptanceCriteria": [
+        "Same caller/key/payload คืน frozen result/reference เดิมโดยไม่เพิ่ม state; payload ต่าง conflict แบบไม่มี partial mutation",
+        "Binding ครอบ caller/workspace/namespace/payment-attempt/parties/money/currency/product/expiry ทั้งหมด",
+        "Wrong client/workspace/payment/receiver/amount/currency/product และ expired reference ถูกปฏิเสธโดยไม่เปิดเผยรายการของ scope อื่น",
+        "Expiry boundaryใช้ supplied clock; retry ไม่ต่อ TTL; output deterministic ไม่ใช้ wall-clock/randomness",
+        "Unknown/missing/unsupported context ไม่คืน allow/zero risk และไม่ใช้ hash เป็น production authorization",
+        "`pnpm --filter @lmps/risk typecheck` และ `pnpm --filter @lmps/risk test` ผ่าน รวม existing regression",
+        "Host scope/source/publication checks ผ่าน"
+      ],
+      "priority": 2,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [
+        "US-101"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-103",
+      "title": "Serialize concurrent synthetic reservations and reconcile outcomes",
+      "description": "Serialize concurrent synthetic reservations and reconcile outcomes",
+      "acceptanceCriteria": [
+        "Actual concurrent Promise submissions key เดียวกันและ explicit capacity1 ไม่ได้ reservation2รายการ; ไม่ใช่ทดสอบด้วย sequential inputs อย่างเดียว",
+        "Duplicate request/callback และ timeout-after-record retry ไม่เพิ่ม pending/executed contribution หรือ releaseซ้ำ",
+        "Executed/failed/cancelled/expired transitions ถูกต้อง; conflicting outcome ไม่แก้ frozen bindingหรือ state เงียบ ๆ",
+        "Currency/workspace/client/sender scopes ไม่ปะปน; amount comparisons exact และ resource/state bounds ถูกบังคับ",
+        "Queue/lock release หลัง thrown error/cancellation ผ่าน; independent reference model ทดสอบ interleavings/reordered retries",
+        "Missing policy/context และ unsupported reversal ออก unavailable/rejected ตาม local contract",
+        "`pnpm --filter @lmps/risk typecheck` และ `pnpm --filter @lmps/risk test` ผ่าน",
+        "Existing detector/features/policy/Case semantics ไม่เปลี่ยน; host scope/source/publication checks ผ่าน"
+      ],
+      "priority": 3,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [
+        "US-102"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-104",
+      "title": "Add private file-only scenario CLI and reproducible report",
+      "description": "Add private file-only scenario CLI and reproducible report",
+      "acceptanceCriteria": [
+        "Strict bounded private JSON inputและ existing private-file/link/FIFO/owner/size checks ถูก reuse ไม่ขยาย helper เดิมให้รับ unsafe files",
+        "Repeated identical scenario/run returns identical report; changed input under same run conflicts และไม่ overwrite reportเดิม",
+        "Reportsผูก scenario/config/code/contract versions และ invariant counts; console/errors ไม่พิมพ์ parties, raw IDs, amounts, secrets หรือ private input contents",
+        "CLIใช้ library จาก US-102/103 จริง และ actual subprocess smoke ทำงานได้จาก root/worker directory",
+        "CLIไม่มี DB/source/network/real-model/provider/payment calls และปฏิเสธ real-source bundle shape",
+        "`pnpm --filter @lmps/risk-workers typecheck` และ `pnpm --filter @lmps/risk-workers test` ผ่าน",
+        "New root commandและ usage examples ถูกตรวจจริงก่อนบันทึกว่ารันได้; ไม่มีการอ้างว่าคำสั่งใหม่มีอยู่แล้วในขั้น draft",
+        "Host scope/source/publication checks ผ่าน"
+      ],
+      "priority": 4,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [
+        "US-103"
+      ]
+    },
+    {
+      "id": "US-105",
+      "title": "Close the batch with full local acceptance and honest handoff",
+      "description": "Close the batch with full local acceptance and honest handoff",
+      "acceptanceCriteria": [
+        "Contract → binding/retry → concurrent reservations → outcomes → private report ทำงานร่วมกันและ reproducible",
+        "Scope-denial, changed money/parties, expiry equality, duplicate/out-of-order/conflicting callbacks, failed command and resource cap cases ผ่าน",
+        "Existing26 + new automation tests, pinned `pnpm typecheck`, `pnpm test`, `pnpm build`, publication/secret scan และ `pnpm verify:fresh` ผ่าน หรือหยุดงานพร้อม actual failure evidence",
+        "Countเฉพาะผลที่รันจริง ไม่ยืม970 testsเดิมมาเป็นผลชุดใหม่; online advisory checks ระบุ RUN/SKIP ตามจริง ไม่มี dependencyใหม่ที่ถูกเพิ่มเงียบ ๆ",
+        "Original database data/credentials, source/plan files, Git index/branch/history และ unrelated user edits ไม่เปลี่ยน",
+        "Handoffระบุ local/synthetic only, ไม่มี actual LMPS endpoint/authority/G-ONLINE/production capacity/identity claim และ real2GBยัง deferred",
+        "ทุก taskมี verification/promotion receipt, tasksที่ผ่านแล้วไม่ถูกเรียกใหม่เมื่อ resume และคิวหยุดหลัง5งาน"
+      ],
+      "priority": 4,
+      "passes": true,
+      "labels": [],
+      "dependsOn": [
+        "US-104"
+      ]
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-25T06:28:09.582Z",
+    "version": "1.0.0",
+    "sourcePrd": "rlp-b01.md",
+    "updatedAt": "2026-10-25T07:52:31.629Z"
+  }
+}

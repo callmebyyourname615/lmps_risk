@@ -1,0 +1,35 @@
+maxIterations = 1
+iterationDelay = 1000
+outputDir = ".local/ralph/iterations"
+autoCommit = false
+agent = "codex"
+command = "/Users/macbookpro/Documents/LMPS_Risk/financial-crime-platform/tools/ralph/agent-adapter.mjs"
+tracker = "json"
+fallbackAgents = []
+prompt_template = ".ralph-tui/prompt.hbs"
+progressFile = ".ralph-tui/progress.md"
+configVersion = "2.1"
+
+[agentOptions]
+fullAuto = false
+sandbox = "read-only"
+timeout = 600000
+
+[trackerOptions]
+path = "./tasks/ralph/prd.json"
+
+[errorHandling]
+strategy = "abort"
+maxRetries = 0
+continueOnNonZeroExit = false
+
+[rateLimitHandling]
+enabled = true
+maxRetries = 0
+recoverPrimaryBetweenIterations = false
+
+[notifications]
+enabled = false
+
+[parallel]
+mode = "never"

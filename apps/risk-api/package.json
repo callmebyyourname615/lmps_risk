@@ -1,0 +1,27 @@
+{
+  "name": "@lmps/risk-api",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm --filter @lmps/database build && tsc -p tsconfig.json",
+    "typecheck": "pnpm --filter @lmps/database build && tsc -p tsconfig.json --noEmit",
+    "start": "node --env-file-if-exists=../../.env dist/main.js",
+    "test": "pnpm --filter @lmps/risk-portal build && pnpm --filter @lmps/risk-workers build && pnpm run build && node --test --test-concurrency=2 test/*.test.mjs",
+    "start:local-db": "node --env-file-if-exists=../../.env --env-file=../../.local/postgres/app.env dist/main.js"
+  },
+  "dependencies": {
+    "@fastify/static": "10.1.2",
+    "@lmps/database": "workspace:*",
+    "@nestjs/common": "12.1.3",
+    "@nestjs/core": "12.1.3",
+    "@nestjs/platform-fastify": "12.1.3",
+    "@nestjs/swagger": "12.0.2",
+    "fastify": "5.12.5",
+    "jose": "6.2.12",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "@lmps/risk": "workspace:*"
+  }
+}

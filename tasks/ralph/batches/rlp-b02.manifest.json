@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "batchId": "rlp-b02",
+  "predecessor": "rlp-b01",
+  "tracker": "tasks/ralph/batches/rlp-b02.json",
+  "document": "tasks/ralph/batches/rlp-b02.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-002.md",
+  "tasks": [
+    { "id":"US-201", "dependsOn":[], "checkGroup":"contracts", "files":["packages/contracts/src/qa-sampling.ts","packages/contracts/package.json","packages/contracts/test/qa-sampling.test.mjs"], "edits":{"packages/contracts/package.json":{"kind":"export","key":"./qa-sampling","value":"./dist/qa-sampling.js"}} },
+    { "id":"US-202", "dependsOn":["US-201"], "checkGroup":"risk", "files":["packages/risk/src/qa-sampling.ts","packages/risk/src/index.ts","packages/risk/test/qa-sampling.test.mjs"], "edits":{"packages/risk/src/index.ts":{"kind":"append","value":"export * from './qa-sampling.js';"}} },
+    { "id":"US-203", "dependsOn":["US-202"], "checkGroup":"workers", "files":["apps/risk-workers/src/qa-sampling.ts","apps/risk-workers/scripts/qa-sampling.mjs","apps/risk-workers/test/qa-sampling.test.mjs","package.json","docs/operations/qa-sampling.md"], "edits":{"package.json":{"kind":"script","key":"risk:sample-qa","value":"pnpm --filter @lmps/risk-workers build && pnpm exec node apps/risk-workers/scripts/qa-sampling.mjs"}} },
+    { "id":"US-204", "dependsOn":["US-203"], "checkGroup":"full", "files":["apps/risk-workers/test/qa-sampling-acceptance.test.mjs","docs/operations/qa-sampling.md","docs/implementation-status/current.md"], "edits":{} }
+  ]
+}

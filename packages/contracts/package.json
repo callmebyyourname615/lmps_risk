@@ -1,0 +1,91 @@
+{
+  "name": "@lmps/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./synthetic-normalization": {
+      "types": "./dist/synthetic-normalization.d.ts",
+      "import": "./dist/synthetic-normalization.js"
+    },
+    "./synthetic-publication": {
+      "types": "./dist/synthetic-publication.d.ts",
+      "import": "./dist/synthetic-publication.js"
+    },
+    "./transaction-risk": {
+      "types": "./dist/transaction-risk.d.ts",
+      "import": "./dist/transaction-risk.js"
+    },
+    "./local-alert": {
+      "types": "./dist/local-alert.d.ts",
+      "import": "./dist/local-alert.js"
+    },
+    "./risk-job": {
+      "types": "./dist/risk-job.d.ts",
+      "import": "./dist/risk-job.js"
+    },
+    "./offline-replay": {
+      "types": "./dist/offline-replay.d.ts",
+      "import": "./dist/offline-replay.js"
+    },
+    "./offline-dataset": {
+      "types": "./dist/offline-dataset.d.ts",
+      "import": "./dist/offline-dataset.js"
+    },
+    "./risk-policy": {
+      "types": "./dist/risk-policy.d.ts",
+      "import": "./dist/risk-policy.js"
+    },
+    "./local-case": {
+      "types": "./dist/local-case.d.ts",
+      "import": "./dist/local-case.js"
+    },
+    "./source-semantics": {
+      "types": "./dist/source-semantics.d.ts",
+      "import": "./dist/source-semantics.js"
+    },
+    "./bulk-dataset": {
+      "types": "./dist/bulk-dataset.d.ts",
+      "import": "./dist/bulk-dataset.js"
+    },
+    "./model-signal": {
+      "types": "./dist/model-signal.d.ts",
+      "import": "./dist/model-signal.js"
+    },
+    "./pretransfer-simulation": {
+      "types": "./dist/pretransfer-simulation.d.ts",
+      "import": "./dist/pretransfer-simulation.js"
+    },
+    "./feature-catalog": "./dist/feature-catalog.js",
+    "./feature-stream": "./dist/feature-stream.js",
+    "./feature-engine-comparison": "./dist/feature-engine-comparison.js",
+    "./feature-serving": "./dist/feature-serving.js",
+    "./qa-sampling": "./dist/qa-sampling.js",
+    "./historical-dataset": "./dist/historical-dataset.js",
+    "./notification-subscription": "./dist/notification-subscription.js",
+    "./notification-payload": "./dist/notification-payload.js",
+    "./label-review": {
+      "types": "./dist/label-review.d.ts",
+      "import": "./dist/label-review.js"
+    }
+  },
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "check:generated": "node scripts/generate.mjs --check",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm run check:generated && pnpm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "16.0.0"
+  }
+}

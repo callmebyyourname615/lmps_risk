@@ -1,0 +1,337 @@
+{
+  "policy": {
+    "version": "local-synthetic-features-1",
+    "scope": "local_synthetic",
+    "identity": "synthetic_declared",
+    "run_id": "synthetic_p04",
+    "namespace": "synthetic_p04",
+    "input_identity": "synthetic_extended_v1",
+    "semantics": "local-synthetic-features-1",
+    "currencies": [
+      "SYN",
+      "USD"
+    ],
+    "anchor": "occurred_at",
+    "window_seconds": 3600,
+    "watermark": "2026-01-01T12:00:00Z",
+    "coverage_start": "2026-01-01T08:00:00Z",
+    "allowed_lateness_seconds": 3600,
+    "active_ttl_seconds": 7200,
+    "freshness_seconds": 3600,
+    "limits": {
+      "deliveries": 32,
+      "payments": 32,
+      "attempts": 32,
+      "revisions_per_payment": 32,
+      "deliveries_per_key": 8,
+      "queries": 8,
+      "bytes": 2097152
+    }
+  },
+  "deliveries": [
+    {
+      "position": 0,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_a",
+        "revision_id": "synthetic_r1",
+        "revision_number": 1,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "0.00",
+        "reversed_amount": "0.00",
+        "lifecycle": "pending",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 1,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_a",
+        "revision_id": "synthetic_r2",
+        "revision_number": 2,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "0.00",
+        "reversed_amount": "0.00",
+        "lifecycle": "failed",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 2,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_retry",
+        "revision_id": "synthetic_r3",
+        "revision_number": 3,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "10.00",
+        "reversed_amount": "0.00",
+        "lifecycle": "succeeded",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 3,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_retry",
+        "revision_id": "synthetic_r4",
+        "revision_number": 4,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "8.00",
+        "reversed_amount": "0.00",
+        "lifecycle": "succeeded",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 4,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_retry",
+        "revision_id": "synthetic_r5",
+        "revision_number": 5,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "8.00",
+        "reversed_amount": "3.00",
+        "lifecycle": "partially_reversed",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 5,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_p",
+        "attempt_id": "synthetic_retry",
+        "revision_id": "synthetic_r6",
+        "revision_number": 6,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "8.00",
+        "reversed_amount": "8.00",
+        "lifecycle": "reversed",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 6,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_usd",
+        "attempt_id": "synthetic_usd",
+        "revision_id": "synthetic_usd",
+        "revision_number": 1,
+        "account_id": "synthetic_A",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "USD",
+        "attempt_amount": "2.00",
+        "gross_amount": "2.00",
+        "reversed_amount": "0.00",
+        "lifecycle": "succeeded",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    },
+    {
+      "position": 7,
+      "revision": {
+        "namespace": "synthetic_p04",
+        "payment_id": "synthetic_unknown",
+        "attempt_id": "synthetic_unknown",
+        "revision_id": "synthetic_unknown",
+        "revision_number": 1,
+        "account_id": "synthetic_U",
+        "occurred_at": "2026-01-01T11:30:00Z",
+        "available_at": "2026-01-01T11:30:00Z",
+        "currency": "SYN",
+        "attempt_amount": "10.00",
+        "gross_amount": "10.00",
+        "reversed_amount": null,
+        "lifecycle": "succeeded",
+        "identity": "synthetic_declared",
+        "coverage": "complete"
+      }
+    }
+  ],
+  "queries": [
+    {
+      "id": "synthetic_q0",
+      "account_id": "synthetic_A",
+      "currency": "SYN",
+      "as_of": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "synthetic_q1",
+      "account_id": "synthetic_A",
+      "currency": "USD",
+      "as_of": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "synthetic_q2",
+      "account_id": "synthetic_U",
+      "currency": "SYN",
+      "as_of": "2026-01-01T12:00:00Z"
+    },
+    {
+      "id": "synthetic_q3",
+      "account_id": "synthetic_empty",
+      "currency": "SYN",
+      "as_of": "2026-01-01T12:00:00Z"
+    }
+  ],
+  "expected_prefix_deltas": [
+    ["1", "1000", "0", "0", "0", "0", "0", "0"],
+    ["0", "0", "0", "0", "0", "0", "0", "0"],
+    ["1", "1000", "1", "1000", "0", "0", "1", "1000"],
+    ["0", "0", "0", "-200", "0", "0", "0", "-200"],
+    ["0", "0", "0", "0", "1", "300", "0", "-300"],
+    ["0", "0", "0", "0", "0", "500", "-1", "-500"]
+  ],
+  "expected_prefix_vectors": [
+    [
+      "1",
+      "1000",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "1",
+      "1000",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    [
+      "2",
+      "2000",
+      "1",
+      "1000",
+      "0",
+      "0",
+      "1",
+      "1000"
+    ],
+    [
+      "2",
+      "2000",
+      "1",
+      "800",
+      "0",
+      "0",
+      "1",
+      "800"
+    ],
+    [
+      "2",
+      "2000",
+      "1",
+      "800",
+      "1",
+      "300",
+      "1",
+      "500"
+    ],
+    [
+      "2",
+      "2000",
+      "1",
+      "800",
+      "1",
+      "800",
+      "0",
+      "0"
+    ]
+  ],
+  "expected_final": [
+    {
+      "vector": [
+        "2",
+        "2000",
+        "1",
+        "800",
+        "1",
+        "800",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "vector": [
+        "1",
+        "200",
+        "1",
+        "200",
+        "0",
+        "0",
+        "1",
+        "200"
+      ]
+    },
+    {
+      "reason": "UNKNOWN_REVERSAL"
+    },
+    {
+      "vector": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "boundaries": {
+    "ttl_equal": "2026-01-01T13:30:00Z",
+    "ttl_expired": "2026-01-01T13:30:01Z",
+    "late": "2026-01-01T10:59:59Z",
+    "left": "2026-01-01T11:00:00Z"
+  },
+  "limitations": "Synthetic declarations only; no source availability or identity verification. Reference parity applies only to matching occurred-time net semantics."
+}

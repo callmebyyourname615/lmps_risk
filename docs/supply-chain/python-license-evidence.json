@@ -1,0 +1,20 @@
+{
+  "pypi:colorama@0.4.6": {
+    "license": "BSD-3-Clause",
+    "artifact_hash": "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6",
+    "artifact_url": "https://files.pythonhosted.org/packages/d1/d6/3965ed04c63042e047cb6a3e6ed1a63a35087b6a609aa3a15ed8ac56c221/colorama-0.4.6-py2.py3-none-any.whl",
+    "license_file": "colorama-0.4.6.dist-info/licenses/LICENSE.txt"
+  },
+  "pypi:httpx2-jsfetch@1.0": {
+    "license": "BSD-3-Clause",
+    "artifact_hash": "sha256:cb916b707601e69a07721aabc8f3f6659be3a6893bc1ff5c6f9e02241df2da32",
+    "artifact_url": "https://files.pythonhosted.org/packages/9b/43/832f631d32e4f1211caa2ba368317739fe71f0b8530e4c9d15dc454bac2a/httpx2_jsfetch-1.0-py3-none-any.whl",
+    "license_file": "httpx2_jsfetch-1.0.dist-info/licenses/LICENSE.md"
+  },
+  "pypi:greenlet@3.5.6": {
+    "license": "MIT AND PSF-2.0",
+    "artifact_url": "https://files.pythonhosted.org/packages/f1/a1/e720a38852366c589e1a46cf570b886507ad2cf591050c203365638baab0/greenlet-3.5.6-cp313-cp313-macosx_11_0_universal2.whl",
+    "artifact_hash": "sha256:f96f0e30b5a95c7631b12bfe214cbc90ec8fe8cfa36920596c10514a65743519",
+    "license_file": "greenlet-3.5.6.dist-info/licenses/LICENSE;greenlet-3.5.6.dist-info/licenses/LICENSE.PSF"
+  }
+}

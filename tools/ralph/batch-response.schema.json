@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "status", "production_ready", "notes"],
+  "properties": {
+    "task_id": { "type": "string", "enum": ["US-101", "US-102", "US-103", "US-104", "US-105"] },
+    "status": { "type": "string", "enum": ["ready_for_verification", "blocked"] },
+    "production_ready": { "type": "boolean", "const": false },
+    "notes": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 500 } }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": "lmps-features-1",
+  "definitions": {
+    "log1p_net_amount": "log1p(exact net cents / 100); approximate model transform, not a monetary total",
+    "hour_sin_utc": "sin(UTC decision hour / 24 * 2pi)",
+    "hour_cos_utc": "cos(UTC decision hour / 24 * 2pi)",
+    "outgoing_count_1h": "distinct earlier known latest-revision executed sender payments in [as_of-1h,as_of)",
+    "log1p_outgoing_amount_1h": "log1p(exact same-currency earlier net cents sum / 100)",
+    "receiver_unseen_1h": "receiver absent from earlier covered one-hour sender window; not a new account claim"
+  },
+  "window_seconds": 3600,
+  "encoding": "fixed_9_decimal_strings",
+  "currency_policy": "one_currency_per_model_no_fx"
+}

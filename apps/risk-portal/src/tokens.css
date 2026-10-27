@@ -1,0 +1,88 @@
+/* Midnight Crypto tokens, reused for the LMPS risk workspace. */
+:root {
+  color-scheme: dark;
+  --radius: 0.75rem;
+  --stage-top: #536082;
+  --stage-bottom: #384361;
+  --shell: #0b1224;
+  --panel: #0d1528;
+  --raised: #111d35;
+  --field: #0a1223;
+  --highlight: #70b8ff;
+  --deep: #1257c9;
+  --soft: #b4bed0;
+  --positive: #1bc8aa;
+  --candle-down: #529dff;
+  --line: rgb(190 210 255 / 8%);
+  --rim: rgb(190 220 255 / 24%);
+  --gold: #f3ba2f;
+  --gold-foreground: #2a1d00;
+  --tether: #26a17b;
+
+  --background: #0b1224;
+  --foreground: #f5f8ff;
+  --card: #0d1528;
+  --card-foreground: #f5f8ff;
+  --popover: #0f1930;
+  --popover-foreground: #f5f8ff;
+  --primary: #1684ff;
+  --primary-foreground: #ffffff;
+  --secondary: #111d35;
+  --secondary-foreground: #f5f8ff;
+  --muted-surface: #111d35;
+  --muted-foreground: #95a2ba;
+  --accent: #16233f;
+  --accent-foreground: #f5f8ff;
+  --destructive: #ff7a86;
+  --destructive-foreground: #1a0306;
+  --border: rgb(190 210 255 / 10%);
+  --input: rgb(190 210 255 / 14%);
+  --ring: #70b8ff;
+  --chart-1: #1684ff;
+  --chart-2: #1bc8aa;
+  --chart-3: #529dff;
+  --chart-4: #70b8ff;
+  --chart-5: #1257c9;
+  --sidebar: #0d1528;
+  --sidebar-foreground: #f5f8ff;
+  --sidebar-primary: #1684ff;
+  --sidebar-primary-foreground: #fff;
+  --sidebar-accent: #111d35;
+  --sidebar-accent-foreground: #f5f8ff;
+  --sidebar-border: rgb(190 210 255 / 8%);
+  --sidebar-ring: #70b8ff;
+
+  --gradient-stage: linear-gradient(145deg, var(--stage-top), var(--stage-bottom));
+  --gradient-panel: linear-gradient(140deg, #101b31, var(--panel) 65%);
+  --gradient-hero:
+    radial-gradient(ellipse 60% 75% at 0% 0%, rgb(137 192 255 / 72%) 0%, rgb(30 115 240 / 70%) 14%, rgb(18 68 143 / 40%) 34%, transparent 62%),
+    linear-gradient(135deg, #102444, #0c1326 60%);
+  --gradient-card:
+    linear-gradient(145deg, #2f8dff 0%, #1663d6 40%, #10306f 78%, #0d1d42 100%);
+  --gradient-button: linear-gradient(180deg, #3a9bff, #1684ff 55%, #1170e6);
+  --gradient-bar: linear-gradient(180deg, #6fb6ff 0%, #2a8cff 35%, #1257c9 100%);
+  --gradient-tile: linear-gradient(160deg, rgb(112 184 255 / 20%), rgb(22 132 255 / 8%));
+  --shadow-shell: 0 28px 70px rgb(4 9 23 / 32%);
+  --shadow-panel: inset 1px 1px 0 rgb(190 220 255 / 9%);
+  --shadow-action: inset 0 1px 0 rgb(205 234 255 / 42%), 0 5px 18px rgb(22 132 255 / 24%);
+}
+
+/* Risk Portal compatibility aliases and semantic extensions. */
+:root {
+  --ink: var(--foreground);
+  --muted: var(--muted-foreground);
+  --paper: var(--shell);
+  --white: var(--panel);
+  --amber: var(--gold);
+  --amber-dark: var(--gold);
+  --green: var(--positive);
+  --red: var(--destructive);
+  --font-sans: "Plus Jakarta Sans", "Noto Sans Lao", "Lao Sangam MN", sans-serif;
+  --radius-panel: 26px;
+  --radius-field: 16px;
+  --risk-warning: #f2c76b;
+  --risk-warning-bg: rgb(242 199 107 / 9%);
+  --risk-danger-bg: rgb(255 122 134 / 9%);
+  --risk-success-bg: rgb(27 200 170 / 9%);
+  --risk-info-bg: rgb(22 132 255 / 10%);
+}

@@ -1,0 +1,30 @@
+{
+  "codebook_version": "synthetic-lifecycle-0.1.0-draft.1",
+  "synthetic_only": true,
+  "production_mapping_approved": false,
+  "cases": [
+    { "id": "payment-pending", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_PENDING", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "payment", "base_status": "pending", "reversal": "none", "candidate_status": "pending" },
+    { "id": "payment-succeeded", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "payment", "base_status": "succeeded", "reversal": "none", "candidate_status": "succeeded" },
+    { "id": "payment-failed", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_FAILED", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "payment", "base_status": "failed", "reversal": "none", "candidate_status": "failed" },
+    { "id": "payment-unknown", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_STATUS_UNKNOWN", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "payment", "base_status": "unknown", "reversal": "none", "candidate_status": "unknown" },
+    { "id": "lookup-pending", "operation_code": "SYNTH_LOOKUP", "status_code": "SYNTH_PENDING", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "lookup", "base_status": "pending", "reversal": "none", "candidate_status": null },
+    { "id": "lookup-succeeded-is-not-payment", "operation_code": "SYNTH_LOOKUP", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "lookup", "base_status": "succeeded", "reversal": "none", "candidate_status": null },
+    { "id": "lookup-failed", "operation_code": "SYNTH_LOOKUP", "status_code": "SYNTH_FAILED", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "lookup", "base_status": "failed", "reversal": "none", "candidate_status": null },
+    { "id": "lookup-unknown", "operation_code": "SYNTH_LOOKUP", "status_code": "SYNTH_STATUS_UNKNOWN", "reversal_code": "SYNTH_REVERSAL_NONE", "kind": "lookup", "base_status": "unknown", "reversal": "none", "candidate_status": null },
+    { "id": "reversal-request-does-not-complete", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_REQUESTED", "kind": "payment", "base_status": "succeeded", "reversal": "requested", "candidate_status": "succeeded" },
+    { "id": "failed-reversal-preserves-original-success", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_FAILED", "kind": "payment", "base_status": "succeeded", "reversal": "failed", "candidate_status": "succeeded" },
+    { "id": "partial-completion-candidate-requires-evidence", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_PARTIAL_COMPLETED", "kind": "payment", "base_status": "succeeded", "reversal": "partial_completed", "candidate_status": "partially_reversed" },
+    { "id": "full-completion-candidate-requires-evidence", "operation_code": "SYNTH_PAYMENT", "status_code": "SYNTH_SUCCEEDED", "reversal_code": "SYNTH_REVERSAL_FULL_COMPLETED", "kind": "payment", "base_status": "succeeded", "reversal": "full_completed", "candidate_status": "reversed" }
+  ],
+  "unrecognized_codes": ["", " ", "0", "00", "1", "SUCCESS", "RAW_RESULT", "SYNTHETIC_OK", "synth_succeeded", "SYNTH_SUCCEEDED ", " SYNTH_PAYMENT", "__proto__", "constructor"],
+  "invalid_code_values": [0, 1, true, false, [], {}],
+  "completion_boundaries": [
+    { "id": "partial-exact-large", "original": "9999999999999999999999.99", "cumulative_reversed": "0.01", "meaning": "partial_completed", "amount_condition_met": true },
+    { "id": "full-exact-large", "original": "9999999999999999999999.99", "cumulative_reversed": "9999999999999999999999.99", "meaning": "full_completed", "amount_condition_met": true },
+    { "id": "equal-is-not-partial", "original": "42.50", "cumulative_reversed": "42.50", "meaning": "partial_completed", "amount_condition_met": false },
+    { "id": "short-is-not-full", "original": "42.50", "cumulative_reversed": "42.49", "meaning": "full_completed", "amount_condition_met": false },
+    { "id": "over-reversal", "original": "42.50", "cumulative_reversed": "42.51", "meaning": "full_completed", "amount_condition_met": false },
+    { "id": "zero-is-not-completed", "original": "42.50", "cumulative_reversed": "0.00", "meaning": "partial_completed", "amount_condition_met": false },
+    { "id": "zero-original-is-not-full", "original": "0.00", "cumulative_reversed": "0.00", "meaning": "full_completed", "amount_condition_met": false }
+  ]
+}

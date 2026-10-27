@@ -1,0 +1,232 @@
+{
+  "format": "lmps-p04-phase-catalog-v1",
+  "version": 1,
+  "phase": "P04",
+  "executable": false,
+  "approval": "เริ่มคิว P04 B08–B11 ด้วย pluse",
+  "profile": "pluse",
+  "reviewedProposalSha256": "708101d3 86b0fa4f 7e1e66bd 961f87d3 865c744f 6af7bf7a f46dc449 5a46952a",
+  "sourceDocuments": [
+    {
+      "name": "01-tech-stack-and-cost.md",
+      "sha256": "c1eaf7ad bcba3362 7dfcbf3d 9a7a91ab c764dbd5 7c21fee3 9c05d001 f764e515"
+    },
+    {
+      "name": "02-architecture-data-and-api.md",
+      "sha256": "ffa37659 6ed36a89 988cb495 eea271af 2bad80b2 d9822b58 b14eb22a fb0d1e52"
+    },
+    {
+      "name": "03-implementation-phases.md",
+      "sha256": "1211acb5 6d3c1b94 4706850a edf08a28 fd55844a 023b90ee 1d4654c9 8b0e4082"
+    },
+    {
+      "name": "04-code-session-backlog.md",
+      "sha256": "61428298 61fd4714 9e4a0113 e4e8fda6 6441587f fee50da5 48eb2ff6 09893ddc"
+    },
+    {
+      "name": "05-evaluation-security-deployment.md",
+      "sha256": "ec503877 4d0a512f 7eed34de 6be0f608 c4235903 9a1a296f b99d9181 73fa3b28"
+    },
+    {
+      "name": "06-decisions-and-references.md",
+      "sha256": "ca20616b 1c040bd8 a5874198 7cf44a3b c73668bd b5a8fc86 29143920 8f1211c6"
+    },
+    {
+      "name": "07-mariadb-replica-bootstrap.md",
+      "sha256": "2abe1b41 1f014718 ad4dbf2e 95188af7 2a23367a 6433bab1 d6413e48 b5b4b94b"
+    },
+    {
+      "name": "08-postgresql-enterprise-design.md",
+      "sha256": "5e415d96 6212c4ef 96f0c12a 321f14b7 5959ef12 a7938d4e 24993ad4 76be68d6"
+    },
+    {
+      "name": "09-missing-inputs-and-foundation-readiness.md",
+      "sha256": "7a9c2962 92a5c051 65780a71 66b3d5dd 159ab486 028a24fc 24d90033 e68b1a69"
+    },
+    {
+      "name": "10-next-implementation-steps.md",
+      "sha256": "273128ea 9b6b8ec6 9bda4c1f 00d7215b 9469ac5a 8398deb1 748e8aa3 d0d7b2c6"
+    },
+    {
+      "name": "README.md",
+      "sha256": "43afa81d e070b800 b7a0a225 728c0dad 38180e4e b24b2667 68fe3f2c dc6def35"
+    }
+  ],
+  "requirements": [
+    {
+      "requirement": "P04-01",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "G-DATA",
+        "O-006",
+        "O-017"
+      ],
+      "continuationBatches": [
+        "rlp-b08"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-02",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-013",
+        "O-008",
+        "O-006",
+        "F-LEGAL"
+      ],
+      "continuationBatches": [
+        "rlp-b09"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-03",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-013",
+        "O-006",
+        "O-007"
+      ],
+      "continuationBatches": [
+        "rlp-b08",
+        "rlp-b09"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-04",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-015",
+        "O-008",
+        "O-006",
+        "F-LEGAL"
+      ],
+      "continuationBatches": [
+        "rlp-b10"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-05",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "G-DATA",
+        "O-016"
+      ],
+      "continuationBatches": [
+        "rlp-b10"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-06",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-004",
+        "O-005"
+      ],
+      "continuationBatches": [
+        "rlp-b08"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-07",
+      "targetComplete": true,
+      "scope": "original bounded simulator scope only; actual LMPS remains P09",
+      "blockedBy": [],
+      "continuationBatches": [
+        "rlp-b11"
+      ],
+      "existingEvidence": [
+        ".local/ralph/registry-preparation/b01-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-08",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-017",
+        "G-DATA"
+      ],
+      "continuationBatches": [
+        "rlp-b11"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    },
+    {
+      "requirement": "P04-09",
+      "targetComplete": false,
+      "scope": "partial local implementation; target gates remain open",
+      "blockedBy": [
+        "O-007",
+        "O-006"
+      ],
+      "continuationBatches": [
+        "rlp-b11"
+      ],
+      "existingEvidence": [
+        ".local/ralph/batches/rlp-b06/historical-seal.json",
+        ".local/ralph/batches/rlp-b07/historical-seal.json"
+      ]
+    }
+  ],
+  "batchPlans": [
+    {
+      "batchId": "rlp-b08",
+      "predecessor": "rlp-b07",
+      "nativeTracker": "tasks/ralph/batches/rlp-b08.json",
+      "activation": "only after predecessor final acceptance/seal and exact reviewed native manifest registration"
+    },
+    {
+      "batchId": "rlp-b09",
+      "predecessor": "rlp-b08",
+      "nativeTracker": "tasks/ralph/batches/rlp-b09.json",
+      "activation": "only after predecessor final acceptance/seal and exact reviewed native manifest registration"
+    },
+    {
+      "batchId": "rlp-b10",
+      "predecessor": "rlp-b09",
+      "nativeTracker": "tasks/ralph/batches/rlp-b10.json",
+      "activation": "only after predecessor final acceptance/seal and exact reviewed native manifest registration"
+    },
+    {
+      "batchId": "rlp-b11",
+      "predecessor": "rlp-b10",
+      "nativeTracker": "tasks/ralph/batches/rlp-b11.json",
+      "activation": "only after predecessor final acceptance/seal and exact reviewed native manifest registration"
+    }
+  ],
+  "liveState": ".local/ralph/phases/p04/state.json",
+  "productionReady": false
+}

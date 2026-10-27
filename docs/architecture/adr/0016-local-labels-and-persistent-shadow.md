@@ -1,0 +1,15 @@
+# ADR0016 — independent labels and persistent owned shadow
+
+Status: implemented for local/synthetic experiments,2026-10-25. Scope: No.47.1–51.1. [Operational contract and commands](../../operations/real-shadow-foundation.md).
+
+Case outcomes express analyst opinions; automatically using them as truth would hide unknowns, backdate maturity and let the same analyst approve their own labels. Source DDL also cannot confirm lifecycle, money units or account identity. The new workflow keeps these gates distinct from executable local plumbing.
+
+Migration0016 adds one append-only `platform.local_label_adjudications` ledger. A scoped independent reviewer appends an adjudication/revocation bound to the current closed Case outcome/evidence, linked Alert, exact transaction revision and task. Existing Case advisory lock372 serializes label writes and Case transitions. Database recording time fences availability/maturity; optimistic versions, request hashes and unique heads protect retries/concurrency. Reopened/changed Cases invalidate current eligibility without deleting history. Only explicitly synthetic fixture evidence can be eligible. Ordinary roles cannot update/delete/truncate or supply server metadata. External resolutions stay unverified.
+
+Exports are immutable as-of artifacts with target/task/record hashes. Exact run-ID retries reuse the frozen artifact; new truth requires a new export and derived dataset/evaluation version. Python rebuilds dataset/feedback lineage, keeps unknown distinct from negative and rejects real-data promotion. Thresholds/candidate selection use calibration only; held-out evaluation and actual rule/model comparisons never authorize activation.
+
+The persistent reference supervisor owns a separate private root, PostgreSQL cluster, MLflow registry/artifacts, keys and loopback listeners. It validates paths, migration status, model pin and a child-specific nonce before readiness; an OS lock fences a second supervisor. It never migrates/stops the original project cluster. Short-lived JWT files and a private authenticated control listener support operator inspection/stop. Model inference remains bounded, signed and shadow-only. Aggregate process metrics/drift carry no raw target/features and make no detection-quality claim.
+
+PostgreSQL recovery and ML recovery are separate acceptance gates. ML restore verifies bytes into a new directory, explicitly records local URI relocation, preserves versions/keys, and warms all registered versions. Local limits and stopped-writer requirements are intentional; this is not a concurrent production registry backup protocol. New fixtures/runtime have31 tables/17 migrations; previous30-table/16-migration and28-table/15-migration backups remain supported. Primary project remains28/15.
+
+Real source owner evidence, verified identity, point-in-time availability, mature representative labels, actual2GB trial, live shadow ownership, throughput and release sign-offs remain pending. The [100k invented recovery and overload probes](../../operations/real-shadow-foundation.md) establish bounded local behavior only.

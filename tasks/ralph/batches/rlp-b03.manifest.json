@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "batchId": "rlp-b03",
+  "predecessor": "rlp-b02",
+  "tracker": "tasks/ralph/batches/rlp-b03.json",
+  "document": "tasks/ralph/batches/rlp-b03.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-003.md",
+  "tasks": [
+    {
+      "id": "US-301",
+      "dependsOn": [],
+      "files": [
+        "docs/architecture/adr/0017-local-adoption-evidence-register.md",
+        "docs/architecture/engineering-foundation-gates.md"
+      ],
+      "checkGroup": "docs",
+      "edits": {}
+    },
+    {
+      "id": "US-302",
+      "dependsOn": [
+        "US-301"
+      ],
+      "files": [
+        "packages/contracts/src/historical-dataset.ts",
+        "packages/contracts/package.json",
+        "packages/contracts/test/historical-dataset.test.mjs",
+        "docs/data-dictionary/historical-dataset-manifest.md"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./historical-dataset",
+          "value": "./dist/historical-dataset.js"
+        }
+      }
+    },
+    {
+      "id": "US-303",
+      "dependsOn": [
+        "US-302"
+      ],
+      "files": [
+        "packages/risk/test/fixtures/feature-streams/golden.json",
+        "packages/risk/test/feature-streams.test.mjs",
+        "docs/data-dictionary/feature-golden-streams.md"
+      ],
+      "checkGroup": "risk",
+      "edits": {}
+    },
+    {
+      "id": "US-304",
+      "dependsOn": [
+        "US-303"
+      ],
+      "files": [
+        "packages/contracts/src/notification-subscription.ts",
+        "packages/contracts/package.json",
+        "packages/contracts/test/notification-subscription.test.mjs"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./notification-subscription",
+          "value": "./dist/notification-subscription.js"
+        }
+      }
+    },
+    {
+      "id": "US-305",
+      "dependsOn": [
+        "US-304"
+      ],
+      "files": [
+        "apps/risk-workers/test/fixtures/notifications/fake-provider.mjs",
+        "apps/risk-workers/test/fixtures/notifications/cases.json",
+        "apps/risk-workers/test/notification-provider-fixtures.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-306",
+      "dependsOn": [
+        "US-305"
+      ],
+      "files": [
+        "packages/contracts/src/notification-payload.ts",
+        "packages/contracts/package.json",
+        "packages/contracts/test/notification-payload.test.mjs"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./notification-payload",
+          "value": "./dist/notification-payload.js"
+        }
+      }
+    },
+    {
+      "id": "US-307",
+      "dependsOn": [
+        "US-306"
+      ],
+      "files": [
+        "services/ml-inference/lmps_ml/batch_schedule.py",
+        "services/ml-inference/lmps_ml/pipeline.py",
+        "services/ml-inference/tests/test_batch_schedule.py",
+        "docs/operations/local-ml-batch-schedule.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    },
+    {
+      "id": "US-308",
+      "dependsOn": [
+        "US-307"
+      ],
+      "files": [
+        "services/ml-inference/lmps_ml/vendor_evaluation.py",
+        "services/ml-inference/tests/test_vendor_evaluation.py"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    },
+    {
+      "id": "US-309",
+      "dependsOn": [
+        "US-308"
+      ],
+      "files": [
+        "docs/security/threat-model.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

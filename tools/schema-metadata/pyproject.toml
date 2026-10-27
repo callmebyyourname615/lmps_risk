@@ -1,0 +1,11 @@
+[project]
+name = "lmps-schema-metadata"
+version = "0.0.0"
+description = "Offline metadata-only analysis of MySQL/MariaDB DDL"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "sqlglot==30.23.0",
+]
+
+[tool.uv]
+package = false

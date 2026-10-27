@@ -1,0 +1,125 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792281600000,
+      "tag": "0000_foundation",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792281600001,
+      "tag": "0001_local_source_intake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792281600002,
+      "tag": "0002_intake_column_grants",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792281600003,
+      "tag": "0003_local_outbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792281600004,
+      "tag": "0004_local_audit",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792281600005,
+      "tag": "0005_local_sync_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792281600006,
+      "tag": "0006_local_transaction_revisions",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792281600007,
+      "tag": "0007_local_normalization_publications",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1792281600008,
+      "tag": "0008_local_rule_assessments",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1792281600009,
+      "tag": "0009_local_transaction_risks",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1792281600010,
+      "tag": "0010_local_alerts",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1792281600011,
+      "tag": "0011_local_risk_jobs",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1792281600012,
+      "tag": "0012_offline_datasets",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792281600013,
+      "tag": "0013_local_risk_policy_lifecycle",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792281600014,
+      "tag": "0014_local_cases",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792281600015,
+      "tag": "0015_local_model_receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792281600016,
+      "tag": "0016_local_label_adjudications",
+      "breakpoints": true
+    }
+  ]
+}

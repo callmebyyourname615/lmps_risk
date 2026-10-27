@@ -1,0 +1,24 @@
+[project]
+name = "lmps-financial-crime-platform"
+version = "0.0.0"
+description = "Development workspace for the new LMPS financial crime platform"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[tool.uv]
+package = false
+required-version = "==0.12.5"
+no-binary-package = ["lightgbm"]
+
+[tool.uv.config-settings-package]
+lightgbm = { "cmake.define.USE_OPENMP" = "OFF" }
+
+[tool.uv.workspace]
+members = ["services/*", "tools/*"]
+exclude = ["tools/ralph"]
+
+[dependency-groups]
+security = [
+    "detect-secrets==1.5.0",
+    "pyyaml==6.0.3",
+]

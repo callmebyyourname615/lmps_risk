@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "status", "must_items", "plan_documents", "production_ready", "read_only", "blocker_codes"],
+  "properties": {
+    "task_id": { "type": "string", "enum": ["US-001"] },
+    "status": { "type": "string", "enum": ["verified", "blocked"] },
+    "must_items": { "type": "integer" },
+    "plan_documents": { "type": "integer" },
+    "production_ready": { "type": "boolean" },
+    "read_only": { "type": "boolean" },
+    "blocker_codes": { "type": "array", "items": { "type": "string" } }
+  }
+}

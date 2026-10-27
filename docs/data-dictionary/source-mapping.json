@@ -1,0 +1,1119 @@
+{
+  "design_version": "source-mapping-0.1.0-draft.1",
+  "status": "DRAFT_FOR_REVIEW",
+  "canonical_schema_version": "0.1.0-draft.1",
+  "evidence_ref": "lmps-schema/metadata.json",
+  "evidence_scope": "offline_ddl_partial_coverage",
+  "source_tables": {
+    "transfer": {
+      "role": "current_table_candidate",
+      "capture_enabled": false,
+      "source_line": 2030,
+      "primary_key": [
+        "id",
+        "requesttime"
+      ],
+      "unique_keys": [
+        [
+          "reference",
+          "requesttime"
+        ]
+      ],
+      "column_candidates": [
+        {
+          "name": "id",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": false
+        },
+        {
+          "name": "txtime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "requesttime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "reference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "frommember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "fromaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "totype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "toaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            5000
+          ],
+          "nullable": false
+        },
+        {
+          "name": "tomember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "responsetime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "result",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "data_type": "decimal",
+          "numeric_parameters": [
+            24,
+            2
+          ],
+          "nullable": false
+        },
+        {
+          "name": "ccy",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "isreconciled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "issettled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "settletime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "txtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "originalreference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "shouldrevert",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": true
+        },
+        {
+          "name": "qrtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": true
+        },
+        {
+          "name": "fromchannel",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": true
+        }
+      ],
+      "default_for_other_columns": "excluded"
+    },
+    "transfer_hist": {
+      "role": "history_comparison_only",
+      "capture_enabled": false,
+      "source_line": 2164,
+      "primary_key": [
+        "id",
+        "requesttime"
+      ],
+      "unique_keys": [
+        [
+          "reference",
+          "requesttime"
+        ]
+      ],
+      "column_candidates": [
+        {
+          "name": "id",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": false
+        },
+        {
+          "name": "txtime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "requesttime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "reference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "frommember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "fromaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "totype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "toaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            5000
+          ],
+          "nullable": false
+        },
+        {
+          "name": "tomember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "responsetime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "result",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "data_type": "decimal",
+          "numeric_parameters": [
+            24,
+            2
+          ],
+          "nullable": false
+        },
+        {
+          "name": "ccy",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "isreconciled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "issettled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "settletime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "txtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "originalreference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "shouldrevert",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": true
+        },
+        {
+          "name": "qrtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": true
+        }
+      ],
+      "default_for_other_columns": "excluded"
+    },
+    "transfer_old": {
+      "role": "history_comparison_only",
+      "capture_enabled": false,
+      "source_line": 2273,
+      "primary_key": [
+        "id"
+      ],
+      "unique_keys": [
+        [
+          "reference"
+        ]
+      ],
+      "column_candidates": [
+        {
+          "name": "id",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": false
+        },
+        {
+          "name": "txtime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "requesttime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": false
+        },
+        {
+          "name": "reference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "frommember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "fromaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "totype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "toaccount",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            5000
+          ],
+          "nullable": false
+        },
+        {
+          "name": "tomember",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "responsetime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "result",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "amount",
+          "data_type": "decimal",
+          "numeric_parameters": [
+            24,
+            2
+          ],
+          "nullable": false
+        },
+        {
+          "name": "ccy",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": false
+        },
+        {
+          "name": "isreconciled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "issettled",
+          "data_type": "tinyint",
+          "numeric_parameters": [
+            1
+          ],
+          "nullable": false
+        },
+        {
+          "name": "settletime",
+          "data_type": "datetime",
+          "numeric_parameters": [],
+          "nullable": true
+        },
+        {
+          "name": "txtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "originalreference",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            200
+          ],
+          "nullable": true
+        },
+        {
+          "name": "shouldrevert",
+          "data_type": "int",
+          "numeric_parameters": [
+            11
+          ],
+          "nullable": true
+        },
+        {
+          "name": "qrtype",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": true
+        }
+      ],
+      "default_for_other_columns": "excluded"
+    },
+    "member": {
+      "role": "institution_dictionary_candidate",
+      "capture_enabled": false,
+      "source_line": 1523,
+      "primary_key": [
+        "code"
+      ],
+      "unique_keys": [],
+      "column_candidates": [
+        {
+          "name": "code",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": false
+        },
+        {
+          "name": "iin",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            100
+          ],
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            16
+          ],
+          "nullable": true
+        },
+        {
+          "name": "member_type",
+          "data_type": "varchar",
+          "numeric_parameters": [
+            20
+          ],
+          "nullable": true
+        }
+      ],
+      "default_for_other_columns": "excluded"
+    }
+  },
+  "gates": {
+    "G-ACCESS": {
+      "status": "UNVERIFIED",
+      "owner_role": "Data/Security",
+      "required_evidence": "Approved source access, field capture and replica impact budget."
+    },
+    "G-SOURCE": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/DBA",
+      "required_evidence": "Live schema, source namespace/generation, collation and history movement/key changes."
+    },
+    "G-CAPTURE": {
+      "status": "UNVERIFIED",
+      "owner_role": "Data/SRE",
+      "required_evidence": "Capture position, row ordinal, snapshot/stream identity, ordering and restart/replay protocol."
+    },
+    "G-BUSINESS": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Business key/retry scope and source-to-payment linkage, including cross-history overlap."
+    },
+    "G-LIFECYCLE": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Risk",
+      "required_evidence": "Status/reversal/settlement and lookup-versus-payment codebooks."
+    },
+    "G-TIME": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Source timezone, field meaning and trustworthy availability history."
+    },
+    "G-MONEY": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Amount units, sign/direction, zero/negative values, fee inclusion and supported bounds."
+    },
+    "G-CURRENCY": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Approved ccy-to-canonical currency mapping; syntax is not a codebook."
+    },
+    "G-MEMBER": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Member code/iin namespace, routing-versus-owning institution, validity and collisions."
+    },
+    "G-ACCOUNT": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Security",
+      "required_evidence": "Account representation, stable identity, masking boundary and role linkage; user deferred."
+    },
+    "G-PRODUCT": {
+      "status": "UNVERIFIED",
+      "owner_role": "LMPS/Data",
+      "required_evidence": "Transaction/product/channel/QR types and history coverage."
+    },
+    "G-PRIVACY": {
+      "status": "UNVERIFIED",
+      "owner_role": "Security/Governance",
+      "required_evidence": "Restricted field classification, tokenization/encoding, access and evidence storage."
+    },
+    "G-RETENTION": {
+      "status": "UNVERIFIED",
+      "owner_role": "Governance/SRE",
+      "required_evidence": "Retention, legal holds, dedup/replay horizon and recovery guarantees."
+    }
+  },
+  "canonical_fields": {
+    "schema_version": {
+      "source_candidates": [],
+      "gate_ids": [],
+      "unresolved_behavior": "producer_assigned",
+      "proposed_rule": "Use the existing draft wire version; this mapping has a separate design version."
+    },
+    "execution_mode": {
+      "source_candidates": [],
+      "gate_ids": [
+        "G-ACCESS"
+      ],
+      "unresolved_behavior": "producer_assigned",
+      "proposed_rule": "Server-assigned mode and isolated workspace; never authorize from caller input."
+    },
+    "run_id": {
+      "source_candidates": [],
+      "gate_ids": [],
+      "unresolved_behavior": "producer_assigned",
+      "proposed_rule": "Execution trace ID. Do not include a changing live process run ID in stable source dedup identity."
+    },
+    "correlation_id": {
+      "source_candidates": [],
+      "gate_ids": [],
+      "unresolved_behavior": "producer_assigned",
+      "proposed_rule": "Producer trace reference, never a raw account/reference copied into logs."
+    },
+    "transaction_id": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "id"
+        },
+        {
+          "table": "transfer",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer",
+          "column": "reference"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "id"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "reference"
+        },
+        {
+          "table": "transfer_old",
+          "column": "id"
+        },
+        {
+          "table": "transfer_old",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_old",
+          "column": "reference"
+        }
+      ],
+      "gate_ids": [
+        "G-SOURCE",
+        "G-BUSINESS"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Internal opaque payment handle only after verified business linkage; source row IDs are not payment IDs."
+    },
+    "transaction_revision": {
+      "source_candidates": [],
+      "gate_ids": [
+        "G-CAPTURE",
+        "G-BUSINESS"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Opaque immutable revision bound to approved input/version; not requesttime or arrival-time ordering."
+    },
+    "source_reference": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "id"
+        },
+        {
+          "table": "transfer",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "id"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_old",
+          "column": "id"
+        },
+        {
+          "table": "transfer_old",
+          "column": "requesttime"
+        }
+      ],
+      "gate_ids": [
+        "G-SOURCE",
+        "G-PRIVACY"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Opaque registry reference to source namespace/table/complete key; reversible authorized lookup, not truncation to 128 chars."
+    },
+    "occurred_at": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "txtime"
+        },
+        {
+          "table": "transfer",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "txtime"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "requesttime"
+        },
+        {
+          "table": "transfer_old",
+          "column": "txtime"
+        },
+        {
+          "table": "transfer_old",
+          "column": "requesttime"
+        }
+      ],
+      "gate_ids": [
+        "G-TIME"
+      ],
+      "unresolved_behavior": "null",
+      "proposed_rule": "Use verified business time converted to UTC; DATETIME has no asserted timezone; never append Z by assumption."
+    },
+    "observed_at": {
+      "source_candidates": [],
+      "gate_ids": [
+        "G-CAPTURE"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Actual capture observation instant; never backdate from txtime/requesttime. Historical snapshots do not prove past availability."
+    },
+    "sender": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "fromaccount"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "fromaccount"
+        },
+        {
+          "table": "transfer_old",
+          "column": "fromaccount"
+        }
+      ],
+      "gate_ids": [
+        "G-ACCOUNT",
+        "G-PRIVACY"
+      ],
+      "unresolved_behavior": "unresolved_account",
+      "proposed_rule": "No source account string in shared wire data; unresolved/unknown until trusted resolver evidence exists."
+    },
+    "receiver": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "toaccount"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "toaccount"
+        },
+        {
+          "table": "transfer_old",
+          "column": "toaccount"
+        }
+      ],
+      "gate_ids": [
+        "G-ACCOUNT",
+        "G-PRIVACY"
+      ],
+      "unresolved_behavior": "unresolved_account",
+      "proposed_rule": "No QR/proxy/account equivalence inferred; unresolved/unknown until trusted resolver evidence exists."
+    },
+    "source_bank_id": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "frommember"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "frommember"
+        },
+        {
+          "table": "transfer_old",
+          "column": "frommember"
+        },
+        {
+          "table": "member",
+          "column": "code"
+        },
+        {
+          "table": "member",
+          "column": "iin"
+        },
+        {
+          "table": "member",
+          "column": "member_type"
+        }
+      ],
+      "gate_ids": [
+        "G-MEMBER"
+      ],
+      "unresolved_behavior": "null",
+      "proposed_rule": "Preserve routing codes separately; resolve owning bank only with approved member/role mapping; no numeric coercion."
+    },
+    "destination_bank_id": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "tomember"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "tomember"
+        },
+        {
+          "table": "transfer_old",
+          "column": "tomember"
+        },
+        {
+          "table": "member",
+          "column": "code"
+        },
+        {
+          "table": "member",
+          "column": "iin"
+        },
+        {
+          "table": "member",
+          "column": "member_type"
+        }
+      ],
+      "gate_ids": [
+        "G-MEMBER"
+      ],
+      "unresolved_behavior": "null",
+      "proposed_rule": "Member primary key is code; iin uniqueness/join semantics are unproven. Never assume every participant is a bank."
+    },
+    "amount": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "amount"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "amount"
+        },
+        {
+          "table": "transfer_old",
+          "column": "amount"
+        }
+      ],
+      "gate_ids": [
+        "G-MONEY"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Exact decimal string; source declaration DECIMAL(24,2), 22 integral digits. No float, rounding, absolute-value or minor-unit inference."
+    },
+    "currency": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "ccy"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "ccy"
+        },
+        {
+          "table": "transfer_old",
+          "column": "ccy"
+        }
+      ],
+      "gate_ids": [
+        "G-CURRENCY"
+      ],
+      "unresolved_behavior": "hold_canonical_emission",
+      "proposed_rule": "Use approved codebook; unknown cannot become LAK/XXX/default or null to force the existing required wire field."
+    },
+    "transaction_type": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "txtype"
+        },
+        {
+          "table": "transfer",
+          "column": "totype"
+        },
+        {
+          "table": "transfer",
+          "column": "qrtype"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "txtype"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "totype"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "qrtype"
+        },
+        {
+          "table": "transfer_old",
+          "column": "txtype"
+        },
+        {
+          "table": "transfer_old",
+          "column": "totype"
+        },
+        {
+          "table": "transfer_old",
+          "column": "qrtype"
+        }
+      ],
+      "gate_ids": [
+        "G-PRODUCT"
+      ],
+      "unresolved_behavior": "null",
+      "proposed_rule": "No code concatenation or preferred field without product semantics."
+    },
+    "channel": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "fromchannel"
+        }
+      ],
+      "gate_ids": [
+        "G-PRODUCT"
+      ],
+      "unresolved_behavior": "null",
+      "proposed_rule": "fromchannel exists only in transfer among these three tables; do not fabricate historical channel."
+    },
+    "transaction_status": {
+      "source_candidates": [
+        {
+          "table": "transfer",
+          "column": "result"
+        },
+        {
+          "table": "transfer",
+          "column": "originalreference"
+        },
+        {
+          "table": "transfer",
+          "column": "shouldrevert"
+        },
+        {
+          "table": "transfer",
+          "column": "isreconciled"
+        },
+        {
+          "table": "transfer",
+          "column": "issettled"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "result"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "originalreference"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "shouldrevert"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "isreconciled"
+        },
+        {
+          "table": "transfer_hist",
+          "column": "issettled"
+        },
+        {
+          "table": "transfer_old",
+          "column": "result"
+        },
+        {
+          "table": "transfer_old",
+          "column": "originalreference"
+        },
+        {
+          "table": "transfer_old",
+          "column": "shouldrevert"
+        },
+        {
+          "table": "transfer_old",
+          "column": "isreconciled"
+        },
+        {
+          "table": "transfer_old",
+          "column": "issettled"
+        }
+      ],
+      "gate_ids": [
+        "G-LIFECYCLE"
+      ],
+      "unresolved_behavior": "unknown",
+      "proposed_rule": "Unknown code stays unknown; reference/flags do not independently establish executed funds or reversal."
+    }
+  },
+  "identity_layers": {
+    "source_record": {
+      "candidate_components": [
+        "workspace",
+        "source_namespace",
+        "source_generation",
+        "table",
+        "complete_source_primary_key"
+      ],
+      "verified_business_identity": false
+    },
+    "capture_event": {
+      "candidate_components": [
+        "workspace",
+        "source_namespace",
+        "source_generation",
+        "capture_epoch",
+        "position",
+        "row_ordinal",
+        "operation"
+      ],
+      "format_selected": false
+    },
+    "business_transaction": {
+      "candidate_components": null,
+      "verified_business_identity": false
+    }
+  },
+  "raw_fields_not_allowed_in_shared_wire": [
+    "fromaccount",
+    "toaccount",
+    "fromuser",
+    "purpose",
+    "receipt"
+  ],
+  "non_goals": [
+    "source_connection",
+    "production_normalizer",
+    "postgres_ddl",
+    "dedup_runtime",
+    "row_profiling",
+    "owner_approval"
+  ]
+}

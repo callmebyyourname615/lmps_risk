@@ -1,0 +1,88 @@
+{
+  "name": "RLP-B04 — P03 local synthetic MariaDB/Debezium/Kafka spike",
+  "description": "User approved the reviewed P03 local CDC spike and requested continuous serial execution via Ralph TUI. Native local-only experimental scope; original owner/adoption/production gates remain pending.",
+  "branchName": "main",
+  "userStories": [
+    {
+      "id": "US-401",
+      "title": "Implement pinned bounded local Kafka/Connect runtime supervisor",
+      "description": "Approved local P03 experiment only; implement the current source task within its exact files. Native proof remains a separately invoked parent-host acceptance gate.",
+      "acceptanceCriteria": [
+        "Implement actual reusable runtime discovery/verification and owned process/config lifecycle helpers for the supplied Kafka 4.1.2, Debezium 3.7.0.Final, Temurin Java 21.0.10 artifacts. Export documented APIs usable by following tasks for Kafka start/stop, Connect start/stop/restart and bounded allowlisted Kafka CLI execution. No placeholder supervisor or fake implementation may satisfy native work.",
+        "Use node:os userInfo().homedir to resolve the fixed .cache/lmps-cdc-runtime/kafka-4.1.2_debezium-3.7.0.Final cache independent of anonymous verifier HOME. Pin the supplied archive SHA512s and extracted-inventory SHA256 in cdc-runtime-pins.json; validate owned regular files, archive hashes, inventory hash and extracted files before execution. No download, network acquisition, package install, environment-selected code or silently changed version. Java home is supplied below; validate exact version and use absolute binaries.",
+        "Kafka: one KRaft broker/controller, fresh short owned temp directory and separate dynamically allocated 127.0.0.1 ports; one partition/replica for this experiment. Standalone Connect uses private durable offset file, private schema-history topic and generated properties; explicitly bind REST/listeners/advertised addresses to loopback. JSON converters, no schema registry/Avro dependency. Broker log and private process outputs bounded; own files 0600/directories0700.",
+        "Bound heap: broker <=512MiB, Connect <=512MiB, short-lived CLI <=128MiB. Set a minimal child environment with pinned JAVA_HOME/PATH and bounded JVM options; no inherited API keys, JAVA_TOOL_OPTIONS, arbitrary JVM/shell input, JMX remote port or services on existing ports. Finite readiness/command/stop deadlines; SIGTERM then bounded owned-child-only cleanup. State/config reuse must preserve broker identity/log/offsets on restart rather than reformatting.",
+        "Expose process handles or equally verifiable ownership; never kill by broad process name or untrusted PID. Reject path symlinks/traversal, unowned directories, malformed ports, unknown settings/tools and missing/tampered runtime. No writes into runtime cache or arbitrary caller paths. Runtime helpers must be import-safe. Generated passwords/config never enter stdout/public errors or command-line arguments.",
+        "Add meaningful unit checks for rejection boundaries, deadlines, minimal environment, failed startup cleanup and restart/offset preservation with injected trusted fake processes. Coding agent may run these unit checks; actual Java/database/binding trial is host-only and remains pending until final acceptance. Preserve every existing test/dependency/lockfile/tooling source.",
+        "Exact allowlist/source/plan/Git/publication guards and the fixed checkGroup checks pass; existing tests, automation, package manifests and lockfiles are protected.",
+        "Coding agent remains workspace-write, with no real source/data/provider, native database commands, external network, installs or authentication-home reads. Native service checks are host-only.",
+        "Return structured ready_for_verification with honest actual unit results and pending host gates; only durable independent host receipts finish the source task."
+      ],
+      "priority": 1,
+      "passes": true,
+      "labels": [
+        "P03",
+        "local-synthetic"
+      ],
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-402",
+      "title": "Implement bounded CDC observation oracle and private spike runner",
+      "description": "Approved local P03 experiment only; implement the current source task within its exact files. Native proof remains a separately invoked parent-host acceptance gate.",
+      "acceptanceCriteria": [
+        "Reuse US-401 supervisor and existing packages/source-preflight/scripts/local.mjs native MariaDB ownership/TLS helpers. Implement an actual loopback synthetic MariaDB -> Debezium MariaDbConnector -> Kafka pipeline callable as an import-safe module and finite CLI. Only explicit run of this owned invented fixture may create data/services. No real source, persistent project database, external host, account field, canonical business identity, payment action, vendor/provider or new dependency.",
+        "Build a dedicated invented CDC fixture with a small independent expected operation/state oracle: synthetic integer row id, revision, exact decimal-string amount and synthetic currency only. Seed snapshot rows; observe snapshot completion, then insert/update/delete, including delete tombstone. Configure finite table/column allowlist, decimal.handling.mode=string and bounded batches; credentials generated privately with only the disposable fixture grants needed. Use its CA and verified TLS to the source; do not weaken an existing shared server or edit a shared Java truststore.",
+        "Implement strict bounded CDC-envelope parsing and reducer separately from transport. Reject malformed/oversized/unknown fixture records; preserve unavailable/unsupported semantics. Operation/position/record-offset observation identity is not payment/account identity. Compare observed op/revision set, final row state and exact money against independently declared expected values. Duplicate replay must not multiply logical effects; conflicting reuse fails. Do not claim exactly-once across systems.",
+        "Prove offset continuity by stopping owned connector/broker, modifying only the owned fixture while capture is stopped, then restarting with the same broker logs, offset and schema-history state; observe expected new operations and no re-snapshot. Read the Kafka topic again and reduce twice to the same independently expected result. Keep snapshot/stream/restart/replay proofs separate and state limitations for untested concurrent initial snapshot/schema evolution/expired log recovery.",
+        "Experimental limits: at most2000 records including tombstones/control observations, <=2MiB captured public data, <=2GiB owned fixture/log footprint, <=180s trial with per-step timeouts, and >=6GiB free before starting. Stop and preserve fixed-code private failure evidence on limits; no silent truncation, auto retry, source-wide query, global shutdown or cleanup outside positively owned fixture. These are local experiment bounds, not capacity/SLO/adoption promises.",
+        "Use a short mkdtemp under /private/tmp/lmps-cdc- for sockets/process data; outputs go to a new private owned directory under project .local/cdc-spike/ by default. Emit a count/hash/version-only receipt, with no credentials, raw account values or raw diagnostic payloads. Always tear down owned Kafka/Connect/MariaDB processes with verified shutdown; preserve private failure evidence when safe cleanup cannot be proven. Native data manipulation is host-only; coding agent runs only independent oracle and runner rejection/lifecycle unit tests.",
+        "Add meaningful independent expected-value tests for snapshot/create/update/delete/tombstone, exact decimals, duplicate replay, changed-content identity conflict, missing/out-of-order/oversized observations and bounded CLI inputs. No fake receipt or precomputed success can substitute for native acceptance.",
+        "Exact allowlist/source/plan/Git/publication guards and the fixed checkGroup checks pass; existing tests, automation, package manifests and lockfiles are protected.",
+        "Coding agent remains workspace-write, with no real source/data/provider, native database commands, external network, installs or authentication-home reads. Native service checks are host-only.",
+        "Return structured ready_for_verification with honest actual unit results and pending host gates; only durable independent host receipts finish the source task."
+      ],
+      "priority": 2,
+      "passes": true,
+      "labels": [
+        "P03",
+        "local-synthetic"
+      ],
+      "dependsOn": [
+        "US-401"
+      ]
+    },
+    {
+      "id": "US-403",
+      "title": "Add native CDC acceptance command and evidence-based handoff",
+      "description": "Approved local P03 experiment only; implement the current source task within its exact files. Native proof remains a separately invoked parent-host acceptance gate.",
+      "acceptanceCriteria": [
+        "Implement the host-only native acceptance entry node apps/risk-workers/scripts/cdc-acceptance.mjs --output <new-private-output-directory>. It must invoke the actual US-402 pipeline, verify every snapshot/changes/restart/replay oracle proof and process cleanup, and atomically publish an acceptance.json receipt only after all pass. Exit nonzero on native failure, unavailable runtime, changed pins, missing observation, limits or unresolved cleanup. Never accept self-reported or fixture-only results.",
+        "Native acceptance is a separately invoked explicit host experiment, not automatically launched inside the legacy root test glob; existing root/fresh verification budgets and all existing checks remain unchanged. Unit-test command/receipt failure boundaries without starting native services. The parent host must run this exact real native command after the Ralph implementation gates pass; the approved P03 scope is incomplete until that independent trial and receipt succeed.",
+        "Document exact versions/hash provenance, cache location/verification, local-only data flow, finite resource bounds, exact run/status/stop/recovery commands and receipt fields. Describe actual checked properties and explicit missing gates. No production adoption, real source connection, initial-snapshot concurrent-update/DDL/expired-log guarantee, general ACL/HA/capacity claim or verified account graph.",
+        "Append an honest implementation handoff to current.md preserving its original prefix. At coding time host/full/native checks are pending; do not fabricate PASS/counts. Point actual native acceptance status to the private acceptance.json generated only by the host command. The trusted verifier appends actual standard host checks after they pass. Local implementation/receipt completion does not close original P03 owner/adoption/source/operations gates.",
+        "Run all mandatory trusted automation, root typecheck/test/build/frozen offline fresh verification and publication/scope guards with unchanged tests/locks/dependencies. Keep B01-B03 receipts/trackers, original11 plan documents and Git/index unchanged. No commit/push/deploy/logout/account rotation.",
+        "Return ready_for_verification only when actual code and available unit checks are finished, explicitly listing the native host trial as pending. Completion of the source task never manufactures a native acceptance receipt.",
+        "Exact allowlist/source/plan/Git/publication guards and the fixed checkGroup checks pass; existing tests, automation, package manifests and lockfiles are protected.",
+        "Coding agent remains workspace-write, with no real source/data/provider, native database commands, external network, installs or authentication-home reads. Native service checks are host-only.",
+        "Return structured ready_for_verification with honest actual unit results and pending host gates; only durable independent host receipts finish the source task."
+      ],
+      "priority": 3,
+      "passes": false,
+      "labels": [
+        "P03",
+        "local-synthetic"
+      ],
+      "dependsOn": [
+        "US-402"
+      ]
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-25T22:13:15.985Z",
+    "version": "1.0.0",
+    "sourcePrd": "rlp-b04.md",
+    "updatedAt": "2026-10-25T23:19:51.996Z"
+  }
+}

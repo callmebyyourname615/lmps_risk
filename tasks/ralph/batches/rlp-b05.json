@@ -1,0 +1,40 @@
+{
+  "name": "RLP-B05 — complete P03 native CDC correction and acceptance",
+  "description": "Continuation/correction within the user-approved P03 scope; preserve B04 verified source tasks and supersede its unverified final source task. All original standard host checks plus mandatory real native acceptance remain required.",
+  "branchName": "main",
+  "userStories": [
+    {
+      "id": "US-501",
+      "title": "Finish P03 CDC native guard correction and final acceptance",
+      "description": "Same approved P03 files and resources; correct confirmed native filesystem race and cwd-dependent test, reconcile partial handoff, then verify the complete final source.",
+      "acceptanceCriteria": [
+        "Finish the already user-approved local P03 CDC spike. Reconcile existing US-401/402 implementation and preserved partial US-403 acceptance/handoff, rather than rebuilding it. Earlier two verified source receipts remain intact; unfinished US-403 is superseded, not marked complete or silently reset.",
+        "Fix the confirmed live-filesystem race in both CDC footprint/audit guards: a descendant may disappear with ENOENT between readdir, lstat or chmod while MariaDB/Kafka creates and renames temporary files. Tolerate only that vanished descendant. Missing root, permissions/other errors, symlinks, unowned/unsafe paths and size limits still fail closed. Add deterministic regression tests, with trusted filesystem seams if needed; do not remove safety guards or weaken fixture isolation.",
+        "Native evidence: installer exits0, but periodic guard saw ENOENT for fixture/data/sys/x@0024schema_tables_with_full_table_scans.frm~ and converted successful bootstrap into CLEANUP_UNPROVEN. Keep actual failure records private. Correct lifecycle accounting if needed without asserting descendant shutdown from an interrupted installer. No Java/MariaDB process from those reviewed attempts remained active.",
+        "Correct acceptance CLI test path assumptions using import.meta.url/project-root absolute paths so the exact tests work from repo root and apps/risk-workers. Preserve path rejection, inert import, immutable publication, independent expected proofs and native-failure cases; never weaken assertions merely to pass.",
+        "Represent public checksum literals as reviewed grouped hex or equivalent explicit lossless public metadata encoding, as in current cdc-runtime-pins.json. Reconstruct and verify exact original cryptographic values. Do not change pins, scanner, ignore/baseline rules, package manifests, locks, existing non-CDC tests or source/automation guards. Fix any current P03 integration bug only within these exact11 files.",
+        "Real host validation must use the prepared pinned MariaDB11.8.9 + Debezium3.7.0.Final + Kafka4.1.2 + Java21.0.10, owned short private scratch, loopback, verified source TLS, invented non-account fixture and independent exact decimal/operation/state oracle. Prove snapshot2, stream6, restart8 and replay8 records with one tombstone and unchanged durable prefix; no fake or supplied receipt can substitute for native services.",
+        "Keep <=2000 observations, <=2MiB captured data, <=2GiB owned storage, <=180s complete native trial and >=6GiB free at start; fixed bounded JVM/command/stop behavior and verified owned-process cleanup remain mandatory. Real source/identity, adoption/named owners, concurrent initial snapshot mutation, DDL/expired log recovery and production gates remain pending.",
+        "The parent host may stage and diagnose this candidate with the same prepared binaries before the coding turn. If .local/p03-host-review.json exists it contains diagnostic count/hash-only findings, not final acceptance. Coding agent must not run Java/database/native/binding operations or read outside candidate. Run available unit/CLI/security checks and list all native/full host gates honestly pending.",
+        "Native acceptance command remains node apps/risk-workers/scripts/cdc-acceptance.mjs --output <new-project-private-directory>; it must actually run the pipeline, bind current source hashes, verify independent exact proofs/cleanup and atomically publish only after success. The parent must repeat that actual command after final source verification/promotion before reporting P03 success.",
+        "Update local-cdc-spike.md/current.md for final implementation and supersession, preserving current.md original root prefix and accurate historical attribution. No fabricated native PASS, source/production approval or full-phase completion. All mandatory automation/root typecheck/test/build/frozen offline fresh/publication and source/plan/Git guards pass before the trusted receipt. No login/logout/rotation, commit/push/deploy, new dependency or unrelated source changes.",
+        "Return ready_for_verification only after implementation and available current unit checks; retain production_ready=false. Only durable independently verified host evidence completes the source task; final native acceptance remains a separate mandatory host gate."
+      ],
+      "priority": 1,
+      "passes": true,
+      "labels": [
+        "P03",
+        "local-synthetic",
+        "native-correction"
+      ],
+      "dependsOn": [],
+      "completionNotes": "Completed by agent"
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-10-25T23:24:46.085Z",
+    "version": "1.0.0",
+    "sourcePrd": "rlp-b05.md",
+    "updatedAt": "2026-10-25T23:53:01.724Z"
+  }
+}

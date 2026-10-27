@@ -1,0 +1,14 @@
+{
+  "name": "@lmps/risk",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "scripts": {
+    "build": "pnpm --filter @lmps/contracts build && tsc -p tsconfig.json",
+    "typecheck": "pnpm --filter @lmps/contracts build && tsc -p tsconfig.json --noEmit",
+    "test": "pnpm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": { "@lmps/contracts": "workspace:*" }
+}

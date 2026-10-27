@@ -1,0 +1,263 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "ModelIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 70,
+          "pattern": "^synthetic_[a-z0-9_]{1,60}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 9,
+          "pattern": "^[1-9][0-9]{0,8}$",
+          "title": "Version",
+          "type": "string"
+        },
+        "artifact_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Artifact Sha256",
+          "type": "string"
+        },
+        "algorithm": {
+          "enum": [
+            "baseline",
+            "logistic",
+            "lightgbm"
+          ],
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "currency": {
+          "maxLength": 3,
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "dataset_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Dataset Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "artifact_sha256",
+        "algorithm",
+        "currency",
+        "dataset_sha256"
+      ],
+      "title": "ModelIdentity",
+      "type": "object"
+    },
+    "Target": {
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "pattern": "^synthetic_[a-z0-9_]{1,40}$",
+          "title": "Namespace",
+          "type": "string"
+        },
+        "transaction_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$",
+          "title": "Transaction Id",
+          "type": "string"
+        },
+        "revision_number": {
+          "maximum": 2147483647,
+          "minimum": 1,
+          "title": "Revision Number",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "namespace",
+        "transaction_id",
+        "revision_number"
+      ],
+      "title": "Target",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "lmps-shadow-result-1",
+      "title": "Format",
+      "type": "string"
+    },
+    "execution_mode": {
+      "const": "shadow",
+      "title": "Execution Mode",
+      "type": "string"
+    },
+    "provenance": {
+      "enum": [
+        "local_synthetic",
+        "user_supplied_file"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "source_semantics": {
+      "const": "unverified",
+      "title": "Source Semantics",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "available",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "reason_code": {
+      "enum": [
+        "MODEL_SCORED",
+        "SOURCE_SEMANTICS_UNVERIFIED",
+        "MODEL_UNAVAILABLE",
+        "FEATURE_UNAVAILABLE",
+        "MODEL_TRAINING_CUTOFF_AFTER_AS_OF",
+        "CURRENCY_OUT_OF_SCOPE"
+      ],
+      "title": "Reason Code",
+      "type": "string"
+    },
+    "scope": {
+      "const": "synthetic_shadow_only",
+      "title": "Scope",
+      "type": "string"
+    },
+    "target": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Target"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "revision_sha256": {
+      "anyOf": [
+        {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Revision Sha256"
+    },
+    "as_of": {
+      "anyOf": [
+        {
+          "maxLength": 24,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "As Of"
+    },
+    "feature_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Feature Sha256",
+      "type": "string"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ModelIdentity"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "probabilities": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Probabilities",
+      "type": "object"
+    },
+    "novelty_score": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Novelty Score"
+    },
+    "historical_model_availability": {
+      "const": "retrospective_experiment",
+      "title": "Historical Model Availability",
+      "type": "string"
+    },
+    "enforcement": {
+      "const": false,
+      "title": "Enforcement",
+      "type": "boolean"
+    },
+    "canonical_emission": {
+      "const": false,
+      "title": "Canonical Emission",
+      "type": "boolean"
+    },
+    "key_id": {
+      "maxLength": 19,
+      "pattern": "^ml_[0-9a-f]{16}$",
+      "title": "Key Id",
+      "type": "string"
+    },
+    "signature": {
+      "maxLength": 88,
+      "minLength": 88,
+      "pattern": "^[A-Za-z0-9+/]{86}==$",
+      "title": "Signature",
+      "type": "string"
+    }
+  },
+  "required": [
+    "format",
+    "execution_mode",
+    "provenance",
+    "source_semantics",
+    "status",
+    "reason_code",
+    "scope",
+    "target",
+    "revision_sha256",
+    "as_of",
+    "feature_sha256",
+    "model",
+    "probabilities",
+    "novelty_score",
+    "historical_model_availability",
+    "enforcement",
+    "canonical_emission",
+    "key_id",
+    "signature"
+  ],
+  "title": "ShadowResult",
+  "type": "object"
+}

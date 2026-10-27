@@ -1,0 +1,388 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lmps:contracts:0.1.0-draft.1:risk-assessment",
+  "$defs": {
+    "IndexScore": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "available",
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Value",
+          "type": "number"
+        },
+        "meaning": {
+          "const": "risk_index",
+          "title": "Meaning",
+          "type": "string"
+        },
+        "engine_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Engine Version",
+          "type": "string"
+        },
+        "calibration_version": {
+          "title": "Calibration Version",
+          "type": "null"
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "meaning",
+        "engine_version",
+        "calibration_version"
+      ],
+      "title": "IndexScore",
+      "type": "object"
+    },
+    "MissingScore": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "not_evaluated",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "null"
+        },
+        "reason_code": {
+          "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+          "title": "Reason Code",
+          "type": "string"
+        },
+        "engine_version": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Engine Version"
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "reason_code",
+        "engine_version"
+      ],
+      "title": "MissingScore",
+      "type": "object"
+    },
+    "NoDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "not_decided",
+          "title": "Status",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "null"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "null"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "action",
+        "policy_version",
+        "reason_codes"
+      ],
+      "title": "NoDecision",
+      "type": "object"
+    },
+    "PolicyDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "decided",
+          "title": "Status",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "allow",
+            "review",
+            "step_up",
+            "hold",
+            "block"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "policy_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "reason_codes": {
+          "items": {
+            "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Reason Codes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "action",
+        "policy_version",
+        "reason_codes"
+      ],
+      "title": "PolicyDecision",
+      "type": "object"
+    },
+    "ProbabilityScore": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "available",
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Value",
+          "type": "number"
+        },
+        "meaning": {
+          "const": "calibrated_probability",
+          "title": "Meaning",
+          "type": "string"
+        },
+        "engine_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Engine Version",
+          "type": "string"
+        },
+        "calibration_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "title": "Calibration Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "value",
+        "meaning",
+        "engine_version",
+        "calibration_version"
+      ],
+      "title": "ProbabilityScore",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft.1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "execution_mode": {
+      "enum": [
+        "live",
+        "shadow",
+        "backfill",
+        "replay",
+        "test"
+      ],
+      "title": "Execution Mode",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "correlation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Correlation Id",
+      "type": "string"
+    },
+    "assessment_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Assessment Id",
+      "type": "string"
+    },
+    "transaction_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Transaction Id",
+      "type": "string"
+    },
+    "transaction_revision": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+      "title": "Transaction Revision",
+      "type": "string"
+    },
+    "assessed_at": {
+      "format": "date-time",
+      "pattern": "^[1-9][0-9]{3}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,6})?Z$",
+      "title": "Assessed At",
+      "type": "string"
+    },
+    "feature_snapshot_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Feature Snapshot Ref"
+    },
+    "vendor_response_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Vendor Response Ref"
+    },
+    "fraud_score": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MissingScore"
+        },
+        {
+          "$ref": "#/$defs/IndexScore"
+        },
+        {
+          "$ref": "#/$defs/ProbabilityScore"
+        }
+      ],
+      "title": "Fraud Score"
+    },
+    "mule_network_score": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MissingScore"
+        },
+        {
+          "$ref": "#/$defs/IndexScore"
+        },
+        {
+          "$ref": "#/$defs/ProbabilityScore"
+        }
+      ],
+      "title": "Mule Network Score"
+    },
+    "aml_suspicion_score": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/MissingScore"
+        },
+        {
+          "$ref": "#/$defs/IndexScore"
+        },
+        {
+          "$ref": "#/$defs/ProbabilityScore"
+        }
+      ],
+      "title": "Aml Suspicion Score"
+    },
+    "rules_triggered": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Rules Triggered",
+      "type": "array"
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NoDecision"
+        },
+        {
+          "$ref": "#/$defs/PolicyDecision"
+        }
+      ],
+      "title": "Decision"
+    }
+  },
+  "required": [
+    "schema_version",
+    "execution_mode",
+    "run_id",
+    "correlation_id",
+    "assessment_id",
+    "transaction_id",
+    "transaction_revision",
+    "assessed_at",
+    "feature_snapshot_ref",
+    "vendor_response_ref",
+    "fraud_score",
+    "mule_network_score",
+    "aml_suspicion_score",
+    "rules_triggered",
+    "decision"
+  ],
+  "title": "RiskAssessment",
+  "type": "object"
+}

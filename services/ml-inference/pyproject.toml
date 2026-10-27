@@ -1,0 +1,30 @@
+[project]
+name = "lmps-ml-inference"
+version = "0.0.0"
+description = "Local diagnostic bootstrap for LMPS model inference"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi==0.143.3",
+    "pydantic==2.14.1",
+    "uvicorn==0.54.0",
+    "numpy==2.5.4",
+    "scikit-learn==1.9.1",
+    "lightgbm==4.7.0",
+    "mlflow-skinny==3.17.2",
+    "sqlalchemy==2.0.55",
+    "alembic==1.20.1",
+    "skops==0.16.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[dependency-groups]
+dev = [
+    "httpx2==2.13.1",
+    "pytest==9.1.1",
+]

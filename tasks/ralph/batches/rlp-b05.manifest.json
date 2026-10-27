@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "batchId": "rlp-b05",
+  "predecessor": "rlp-b03",
+  "tracker": "tasks/ralph/batches/rlp-b05.json",
+  "document": "tasks/ralph/batches/rlp-b05.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-005.md",
+  "tasks": [
+    {
+      "id": "US-501",
+      "dependsOn": [],
+      "files": [
+        "apps/risk-workers/scripts/cdc-runtime.mjs",
+        "apps/risk-workers/test/cdc-runtime.test.mjs",
+        "apps/risk-workers/scripts/cdc-oracle.mjs",
+        "apps/risk-workers/scripts/cdc-spike.mjs",
+        "apps/risk-workers/test/cdc-oracle.test.mjs",
+        "apps/risk-workers/test/cdc-spike.test.mjs",
+        "apps/risk-workers/scripts/cdc-acceptance.mjs",
+        "apps/risk-workers/test/cdc-acceptance.test.mjs",
+        "docs/operations/local-cdc-spike.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

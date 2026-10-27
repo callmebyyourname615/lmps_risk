@@ -1,0 +1,58 @@
+name: Verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      LMPS_ENVIRONMENT: test
+      LMPS_EXECUTION_MODE: test
+      LMPS_PG_BIN: /usr/lib/postgresql/18/bin
+      LMPS_MARIADB_BASE: /usr
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24.22.0
+      - run: npm install --global pnpm@11.20.0
+      - name: Install pinned uv
+        run: |
+          python3 -m venv "$RUNNER_TEMP/lmps-uv"
+          "$RUNNER_TEMP/lmps-uv/bin/python" -m pip install uv==0.12.5
+          echo "$RUNNER_TEMP/lmps-uv/bin" >> "$GITHUB_PATH"
+      - name: Install PostgreSQL 18 test binaries from the official repository
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg /etc/postgresql-common
+          sudo curl --fail --silent --show-error https://www.postgresql.org/media/keys/ACCC4CF8.asc -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          printf '%s\n' 'deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt noble-pgdg main' | sudo tee /etc/apt/sources.list.d/lmps-pgdg.list > /dev/null
+          printf '%s\n' 'create_main_cluster = false' | sudo tee /etc/postgresql-common/createcluster.conf > /dev/null
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends postgresql-18
+      - name: Prepare MariaDB 11.8 test binaries on the disposable runner
+        run: |
+          sudo systemctl stop mysql
+          sudo apt-get purge --yes mysql-server mysql-server-8.0 mysql-server-core-8.0 mysql-client-8.0 mysql-client-core-8.0
+          printf '#!/bin/sh\nexit 101\n' | sudo tee /usr/sbin/policy-rc.d > /dev/null
+          sudo chmod 755 /usr/sbin/policy-rc.d
+          curl --fail --location --silent --show-error https://r.mariadb.com/downloads/mariadb_repo_setup -o "$RUNNER_TEMP/mariadb_repo_setup"
+          python3 - "$RUNNER_TEMP/mariadb_repo_setup" <<'PY'
+          from hashlib import sha256
+          import json, pathlib, sys
+          manifest = json.loads(pathlib.Path('infrastructure/mariadb/repository.json').read_text())
+          if sha256(pathlib.Path(sys.argv[1]).read_bytes()).hexdigest() != manifest['helper_sha256']:
+              raise SystemExit('MariaDB repository helper changed; review pinned checksum.')
+          PY
+          sudo bash "$RUNNER_TEMP/mariadb_repo_setup" --mariadb-server-version=mariadb-11.8 --skip-maxscale --skip-tools
+          sudo apt-get install --yes --no-install-recommends mariadb-server mariadb-client
+          sudo rm /usr/sbin/policy-rc.d
+      - run: pnpm install --frozen-lockfile
+      - run: uv sync --locked --all-packages --group security
+      - run: pnpm verify

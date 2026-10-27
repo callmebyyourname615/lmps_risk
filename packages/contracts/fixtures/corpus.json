@@ -1,0 +1,1009 @@
+{
+  "synthetic_only": true,
+  "description": "Invented shape-validation examples; no source extracts, real scores, labels, thresholds or delivery authority.",
+  "examples": {
+    "transaction": {
+      "schema_version": "0.1.0-draft.1",
+      "execution_mode": "test",
+      "run_id": "synthetic-run-001",
+      "correlation_id": "synthetic-correlation-001",
+      "transaction_id": "0009007199254740993",
+      "transaction_revision": "synthetic-revision-1",
+      "source_reference": {
+        "namespace": "synthetic-lmps",
+        "record_ref": "synthetic-record-1",
+        "mapping_version": null
+      },
+      "occurred_at": null,
+      "observed_at": "2026-10-17T10:00:00Z",
+      "sender": {
+        "status": "unresolved",
+        "source_representation": "masked",
+        "reason_code": "STABLE_IDENTITY_UNVERIFIED"
+      },
+      "receiver": {
+        "status": "unresolved",
+        "source_representation": "unknown",
+        "reason_code": "STABLE_IDENTITY_UNVERIFIED"
+      },
+      "source_bank_id": null,
+      "destination_bank_id": null,
+      "amount": "9007199254740993.123456789012345678",
+      "currency": "LAK",
+      "transaction_type": null,
+      "channel": null,
+      "transaction_status": "unknown"
+    },
+    "risk-assessment": {
+      "schema_version": "0.1.0-draft.1",
+      "execution_mode": "test",
+      "run_id": "synthetic-run-001",
+      "correlation_id": "synthetic-correlation-001",
+      "assessment_id": "synthetic-assessment-1",
+      "transaction_id": "0009007199254740993",
+      "transaction_revision": "synthetic-revision-1",
+      "assessed_at": "2026-10-17T10:00:01Z",
+      "feature_snapshot_ref": "synthetic-features-1",
+      "vendor_response_ref": null,
+      "fraud_score": {
+        "status": "available",
+        "value": 0.91,
+        "meaning": "risk_index",
+        "engine_version": "synthetic-engine-v1",
+        "calibration_version": null
+      },
+      "mule_network_score": {
+        "status": "not_evaluated",
+        "value": null,
+        "reason_code": "MODEL_NOT_LOADED",
+        "engine_version": null
+      },
+      "aml_suspicion_score": {
+        "status": "not_evaluated",
+        "value": null,
+        "reason_code": "MODEL_NOT_LOADED",
+        "engine_version": null
+      },
+      "rules_triggered": [
+        "synthetic-rule-1"
+      ],
+      "decision": {
+        "status": "decided",
+        "action": "review",
+        "policy_version": "synthetic-policy-v1",
+        "reason_codes": [
+          "SYNTHETIC_RULE_MATCH"
+        ]
+      }
+    },
+    "alert": {
+      "schema_version": "0.1.0-draft.1",
+      "execution_mode": "test",
+      "run_id": "synthetic-run-001",
+      "correlation_id": "synthetic-correlation-001",
+      "alert_id": "synthetic-alert-1",
+      "assessment_id": "synthetic-assessment-1",
+      "transaction_id": "0009007199254740993",
+      "transaction_revision": "synthetic-revision-1",
+      "created_at": "2026-10-17T10:00:02Z",
+      "severity": "high",
+      "risk_dimensions": [
+        "fraud"
+      ],
+      "reason_codes": [
+        "SYNTHETIC_RULE_MATCH"
+      ],
+      "alert_policy_version": "synthetic-alert-policy-v1",
+      "evidence_refs": [
+        "synthetic-assessment-1"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "transaction:base",
+      "contract": "transaction",
+      "valid": true,
+      "set": {},
+      "omit": []
+    },
+    {
+      "id": "transaction:extra-field",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "raw_payload": "synthetic-sensitive-canary"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:missing-correlation",
+      "contract": "transaction",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "correlation_id"
+      ]
+    },
+    {
+      "id": "transaction:wrong-version",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "schema_version": "1.0.0"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:unknown-mode",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "execution_mode": "simulate"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:mode-number",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "execution_mode": 1
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:base",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {},
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:extra-field",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "raw_payload": "synthetic-sensitive-canary"
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:missing-correlation",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "correlation_id"
+      ]
+    },
+    {
+      "id": "risk-assessment:wrong-version",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "schema_version": "1.0.0"
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:unknown-mode",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "execution_mode": "simulate"
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:mode-number",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "execution_mode": 1
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:base",
+      "contract": "alert",
+      "valid": true,
+      "set": {},
+      "omit": []
+    },
+    {
+      "id": "alert:extra-field",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "raw_payload": "synthetic-sensitive-canary"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:missing-correlation",
+      "contract": "alert",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "correlation_id"
+      ]
+    },
+    {
+      "id": "alert:wrong-version",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "schema_version": "1.0.0"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:unknown-mode",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "execution_mode": "simulate"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:mode-number",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "execution_mode": 1
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:full-looking-does-not-resolve-identity",
+      "contract": "transaction",
+      "valid": true,
+      "set": {
+        "sender": {
+          "status": "unresolved",
+          "source_representation": "unmasked",
+          "reason_code": "STABLE_IDENTITY_UNVERIFIED"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:synthetic-resolved-token",
+      "contract": "transaction",
+      "valid": true,
+      "set": {
+        "sender": {
+          "status": "resolved",
+          "namespace": "synthetic-bank-namespace",
+          "owning_institution_id": "synthetic-bank-A",
+          "account_token": "synthetic-token-0001",
+          "resolution_version": "synthetic-resolver-v1"
+        },
+        "receiver": {
+          "status": "resolved",
+          "namespace": "synthetic-bank-namespace",
+          "owning_institution_id": "synthetic-bank-A",
+          "account_token": "synthetic-token-0001",
+          "resolution_version": "synthetic-resolver-v1"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:known-time-leap-day",
+      "contract": "transaction",
+      "valid": true,
+      "set": {
+        "occurred_at": "2024-02-29T23:59:59.123456Z"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:zero-amount",
+      "contract": "transaction",
+      "valid": true,
+      "set": {
+        "amount": "0.00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:failed-status",
+      "contract": "transaction",
+      "valid": true,
+      "set": {
+        "transaction_status": "failed"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:numeric-id",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "transaction_id": 9007199254740992
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:numeric-amount",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": 1.5
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-25",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "-1"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-26",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "1e3"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-27",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "01.00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-28",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "1,000.00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-29",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": " 1.00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-30",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "1.00\n"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-31",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "1."
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-32",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": ".5"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-33",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "NaN"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:amount-34",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "amount": "999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:missing-amount",
+      "contract": "transaction",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "amount"
+      ]
+    },
+    {
+      "id": "transaction:missing-occurred-at-is-not-null",
+      "contract": "transaction",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "occurred_at"
+      ]
+    },
+    {
+      "id": "transaction:lowercase-currency",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "currency": "lak"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:missing-currency",
+      "contract": "transaction",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "currency"
+      ]
+    },
+    {
+      "id": "transaction:unknown-status",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "transaction_status": "OK"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:date-without-zone",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "occurred_at": "2026-10-17T10:00:00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:date-only",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "observed_at": "2026-10-17"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:bad-calendar-date",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "occurred_at": "2026-02-30T00:00:00Z"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:bad-leap-day",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "occurred_at": "2025-02-29T00:00:00Z"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:leap-second-outside-profile",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "occurred_at": "2026-10-17T23:59:60Z"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:utc-only-profile",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "occurred_at": "2026-10-17T10:00:00+07:00"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:timestamp-newline",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "observed_at": "2026-10-17T10:00:00Z\n"
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:unresolved-raw-account-rejected",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "sender": {
+          "status": "unresolved",
+          "source_representation": "masked",
+          "reason_code": "STABLE_IDENTITY_UNVERIFIED",
+          "account_number": "SYNTHETIC-1234XXXX5678"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:masked-as-token-not-resolved",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "sender": {
+          "status": "unresolved",
+          "source_representation": "masked",
+          "reason_code": "STABLE_IDENTITY_UNVERIFIED",
+          "account_token": "SYNTHETIC-1234XXXX5678"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "transaction:resolved-without-namespace",
+      "contract": "transaction",
+      "valid": false,
+      "set": {
+        "sender": {
+          "status": "resolved",
+          "account_token": "synthetic-token-0001",
+          "owning_institution_id": "synthetic-bank-A",
+          "resolution_version": "synthetic-resolver-v1"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:missing-all-scores",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "fraud_score": {
+          "status": "not_evaluated",
+          "value": null,
+          "reason_code": "MODEL_NOT_LOADED",
+          "engine_version": null
+        },
+        "mule_network_score": {
+          "status": "not_evaluated",
+          "value": null,
+          "reason_code": "MODEL_NOT_LOADED",
+          "engine_version": null
+        },
+        "aml_suspicion_score": {
+          "status": "not_evaluated",
+          "value": null,
+          "reason_code": "MODEL_NOT_LOADED",
+          "engine_version": null
+        },
+        "decision": {
+          "status": "not_decided",
+          "action": null,
+          "policy_version": null,
+          "reason_codes": [
+            "POLICY_UNAVAILABLE"
+          ]
+        },
+        "feature_snapshot_ref": null,
+        "rules_triggered": []
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:unavailable-is-not-zero",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "mule_network_score": {
+          "status": "unavailable",
+          "value": null,
+          "reason_code": "IDENTITY_UNRESOLVED",
+          "engine_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:zero-evaluated-index",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 0,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:one-evaluated-index",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 1,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:synthetic-calibrated-score",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 0.7,
+          "meaning": "calibrated_probability",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": "synthetic-calibration-v1"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:not-decided",
+      "contract": "risk-assessment",
+      "valid": true,
+      "set": {
+        "decision": {
+          "status": "not_decided",
+          "action": null,
+          "policy_version": null,
+          "reason_codes": [
+            "POLICY_UNAVAILABLE"
+          ]
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:missing-score-field",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "fraud_score"
+      ]
+    },
+    {
+      "id": "risk-assessment:bare-null-score",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": null
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:bare-number-score",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": 0.5
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:not-evaluated-with-zero",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "not_evaluated",
+          "value": 0,
+          "reason_code": "MODEL_NOT_LOADED",
+          "engine_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:negative-score",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": -0.1,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:score-over-one",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 1.01,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:string-score",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": "0.91",
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:boolean-score",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": true,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:probability-without-calibration",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 0.7,
+          "meaning": "calibrated_probability",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:index-with-calibration",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 0.91,
+          "meaning": "risk_index",
+          "engine_version": "synthetic-engine-v1",
+          "calibration_version": "synthetic-calibration-v1"
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:available-without-engine",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "fraud_score": {
+          "status": "available",
+          "value": 0.91,
+          "meaning": "risk_index",
+          "engine_version": null,
+          "calibration_version": null
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:decision-without-policy",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "decision": {
+          "status": "decided",
+          "action": "review",
+          "policy_version": null,
+          "reason_codes": [
+            "SYNTHETIC_RULE_MATCH"
+          ]
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:undecided-with-action",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "decision": {
+          "status": "not_decided",
+          "action": "allow",
+          "policy_version": null,
+          "reason_codes": [
+            "POLICY_UNAVAILABLE"
+          ]
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:decision-without-reason",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "decision": {
+          "status": "decided",
+          "action": "review",
+          "policy_version": "synthetic-policy-v1",
+          "reason_codes": []
+        }
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:numeric-transaction-reference",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "transaction_id": 1
+      },
+      "omit": []
+    },
+    {
+      "id": "risk-assessment:invalid-assessment-date",
+      "contract": "risk-assessment",
+      "valid": false,
+      "set": {
+        "assessed_at": "2026-11-31T10:00:01Z"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:multiple-dimensions",
+      "contract": "alert",
+      "valid": true,
+      "set": {
+        "risk_dimensions": [
+          "fraud",
+          "mule_network",
+          "aml"
+        ]
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:unknown-severity",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "severity": "urgent"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:duplicate-dimensions",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "risk_dimensions": [
+          "fraud",
+          "fraud"
+        ]
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:unknown-dimension",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "risk_dimensions": [
+          "sanctions"
+        ]
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:empty-dimensions",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "risk_dimensions": []
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:no-evidence",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "evidence_refs": []
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:no-reason",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "reason_codes": []
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:missing-assessment-link",
+      "contract": "alert",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "assessment_id"
+      ]
+    },
+    {
+      "id": "alert:missing-alert-policy",
+      "contract": "alert",
+      "valid": false,
+      "set": {},
+      "omit": [
+        "alert_policy_version"
+      ]
+    },
+    {
+      "id": "alert:recipient-is-not-in-alert-contract",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "device_token": "synthetic-device-token"
+      },
+      "omit": []
+    },
+    {
+      "id": "alert:invalid-created-date",
+      "contract": "alert",
+      "valid": false,
+      "set": {
+        "created_at": "2026-02-30T10:00:02Z"
+      },
+      "omit": []
+    }
+  ]
+}

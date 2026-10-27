@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "batchId": "rlp-b06",
+  "predecessor": "rlp-b05",
+  "tracker": "tasks/ralph/batches/rlp-b06.json",
+  "document": "tasks/ralph/batches/rlp-b06.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-006.md",
+  "tasks": [
+    {
+      "id": "US-601",
+      "dependsOn": [],
+      "files": [
+        "packages/contracts/src/feature-stream.ts",
+        "packages/contracts/test/feature-stream.test.mjs",
+        "packages/contracts/package.json"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./feature-stream",
+          "value": "./dist/feature-stream.js"
+        }
+      }
+    },
+    {
+      "id": "US-602",
+      "dependsOn": [
+        "US-601"
+      ],
+      "files": [
+        "packages/risk/src/feature-stream.ts",
+        "packages/risk/test/feature-stream.test.mjs",
+        "packages/risk/src/index.ts"
+      ],
+      "checkGroup": "risk",
+      "edits": {
+        "packages/risk/src/index.ts": {
+          "kind": "append",
+          "value": "export * from './feature-stream.js';"
+        }
+      }
+    },
+    {
+      "id": "US-603",
+      "dependsOn": [
+        "US-602"
+      ],
+      "files": [
+        "apps/risk-workers/src/feature-stream-consumer.ts",
+        "apps/risk-workers/test/feature-stream-consumer.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-604",
+      "dependsOn": [
+        "US-603"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-stream-spike.mjs",
+        "apps/risk-workers/test/feature-stream-spike.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-605",
+      "dependsOn": [
+        "US-604"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-stream-acceptance.mjs",
+        "apps/risk-workers/test/feature-stream-acceptance.test.mjs",
+        "docs/operations/local-feature-stream.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

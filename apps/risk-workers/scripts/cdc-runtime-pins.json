@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "cacheRelative": ".cache/lmps-cdc-runtime/kafka-4.1.2_debezium-3.7.0.Final",
+  "javaHome": "/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home",
+  "javaVersion": "21.0.10",
+  "kafkaVersion": "4.1.2",
+  "debeziumVersion": "3.7.0.Final",
+  "inventorySha256": "efd8dcc3 4d81f519 61a1d69d c5863c73 07ba90fd 9de98500 2b7e40e2 b37edc9c",
+  "inventoryFiles": 249,
+  "kafkaRelative": "kafka/kafka_2.13-4.1.2",
+  "pluginRelative": "debezium/debezium-connector-mariadb",
+  "artifacts": [
+    {
+      "name": "kafka",
+      "file": "kafka_2.13-4.1.2.tgz",
+      "url": "https://archive.apache.org/dist/kafka/4.1.2/kafka_2.13-4.1.2.tgz",
+      "bytes": 133586323,
+      "sha512": "78ac6e48 8b107112 2f9608df db363f6f e50e1dbb c4923470 02c0398d fbf77e0d 8caa5bf7 94c59373 79721004 dfe92025 937d238b 0faf4eb7 15529417 fd43b491"
+    },
+    {
+      "name": "debezium",
+      "file": "debezium-connector-mariadb-3.7.0.Final-plugin.tar.gz",
+      "url": "https://repo.maven.apache.org/maven2/io/debezium/debezium-connector-mariadb/3.7.0.Final/debezium-connector-mariadb-3.7.0.Final-plugin.tar.gz",
+      "bytes": 9024428,
+      "sha512": "b5cf1538 30e1c33e 0e2e9f6b f4fa7f9b e80b8530 3a83aa01 25803133 c6975e03 e407e51a fcd1058e 8522c32b 8a9de9ea 3af63e46 cc4f2812 58b2290d a1f29602"
+    }
+  ]
+}

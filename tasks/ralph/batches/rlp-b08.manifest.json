@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "batchId": "rlp-b08",
+  "predecessor": "rlp-b07",
+  "tracker": "tasks/ralph/batches/rlp-b08.json",
+  "document": "tasks/ralph/batches/rlp-b08.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-008.md",
+  "tasks": [
+    {
+      "id": "US-801",
+      "dependsOn": [],
+      "files": [
+        "packages/contracts/src/feature-catalog.ts",
+        "packages/contracts/test/feature-catalog.test.mjs",
+        "packages/contracts/package.json",
+        "docs/data-dictionary/feature-catalog.md"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./feature-catalog",
+          "value": "./dist/feature-catalog.js"
+        }
+      }
+    },
+    {
+      "id": "US-802",
+      "dependsOn": [
+        "US-801"
+      ],
+      "files": [
+        "packages/risk/src/feature-contributions.ts",
+        "packages/risk/test/feature-contributions.test.mjs",
+        "packages/risk/src/index.ts"
+      ],
+      "checkGroup": "risk",
+      "edits": {
+        "packages/risk/src/index.ts": {
+          "kind": "append",
+          "value": "export * from './feature-contributions.js';"
+        }
+      }
+    },
+    {
+      "id": "US-803",
+      "dependsOn": [
+        "US-802"
+      ],
+      "files": [
+        "packages/risk/src/feature-window-state.ts",
+        "packages/risk/test/feature-window-state.test.mjs",
+        "packages/risk/src/index.ts"
+      ],
+      "checkGroup": "risk",
+      "edits": {
+        "packages/risk/src/index.ts": {
+          "kind": "append",
+          "value": "export * from './feature-window-state.js';"
+        }
+      }
+    },
+    {
+      "id": "US-804",
+      "dependsOn": [
+        "US-803"
+      ],
+      "files": [
+        "apps/risk-workers/src/feature-contribution-worker.ts",
+        "apps/risk-workers/test/feature-contribution-worker.test.mjs",
+        "packages/risk/test/fixtures/feature-streams/p04-extended-golden.json",
+        "packages/risk/test/feature-contributions-golden.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-805",
+      "dependsOn": [
+        "US-804"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-contributions-acceptance.mjs",
+        "apps/risk-workers/test/feature-contributions-acceptance.test.mjs",
+        "docs/operations/local-feature-contributions.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

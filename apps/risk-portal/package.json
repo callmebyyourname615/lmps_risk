@@ -1,0 +1,25 @@
+{
+  "name": "@lmps/risk-portal",
+  "version": "0.0.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm run typecheck && vite build",
+    "typecheck": "pnpm --filter @lmps/contracts build && tsc -p tsconfig.json --noEmit",
+    "dev": "vite --host 127.0.0.1",
+    "test": "pnpm --filter @lmps/risk-api build && pnpm run build && node --test test/*.test.mjs",
+    "test:browser": "pnpm --filter @lmps/risk-api build && pnpm run build && node test/browser-native.mjs"
+  },
+  "dependencies": {
+    "@lmps/contracts": "workspace:*",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "vite": "8.1.6"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "seed": 305,
+  "limitsNote": "Three attempts mirror the local outbox. 60000ms TTL and 16 cases are local fixture limits, not business thresholds.",
+  "cases": [
+    {"id":"synthetic_accepted","behaviors":["accepted"],"expected":["accepted",1,1]},
+    {"id":"synthetic_offline","behaviors":["offline"],"expected":["dead",3,0]},
+    {"id":"synthetic_expired","behaviors":["expired"],"ttlMs":0,"expected":["expired",0,0]},
+    {"id":"synthetic_revoked","behaviors":["revoked"],"expected":["dead",1,0]},
+    {"id":"synthetic_rate_limited","behaviors":["rate-limited","accepted"],"expected":["accepted",2,1]},
+    {"id":"synthetic_invalid_subscription","behaviors":["invalid-subscription"],"expected":["dead",1,0]},
+    {"id":"synthetic_crash","behaviors":["crash-after-acceptance","accepted"],"expected":["accepted",2,2]}
+  ]
+}

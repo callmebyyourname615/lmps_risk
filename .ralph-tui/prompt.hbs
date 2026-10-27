@@ -1,0 +1,14 @@
+RALPH_TASK_ID={{taskId}}
+
+This is an explicitly approved read-only automation intake audit, not an application implementation batch.
+Task: {{taskTitle}}
+{{taskDescription}}
+
+Acceptance criteria:
+{{acceptanceCriteria}}
+
+Read AGENTS.md, tasks/ralph/approved-batch.md and tasks/ralph/requirements-map.md. Cross-check the sibling ../plan/03-implementation-phases.md and the latest entry in docs/implementation-status/current.md. The map's historical scores are not a new assessment after No.51.
+
+Do not modify any file, Git state, database or task tracker. Do not run builds/tests/installers, login/logout, another agent, source/dataset/runtime commands or network tools. Do not read .env, .local, private datasets, authentication files or credentials. Never print source row values or credentials. Do not infer source semantics, account identity, historical availability, real labels or production approval.
+
+Return only a JSON object matching the supplied output schema. Set status to verified only if the intake map covers every unique MUST requirement and distinguishes reported local implementation from unverified target gates. Otherwise return status blocked. Include blocker codes SOURCE_SEMANTICS, ACCOUNT_IDENTITY, HISTORICAL_AVAILABILITY, REAL_LABELS and PRODUCTION_APPROVAL. No free-text or completion marker is needed: an independent local verifier controls completion after your report.

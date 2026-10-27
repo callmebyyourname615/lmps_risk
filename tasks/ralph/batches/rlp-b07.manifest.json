@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "batchId": "rlp-b07",
+  "predecessor": "rlp-b06",
+  "tracker": "tasks/ralph/batches/rlp-b07.json",
+  "document": "tasks/ralph/batches/rlp-b07.md",
+  "proposal": ".local/ralph/proposals/implementation-batch-007.md",
+  "tasks": [
+    {
+      "id": "US-701",
+      "dependsOn": [],
+      "files": [
+        "packages/contracts/src/feature-serving.ts",
+        "packages/contracts/test/feature-serving.test.mjs",
+        "packages/contracts/package.json"
+      ],
+      "checkGroup": "contracts",
+      "edits": {
+        "packages/contracts/package.json": {
+          "kind": "export",
+          "key": "./feature-serving",
+          "value": "./dist/feature-serving.js"
+        }
+      }
+    },
+    {
+      "id": "US-702",
+      "dependsOn": [
+        "US-701"
+      ],
+      "files": [
+        "apps/risk-workers/src/feature-snapshot-store.ts",
+        "apps/risk-workers/test/feature-snapshot-store.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-703",
+      "dependsOn": [
+        "US-702"
+      ],
+      "files": [
+        "packages/risk/src/feature-serving.ts",
+        "packages/risk/test/feature-serving.test.mjs",
+        "packages/risk/src/index.ts"
+      ],
+      "checkGroup": "risk",
+      "edits": {
+        "packages/risk/src/index.ts": {
+          "kind": "append",
+          "value": "export * from './feature-serving.js';"
+        }
+      }
+    },
+    {
+      "id": "US-704",
+      "dependsOn": [
+        "US-703"
+      ],
+      "files": [
+        "apps/risk-workers/src/feature-serving-adapter.ts",
+        "apps/risk-workers/test/feature-serving-adapter.test.mjs"
+      ],
+      "checkGroup": "workers",
+      "edits": {}
+    },
+    {
+      "id": "US-705",
+      "dependsOn": [
+        "US-704"
+      ],
+      "files": [
+        "apps/risk-workers/scripts/feature-serving-acceptance.mjs",
+        "apps/risk-workers/test/feature-serving-acceptance.test.mjs",
+        "docs/operations/local-feature-serving.md",
+        "docs/implementation-status/current.md"
+      ],
+      "checkGroup": "full",
+      "edits": {}
+    }
+  ]
+}

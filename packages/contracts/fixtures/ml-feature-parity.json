@@ -1,0 +1,310 @@
+{
+  "synthetic_only": true,
+  "request": {
+    "format": 1,
+    "provenance": "local_synthetic",
+    "execution_mode": "test",
+    "workspace_key": "synthetic_local",
+    "run_id": "11111111-1111-4111-8111-111111111111",
+    "target": {
+      "namespace": "synthetic_snapshot",
+      "transaction_id": "synthetic_target",
+      "revision_number": 1
+    },
+    "policy": {
+      "policy_id": "synthetic_monitoring",
+      "version": "synthetic_v1",
+      "currency": "SYN",
+      "window_seconds": 3600,
+      "baseline_windows": 2,
+      "graph_depth": 4,
+      "minimum_amount": "500.00",
+      "structuring_ceiling": "1000.00",
+      "near_threshold_bps": 8000,
+      "severity_bps": {
+        "medium": 3000,
+        "high": 6000,
+        "critical": 9000
+      },
+      "rules": [
+        {
+          "code": "FRAUD_HIGH_AMOUNT",
+          "enabled": true,
+          "threshold": "500.00",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "FRAUD_COUNT_VELOCITY",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "FRAUD_AMOUNT_VELOCITY",
+          "enabled": true,
+          "threshold": "2000.00",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "FRAUD_NEW_COUNTERPARTY",
+          "enabled": true,
+          "threshold": "1",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "FRAUD_AMOUNT_DEVIATION",
+          "enabled": true,
+          "threshold": "15000",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "FRAUD_FREQUENCY_DEVIATION",
+          "enabled": true,
+          "threshold": "15000",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "MULE_FAN_IN",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "MULE_FAN_OUT",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "MULE_RAPID_PASS_THROUGH",
+          "enabled": true,
+          "threshold": "8000",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "MULE_NETWORK_CYCLE",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "MULE_FLAGGED_NEIGHBOR",
+          "enabled": true,
+          "threshold": "1",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "AML_STRUCTURING_PATTERN",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "AML_REPEATED_HIGH_VALUE",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "AML_MULTI_HOP_FLOW",
+          "enabled": true,
+          "threshold": "2",
+          "weight_bps": 1000,
+          "severity": "high"
+        },
+        {
+          "code": "AML_NETWORK_DEVIATION",
+          "enabled": true,
+          "threshold": "15000",
+          "weight_bps": 1000,
+          "severity": "high"
+        }
+      ]
+    },
+    "context": {
+      "binding": {
+        "namespace": "synthetic_snapshot",
+        "transaction_id": "synthetic_target",
+        "revision_number": 1,
+        "revision_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "identity_status": "synthetic_declared",
+      "as_of": "2026-01-01T12:00:00.000Z",
+      "coverage_start": "2026-01-01T08:00:00.000Z",
+      "coverage_complete": true,
+      "flagged_accounts": [
+        "synthetic_C"
+      ],
+      "flagged_accounts_version": "synthetic_flags_v1",
+      "events": [
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_baseline_1",
+          "revision_number": 1,
+          "sender": "synthetic_A",
+          "receiver": "synthetic_Old1",
+          "occurred_at": "2026-01-01T09:30:00.000Z",
+          "available_at": "2026-01-01T09:30:00.000Z",
+          "currency": "SYN",
+          "amount": "100.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_baseline_2",
+          "revision_number": 1,
+          "sender": "synthetic_A",
+          "receiver": "synthetic_Old2",
+          "occurred_at": "2026-01-01T10:30:00.000Z",
+          "available_at": "2026-01-01T10:30:00.000Z",
+          "currency": "SYN",
+          "amount": "100.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_chain",
+          "revision_number": 1,
+          "sender": "synthetic_X",
+          "receiver": "synthetic_C",
+          "occurred_at": "2026-01-01T11:01:00.000Z",
+          "available_at": "2026-01-01T11:01:00.000Z",
+          "currency": "SYN",
+          "amount": "100.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_cycle",
+          "revision_number": 1,
+          "sender": "synthetic_B",
+          "receiver": "synthetic_C",
+          "occurred_at": "2026-01-01T11:02:00.000Z",
+          "available_at": "2026-01-01T11:02:00.000Z",
+          "currency": "SYN",
+          "amount": "100.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_fanin",
+          "revision_number": 1,
+          "sender": "synthetic_X",
+          "receiver": "synthetic_B",
+          "occurred_at": "2026-01-01T11:10:00.000Z",
+          "available_at": "2026-01-01T11:10:00.000Z",
+          "currency": "SYN",
+          "amount": "500.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_receipt",
+          "revision_number": 1,
+          "sender": "synthetic_C",
+          "receiver": "synthetic_A",
+          "occurred_at": "2026-01-01T11:15:00.000Z",
+          "available_at": "2026-01-01T11:15:00.000Z",
+          "currency": "SYN",
+          "amount": "1800.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_out_1",
+          "revision_number": 1,
+          "sender": "synthetic_A",
+          "receiver": "synthetic_D",
+          "occurred_at": "2026-01-01T11:30:00.000Z",
+          "available_at": "2026-01-01T11:30:00.000Z",
+          "currency": "SYN",
+          "amount": "850.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_out_2",
+          "revision_number": 1,
+          "sender": "synthetic_A",
+          "receiver": "synthetic_E",
+          "occurred_at": "2026-01-01T11:40:00.000Z",
+          "available_at": "2026-01-01T11:40:00.000Z",
+          "currency": "SYN",
+          "amount": "900.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        },
+        {
+          "namespace": "synthetic_snapshot",
+          "transaction_id": "synthetic_target",
+          "revision_number": 1,
+          "sender": "synthetic_A",
+          "receiver": "synthetic_B",
+          "occurred_at": "2026-01-01T12:00:00.000Z",
+          "available_at": "2026-01-01T12:00:00.000Z",
+          "currency": "SYN",
+          "amount": "900.00",
+          "reversed_amount": "0.00",
+          "status": "succeeded"
+        }
+      ]
+    }
+  },
+  "observation": {
+    "status": "available",
+    "revision_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "amount": "900.00",
+    "reversed_amount": "0.00",
+    "currency": "SYN",
+    "transaction_status": "succeeded",
+    "observed_at": "2026-01-01T12:00:00.000Z"
+  },
+  "expected": {
+    "format": 1,
+    "execution_mode": "shadow",
+    "provenance": "local_synthetic",
+    "source_semantics": "synthetic_declared",
+    "snapshot": {
+      "target": {
+        "namespace": "synthetic_snapshot",
+        "transaction_id": "synthetic_target",
+        "revision_number": 1
+      },
+      "revision_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "as_of": "2026-01-01T12:00:00.000Z",
+      "currency": "SYN",
+      "feature_version": "lmps-features-1",
+      "status": "available",
+      "reason_code": null,
+      "values": [
+        "6.803505258",
+        "0.000000000",
+        "-1.000000000",
+        "2.000000000",
+        "7.467942332",
+        "1.000000000"
+      ],
+      "net_amount_cents": "90000"
+    }
+  }
+}
