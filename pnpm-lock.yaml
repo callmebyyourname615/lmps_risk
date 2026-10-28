@@ -23,6 +23,9 @@ importers:
       '@fastify/static':
         specifier: 10.1.2
         version: 10.1.2
+      '@lmps/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@lmps/database':
         specifier: workspace:*
         version: link:../../packages/database

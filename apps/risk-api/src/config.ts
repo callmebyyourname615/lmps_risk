@@ -34,6 +34,10 @@ export function readConfig(env: NodeJS.ProcessEnv) {
     if (localPoolConfig(caseDsn, 'case').port !== localPoolConfig(postgresDsn!).port) throw new Error('Local case storage must use the app database instance.');
   }
   const modelPublicKeyFile=env.LMPS_ML_PUBLIC_KEY_FILE;
+  const detectionDsn = env.LMPS_LOCAL_DETECTION_DSN;
+  if (detectionDsn && (!authConfig || localPoolConfig(detectionDsn, 'intake').port !== localPoolConfig(postgresDsn!).port)) throw new Error('Local detection storage must use the authenticated app database instance.');
+  if (env.LMPS_DETECTION_WORKER !== undefined && !['0', '1'].includes(env.LMPS_DETECTION_WORKER)) throw new Error('Invalid local detection worker switch.');
+  if (env.LMPS_DETECTION_WORKER === '1' && !detectionDsn) throw new Error('Local detection worker needs configured intake storage.');
   if(modelPublicKeyFile!==undefined && (!isAbsolute(modelPublicKeyFile)||!authConfig))throw new Error('Model evidence requires private trust config and authenticated app reads.');
-  return { ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
+  return { ...(detectionDsn ? { detectionDsn, detectionWorker: env.LMPS_DETECTION_WORKER !== '0' } : {}), ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
 }

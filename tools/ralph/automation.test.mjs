@@ -491,6 +491,38 @@ test('maintenance preserves old receipt boundaries and cannot authorize applicat
   }
 });
 
+test('reviewed monitoring plan transition rejects unreviewed scope and preserves its inputs', context => {
+  const { root, parent } = fixture(context);
+  mkdirSync(join(root, 'apps/risk-api/src'), { recursive: true });
+  const name = 'apps/risk-api/src/overview.controller.ts';
+  writeFileSync(join(root, name), 'previous calendar');
+  const before = sourceSnapshot(root);
+  writeFileSync(join(root, name), 'reviewed calendar');
+  writeFileSync(join(parent, 'plan/README.md'), 'automatic monitoring plan');
+  const after = sourceSnapshot(root);
+  const pending = [{ id: 'US-902', files: ['apps/risk-workers/scripts/feature-streams-candidate.mjs'] }];
+  const record = { kind: 'source-plan-review', authorization: 'explicit-user-approval', scope: 'monitoring', productionReady: false, beforeTask: 'US-902', before, after, fromPolicy: 'old', toPolicy: 'new', changedFiles: [], sourceChanges: [name], planChanges: ['README.md'], taskMapping: [{ id: 'US-902', requirements: ['P04-02', 'P04-03'] }], checks: { passed: true, testCount: 70 } };
+  const original = structuredClone(record);
+  assert.deepEqual(maintenanceBoundary(before, 'old', record, pending), { expected: after, policy: 'new' });
+  assert.deepEqual(record, original);
+  for (const changes of [{ authorization: 'agent-request' }, { beforeTask: 'US-901' }, { productionReady: true }, { sourceChanges: [] }, { planChanges: [] }, { taskMapping: [] }, { checks: { passed: true } }, { after: { ...after, head: 'unreviewed-commit' } }, { after: { ...after, plan: [] } }]) {
+    assert.throws(() => maintenanceBoundary(before, 'old', { ...record, ...changes }, pending));
+  }
+  assert.throws(() => maintenanceBoundary(before, 'old', record, [{ ...pending[0], files: [name] }]), /protected scope/);
+  assert.throws(() => maintenanceBoundary(before, 'old', { ...record, kind: undefined }, pending), /application/);
+  const forged = structuredClone(record);
+  forged.after.source.push({ name: 'tools/ralph/state.mjs', sha256: 'invented', mode: 420 });
+  forged.sourceChanges = [...record.sourceChanges, 'tools/ralph/state.mjs'].sort();
+  assert.throws(() => maintenanceBoundary(before, 'old', forged, pending), /protected scope/);
+  const dependency = structuredClone(record);
+  dependency.after.source.push({ name: 'apps/risk-api/package.json', sha256: 'invented', mode: 420 });
+  dependency.sourceChanges = [...record.sourceChanges, 'apps/risk-api/package.json'].sort();
+  assert.throws(() => maintenanceBoundary(before, 'old', dependency, pending), /protected scope/);
+  const deleted = structuredClone(record);
+  deleted.after.source = deleted.after.source.filter(row => row.name !== name);
+  assert.throws(() => maintenanceBoundary(before, 'old', deleted, pending), /protected scope/);
+});
+
 test('blocked structured notes persist while host verification is never called', async () => {
   let invoked = false;
   const result = await runAgent({ executable: process.execPath, arguments_: [FAKE, 'batch-blocked', 'US-103'], prompt: 'invented task', cwd: ROOT, env: environment(), validate: text => validateBatchReport(text, 'US-103'), verify: () => { invoked = true; } });
@@ -686,6 +718,30 @@ test('fake-agent successor resumes after receipt repair and never invokes comple
   const result=spawnSync(process.execPath,['--input-type=module','-e',script,root,FAKE],{cwd:root,env:{...environment(root),LMPS_RALPH_BATCH:'rlp-b02'},encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
   assert.equal(result.status,0,result.stderr);
   assert.deepEqual(JSON.parse(result.stdout).calls,['US-201','US-202']);
+});
+
+test('reviewed plan re-registration preserves a completed receipt and stops subsequent drift', context => {
+  const { root } = registryFixture(context);
+  const script = `
+    import assert from 'node:assert/strict';import {writeFileSync,mkdirSync,readFileSync} from 'node:fs';import {join,dirname} from 'node:path';
+    const root=process.argv[1],s=await import(join(root,'tools/ralph/state.mjs')),p=await import(join(root,'tools/ralph/batch-policy.mjs')),w=await import(join(root,'tools/ralph/workspace.mjs'));
+    const dir=join(root,'.local/ralph/batches/rlp-b02'),tracker='tasks/ralph/batches/rlp-b02.json',before=w.batchSnapshot(root,tracker),policy=p.policyDigest(root);
+    s.writeJson(join(dir,'approved.json'),{baseline:before,policySha256:policy});
+    const task=p.TASKS[0],folder=join(dir,'tasks',task.id),candidate=w.makeCandidate(root,folder,before,tracker);
+    mkdirSync(dirname(join(candidate,task.files[0])),{recursive:true});writeFileSync(join(candidate,task.files[0]),'verified fixture implementation');
+    const changes=w.changedFiles(root,candidate,before,task.files,task.id,{tracker,edits:task.edits}),evidence={checks:[{passed:true}]};
+    const journal=w.promote(root,candidate,folder,before,changes,evidence,tracker),receipt=join(folder,'receipt.json');
+    s.writeJson(receipt,{status:'verified',taskId:task.id,policySha256:policy,before,after:journal.after,changes,evidence});
+    const receiptHash=s.digest(readFileSync(receipt)),name='docs/api/calendar.md';mkdirSync(dirname(join(root,name)),{recursive:true});writeFileSync(join(root,name),'reviewed API documentation');writeFileSync(join(dirname(root),'plan/README.md'),'new monitoring direction');
+    assert.throws(()=>p.batchReconcile(root),/Source, plan or Git/);
+    s.writeJson(join(dir,'maintenance.json'),{updates:[{kind:'source-plan-review',authorization:'explicit-user-approval',scope:'monitoring',productionReady:false,beforeTask:p.TASKS[1].id,before:journal.after,after:w.batchSnapshot(root,tracker),fromPolicy:policy,toPolicy:policy,changedFiles:[],sourceChanges:[name],planChanges:['README.md'],taskMapping:[{id:p.TASKS[1].id,requirements:['P04-02']}],checks:{passed:true,testCount:70}}]});
+    const state=p.batchReconcile(root,true);assert.deepEqual(state.completed,[task.id]);assert.equal(state.nextTask,p.TASKS[1].id);assert.equal(s.digest(readFileSync(receipt)),receiptHash);
+    writeFileSync(join(root,name),'later unreviewed edit');assert.throws(()=>p.batchReconcile(root),/Source, plan or Git/);assert.equal(s.digest(readFileSync(receipt)),receiptHash);
+    console.log('reviewed-plan-preserves-receipt');
+  `;
+  const result = spawnSync(process.execPath, ['--input-type=module', '-e', script, root], { cwd: root, env: { ...environment(root), LMPS_RALPH_BATCH: 'rlp-b02' }, encoding: 'utf8', timeout: 30000, maxBuffer: 1024 * 1024 });
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /reviewed-plan-preserves-receipt/);
 });
 
 test('disk preflight stops before cache preparation while accepting explicit capacity boundaries',()=>{

@@ -56,13 +56,24 @@ export function validateBatchReport(text, id) {
   return value;
 }
 
-export function maintenanceBoundary(expected, policy, record) {
+export function maintenanceBoundary(expected, policy, record, pendingTasks = []) {
   const allowed = ['tools/ralph/workspace.mjs', 'tools/ralph/agent-adapter.mjs', 'tools/ralph/batch-policy.mjs', 'tools/ralph/batch-registry.mjs', 'tools/ralph/automation.test.mjs', 'tools/ralph/README.md', 'tools/ralph/launch.mjs', 'tools/ralph/state.mjs', 'ci/verify.py', 'ci/tests/test_verification.py', 'apps/risk-workers/test/feature-stream-spike.test.mjs'];
-  if (!same(record.before, expected) || record.fromPolicy !== policy || !record.checks?.passed || record.checks.testCount < 41 || record.changedFiles.some(name => !allowed.includes(name))) throw new Error('Runner maintenance has invalid evidence or scope.');
+  if (!same(record.before, expected) || record.fromPolicy !== policy || !record.checks?.passed || !Number.isSafeInteger(record.checks.testCount) || record.checks.testCount < 41 || record.changedFiles.some(name => !allowed.includes(name))) throw new Error('Runner maintenance has invalid evidence or scope.');
   const before = structuredClone(record.before), after = structuredClone(record.after);
+  if (record.kind !== undefined) {
+    if (record.kind !== 'source-plan-review' || record.authorization !== 'explicit-user-approval' || record.scope !== 'monitoring' || record.productionReady !== false || !pendingTasks.length || record.beforeTask !== pendingTasks[0].id || !Array.isArray(record.taskMapping) || !same(record.taskMapping.map(row => row.id), pendingTasks.map(task => task.id)) || record.taskMapping.some(row => !Array.isArray(row.requirements) || !row.requirements.length || row.requirements.some(id => !/^P04-0[1-9]$/.test(id)))) throw new Error('Source/plan review requires explicit approval and pending-task mapping.');
+    const changes = section => [...new Set([...before[section], ...after[section]].map(row => row.name))].filter(name => !same(before[section].find(row => row.name === name) ?? null, after[section].find(row => row.name === name) ?? null)).sort();
+    const sourceChanges = changes('source').filter(name => !record.changedFiles.includes(name));
+    const reviewable = name => /^(apps\/risk-api\/(src|scripts|test)\/.+\.(ts|mjs)|docs\/api\/.+\.md|docs\/implementation-status\/current\.md|tasks\/ralph\/requirements-map\.md)$/.test(name) && !name.split('/').some(part => part.startsWith('.'));
+    if (!same(record.sourceChanges, sourceChanges) || !same(record.planChanges, changes('plan')) || !same(before.plan.map(row => row.name), after.plan.map(row => row.name)) || sourceChanges.some(name => !after.source.some(row => row.name === name) || !reviewable(name) || name !== 'docs/implementation-status/current.md' && pendingTasks.some(task => task.files.includes(name)))) throw new Error('Source/plan review changed protected scope or its exact inventory.');
+    before.source = before.source.filter(row => !sourceChanges.includes(row.name));
+    after.source = after.source.filter(row => !sourceChanges.includes(row.name));
+    before.plan = before.plan.filter(row => !record.planChanges.includes(row.name));
+    after.plan = after.plan.filter(row => !record.planChanges.includes(row.name));
+  }
   before.source = before.source.filter(row => !record.changedFiles.includes(row.name));
   after.source = after.source.filter(row => !record.changedFiles.includes(row.name));
-  if (!same(before, after) || record.after.source.length !== record.before.source.length) throw new Error('Maintenance changed application, plan or Git state.');
+  if (!same(before, after) || record.kind === undefined && record.after.source.length !== record.before.source.length) throw new Error('Maintenance changed application, plan or Git state.');
   return { expected: record.after, policy: record.toPolicy };
 }
 
@@ -78,7 +89,7 @@ export function batchReconcile(root = ROOT, repair = false) {
   let policy = approved.policySha256;
   const completed = [];
   for (const task of TASKS) {
-    for (const update of maintenance.filter(item => item.beforeTask === task.id)) ({ expected, policy } = maintenanceBoundary(expected, policy, update));
+    for (const update of maintenance.filter(item => item.beforeTask === task.id)) ({ expected, policy } = maintenanceBoundary(expected, policy, update, TASKS.filter(item => !completed.includes(item.id))));
     const folder = taskDirectory(root, task.id);
     let receipt = optional(join(folder, 'receipt.json'));
     const journal = optional(join(folder, 'promotion.json'));

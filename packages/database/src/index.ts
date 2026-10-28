@@ -65,6 +65,7 @@ export { createLocalAlerts, createAlertReviews, readLocalAlert, listLocalAlerts,
 export { createRiskJobs, validateRiskJobInput, riskJobInputHash, RiskJobError, type RiskJobClaim } from './risk-jobs.js';
 
 export { listRiskJobs, readRiskJob, readRiskJobAttempts } from './risk-job-reads.js';
+export { createDetectionHandoff, readDetectionHealth, DetectionError } from './detection-handoff.js';
 
 export { createOfflineDatasets, datasetRowsHash, datasetRowHash, datasetIdentity, validateDatasetSnapshot } from './offline-datasets.js';
 
@@ -77,3 +78,6 @@ export { createModelSignals, readModelReceipt, type FrozenModelReceipt } from '.
 export {createLabelReviews,readLabelReview,labelCandidates,validateLabelCommand,LabelError,type LabelCommand,type LabelReviewView} from './label-reviews.js';
 
 export {labelCommandSchema} from '@lmps/contracts/label-review';
+
+export { readMonitoringSummary, readMonitoringSnapshot, MonitoringReadError } from './monitoring-reads.js';
+export { readMonitoringTimeline } from './monitoring-timeline.js';

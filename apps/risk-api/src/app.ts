@@ -27,6 +27,9 @@ import { createLabelReviews } from '@lmps/database';
 import { registerPortal } from './portal.js';
 import { OverviewController } from './overview.controller.js';
 import { NotificationsController } from './notifications.controller.js';
+import { MonitoringController } from './monitoring.controller.js';
+import { DetectionController } from './detection.controller.js';
+import { DETECTION_RUNTIME, DetectionRuntime } from './detection-runtime.js';
 
 export async function createApp(env: NodeJS.ProcessEnv = process.env) {
   const config = readConfig(env);
@@ -37,9 +40,10 @@ export async function createApp(env: NodeJS.ProcessEnv = process.env) {
   const policies = config.policyDsn ? createRiskPolicies(config.policyDsn) : null;
   const labels = config.policyDsn ? createLabelReviews(config.policyDsn) : null;
   const cases = config.caseDsn ? createLocalCases(config.caseDsn) : null;
+  const detection = new DetectionRuntime(config.detectionDsn, config.detectionWorker);
   @Module({
-    controllers: [HealthController, ...(auth ? [NotificationsController, OverviewController, SourceController, OperationsController, AuditController, SyncController, TransactionsController, AssessmentsController, TransactionRiskController, AlertsController, RiskJobsController, RiskPoliciesController, CasesController, ModelSignalsController, LabelsController] : [])],
-    providers: [PostgresService, {provide: LABEL_REVIEWS,useValue: labels}, {provide: MODEL_TRUST, useValue: modelTrust}, { provide: LOCAL_CASES, useValue: cases }, { provide: RISK_POLICIES, useValue: policies }, { provide: ALERT_REVIEWS, useValue: reviews }, ...(auth ? [LocalAccessGuard, { provide: LOCAL_AUTH, useValue: auth }] : []), { provide: POSTGRES_DATABASE, useValue: database }],
+    controllers: [HealthController, ...(auth ? [DetectionController, MonitoringController, NotificationsController, OverviewController, SourceController, OperationsController, AuditController, SyncController, TransactionsController, AssessmentsController, TransactionRiskController, AlertsController, RiskJobsController, RiskPoliciesController, CasesController, ModelSignalsController, LabelsController] : [])],
+    providers: [PostgresService, { provide: DETECTION_RUNTIME, useValue: detection }, {provide: LABEL_REVIEWS,useValue: labels}, {provide: MODEL_TRUST, useValue: modelTrust}, { provide: LOCAL_CASES, useValue: cases }, { provide: RISK_POLICIES, useValue: policies }, { provide: ALERT_REVIEWS, useValue: reviews }, ...(auth ? [LocalAccessGuard, { provide: LOCAL_AUTH, useValue: auth }] : []), { provide: POSTGRES_DATABASE, useValue: database }],
   })
   class AppModule {}
   // Request bodies/URLs can contain account data; request logging is not enabled.

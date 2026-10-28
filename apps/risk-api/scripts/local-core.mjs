@@ -7,6 +7,7 @@ import { dsn, identify, loadState, localMode } from '../../../packages/database/
 import { migrations } from '../../../packages/database/scripts/migrations.mjs';
 
 export const CORE_ROLES = {
+  detection_operator: { sub: 'synthetic_detection_operator', scope: 'alerts:read risk-jobs:read risk-jobs:retry' },
   case_manager: { sub:'synthetic_case_manager', scope:'alerts:read risk:read cases:read cases:write cases:assign audit:read' },
   adjudicator: {sub:'synthetic_core_adjudicator',scope:'labels:read labels:adjudicate cases:read risk:read alerts:read'},
   reader: { sub: 'synthetic_core_reader', scope: 'source:read operations:read sync:read transactions:read rules:read assessments:read risk:read alerts:read risk-jobs:read policies:read cases:read audit:read labels:read' },
@@ -32,7 +33,8 @@ export async function openCoreApi(state, port, options = {}) {
     const auth = await authFixture(directory);
     ({ app } = await createApp({ LMPS_ENVIRONMENT: 'local', LMPS_EXECUTION_MODE: 'test', LMPS_API_PORT: String(port),
       LMPS_POSTGRES_DSN: dsn(state), LMPS_LOCAL_AUTH_CONFIG: auth.path, ...(options.modelPublicKeyFile ? {LMPS_ML_PUBLIC_KEY_FILE: options.modelPublicKeyFile} : {}),
-      LMPS_LOCAL_REVIEW_DSN: dsn(state, 'reviewer'), LMPS_LOCAL_POLICY_DSN: dsn(state, 'policy'), LMPS_LOCAL_CASE_DSN: dsn(state, 'case') }));
+      LMPS_LOCAL_REVIEW_DSN: dsn(state, 'reviewer'), LMPS_LOCAL_POLICY_DSN: dsn(state, 'policy'), LMPS_LOCAL_CASE_DSN: dsn(state, 'case'),
+      LMPS_LOCAL_DETECTION_DSN: dsn(state, 'intake'), LMPS_DETECTION_WORKER: options.detectionWorker === true ? '1' : '0' }));
     await app.listen(port, '127.0.0.1');
     const url = `http://127.0.0.1:${port}`;
     const token = role => {

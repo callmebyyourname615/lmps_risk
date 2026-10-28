@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, Get, Inject, Query, Req, ServiceUnavailableException, SetMetadata, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiProperty, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { readLocalAlert, readLocalCase, validateFrozenTransactionRisk, validateTransactionRevision, type Database } from '@lmps/database';
 import { riskHash } from '@lmps/risk';
 import { LOCAL_SCOPE, LocalAccessGuard, type ScopedRequest } from './local-auth.js';
@@ -27,6 +27,21 @@ class RiskCalendarView {
   @ApiProperty({ minimum: 0 }) total_alerts!: number;
   @ApiProperty({ type: [RiskCalendarDay] }) days!: RiskCalendarDay[];
 }
+class RiskCalendarHour {
+  @ApiProperty({ minimum: 0, maximum: 23 }) hour!: number;
+  @ApiProperty({ minimum: 0 }) count!: number;
+}
+class RiskCalendarDayView {
+  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
+  @ApiProperty() workspace_key!: string;
+  @ApiProperty({ format: 'date-time' }) as_of!: string;
+  @ApiProperty({ enum: ['Asia/Vientiane'] }) timezone!: 'Asia/Vientiane';
+  @ApiProperty({ enum: ['alerts_created'] }) metric!: 'alerts_created';
+  @ApiProperty({ format: 'date' }) date!: string;
+  @ApiProperty({ minimum: 0 }) total_alerts!: number;
+  @ApiProperty({ type: [RiskCalendarHour] }) hours!: RiskCalendarHour[];
+}
 class OverviewView {
   @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
@@ -52,13 +67,57 @@ class OverviewView {
 @ApiBearerAuth()
 @UseGuards(LocalAccessGuard)
 @SetMetadata(LOCAL_SCOPE, ['transactions:read', 'risk:read', 'alerts:read', 'cases:read'])
-@ApiResponse({ status: 400, description: 'INVALID_QUERY; no query parameters accepted' })
+@ApiResponse({ status: 400, description: 'INVALID_QUERY; query fields must match the selected endpoint contract' })
 @ApiResponse({ status: 401, description: 'UNAUTHORIZED' })
 @ApiResponse({ status: 403, description: 'FORBIDDEN; all four read scopes are required before any counts are disclosed' })
 @ApiResponse({ status: 503, description: 'OVERVIEW_UNAVAILABLE; redacted storage/validation error' })
 @Controller('v1/local/overview')
 export class OverviewController {
   constructor(@Inject(POSTGRES_DATABASE) private readonly database: Database) {}
+
+  @Get('risk-calendar/day')
+  @ApiOperation({ summary: 'Read all 24 ICT hourly Alert-creation counts for a selected calendar day, bounded by the original calendar observation time.' })
+  @ApiQuery({ name: 'date', required: true, type: String, description: 'YYYY-MM-DD within the original ICT calendar range.' })
+  @ApiQuery({ name: 'as_of', required: true, type: String, description: 'Original calendar observation timestamp in UTC with six fractional digits; cannot be in the future.' })
+  @ApiOkResponse({ type: RiskCalendarDayView })
+  async calendarDay(@Req() request: ScopedRequest, @Query() query: Record<string, unknown>): Promise<RiskCalendarDayView> {
+    const invalid = (): never => { throw new BadRequestException({ code: 'INVALID_QUERY', message: 'Invalid risk calendar day or observation time.' }); };
+    const date = query.date, asOf = query.as_of;
+    if (Object.keys(query).sort().join(',') !== 'as_of,date' || typeof date !== 'string' || !/^[1-9]\d{3}-\d\d-\d\d$/.test(date)
+      || !Number.isFinite(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date
+      || typeof asOf !== 'string' || !/^[1-9]\d{3}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{6}Z$/.test(asOf)
+      || !Number.isFinite(Date.parse(asOf)) || new Date(asOf).toISOString().slice(0, 19) !== asOf.slice(0, 19)) return invalid();
+    const today = new Date(Date.parse(asOf) + 7 * 3600000).toISOString().slice(0, 10);
+    let first = Date.parse(today) - 364 * 86400000; first -= new Date(first).getUTCDay() * 86400000;
+    if (date < new Date(first).toISOString().slice(0, 10) || date > today) return invalid();
+    try {
+      const { rows: [row] } = await this.database.pool.query(`WITH bounds AS MATERIALIZED (
+        SELECT $2::timestamptz AS cutoff,$3::date AS day,statement_timestamp() AS now,
+          $3::date::timestamp AT TIME ZONE 'Asia/Vientiane' AS first,
+          ($3::date+1)::timestamp AT TIME ZONE 'Asia/Vientiane' AS last
+      ), activity AS (
+        SELECT extract(hour FROM a.created_at AT TIME ZONE 'Asia/Vientiane')::integer AS hour,count(*)::text AS n
+        FROM platform.local_alerts a CROSS JOIN bounds b WHERE a.workspace_key=$1
+          AND a.created_at>=b.first AND a.created_at<b.last AND a.created_at<=b.cutoff GROUP BY hour
+      ) SELECT b.cutoff<=b.now AS valid_cutoff,
+        (SELECT jsonb_agg(jsonb_build_object('hour',h.hour,'count',coalesce(a.n,'0')) ORDER BY h.hour)
+          FROM generate_series(0,23) h(hour) LEFT JOIN activity a ON a.hour=h.hour) AS hours FROM bounds b`,
+      [request.principal.workspace, asOf, date]);
+      if (row?.valid_cutoff === false) return invalid();
+      if (!row || row.valid_cutoff !== true || !Array.isArray(row.hours) || row.hours.length !== 24) throw new Error();
+      const hours = row.hours.map((hour: { hour: number; count: unknown }, index: number) => {
+        if (hour.hour !== index) throw new Error();
+        return { hour: index, count: safeCount(hour.count) };
+      });
+      const total = hours.reduce((sum: number, hour: RiskCalendarHour) => sum + hour.count, 0);
+      if (!Number.isSafeInteger(total)) throw new Error();
+      return { provenance: 'local_synthetic', execution_mode: 'test', workspace_key: request.principal.workspace,
+        as_of: asOf, timezone: 'Asia/Vientiane', metric: 'alerts_created', date, total_alerts: total, hours };
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new ServiceUnavailableException({ code: 'OVERVIEW_UNAVAILABLE', message: 'Risk calendar day is unavailable.' });
+    }
+  }
 
   @Get('risk-calendar')
   @ApiOperation({ summary: 'Read a week-aligned trailing year of newly created Alerts in ICT, one count per day through the observation clock; no source-event or risk-score inference' })
