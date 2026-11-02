@@ -100,3 +100,13 @@ test('invalid ports are rejected without returning their supplied values', () =>
     });
   }
 });
+
+
+test('the backend does not serve the retired embedded portal or its assets', async () => {
+  for (const path of ['/portal', '/portal/', '/portal/index.html', '/portal/assets/app.js', '/portal/.env']) {
+    const response = await fetch(origin + path, { redirect: 'manual' });
+    assert.equal(response.status, 404, path);
+    assert.equal(response.headers.get('location'), null);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+  }
+});

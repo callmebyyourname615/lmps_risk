@@ -120,7 +120,7 @@ export function evaluateTransactionRisk(input: unknown, source: unknown): Transa
   const evaluated = findings.filter(f => ['triggered', 'not_triggered'].includes(f.status)).length, unavailable = findings.some(f => f.status === 'unavailable');
   const assessment_status = unavailable ? evaluated ? 'partial' : 'unavailable' : evaluated ? 'complete' : findings.some(f => f.status === 'not_applicable') ? 'not_applicable' : 'not_evaluated';
   const risk_types = findings.filter(f => f.status === 'triggered').map(f => f.code);
-  return { format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: request.workspace_key, run_id: request.run_id, target: request.target,
+  return { format: 1, provenance: request.provenance, execution_mode: 'test', workspace_key: request.workspace_key, run_id: request.run_id, target: request.target,
     engine_version: RISK_ENGINE_VERSION, catalog_version: RISK_CATALOG_VERSION, policy: policy ? { policy_id: policy.policy_id, version: policy.version, sha256: riskHash(policy) } : null,
     assessment_id: request.run_id, as_of: observation.observed_at, reason_codes: [...new Set(findings.map(f => f.reason_code))].sort(),
     input_sha256: riskHash({ request, observation }), revision_sha256: observation.revision_sha256, feature_snapshot_sha256: request.context ? riskHash(request.context) : null,
@@ -154,3 +154,4 @@ export * from './feature-serving.js';
 export * from './feature-contributions.js';
 
 export * from './feature-window-state.js';
+export * from './feature-health.js';

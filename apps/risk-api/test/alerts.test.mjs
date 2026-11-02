@@ -126,3 +126,15 @@ test('OpenAPI documents review mutation, mandatory scopes, filters, body shape a
   assert.deepEqual(mutation.requestBody.content['application/json'].schema.required.sort(), ['action', 'expected_version', 'note', 'outcome', 'request_id']);
   assert.equal((await app.inject('/health/ready')).statusCode, 503);
 });
+
+test('alert read scope supplies all 15 bilingual detector definitions without risk scope escalation', async () => {
+  for (const locale of ['lo', 'en']) {
+    const response = await request('GET', '/v1/local/alerts/catalog', { language: locale }); assert.equal(response.statusCode, 200); const body = response.json();
+    assert.equal(body.locale, locale); assert.equal(body.risk_types.length, 15); assert.equal(new Set(body.risk_types.map(r => r.code)).size, 15);
+    assert.ok(body.statuses.length > 0); assert.ok(body.units.length > 0);
+    for (const item of body.risk_types) for (const key of ['title', 'definition', 'condition', 'limitation']) { assert.ok(item[key]); if (locale === 'lo') assert.match(item[key], /[\u0e80-\u0eff]/); }
+    assert.equal(response.headers['cache-control'], 'no-store');
+  }
+  assert.equal((await app.inject('/v1/local/alerts/catalog')).statusCode, 401);
+  assert.equal((await request('GET', '/v1/local/alerts/catalog', { scope: 'alerts:review' })).statusCode, 403);
+});

@@ -2,6 +2,12 @@ import { localPoolConfig } from '@lmps/database';
 import { isAbsolute } from 'node:path';
 
 export function readConfig(env: NodeJS.ProcessEnv) {
+  const config=baseConfig(env),readNamespace=env.LMPS_READ_NAMESPACE;
+  if(readNamespace!==undefined&&(!/^synthetic_[a-z0-9_]{1,40}$/.test(readNamespace)||!config.authConfig||!config.postgresDsn))throw new Error('Invalid authenticated test source namespace.');
+  return {...config,...(readNamespace?{readNamespace}:{})};
+}
+function baseConfig(env: NodeJS.ProcessEnv) {
+  if (env.LMPS_WEB_PUSH_WORKER !== undefined && !["0","1"].includes(env.LMPS_WEB_PUSH_WORKER)) throw new Error("Invalid Web Push worker switch.");
   const environment = env.LMPS_ENVIRONMENT ?? 'local';
   if (env.NODE_ENV === 'production' || !['local', 'test'].includes(environment)) {
     throw new Error('This bootstrap API supports local/test environments only.');
@@ -17,6 +23,7 @@ export function readConfig(env: NodeJS.ProcessEnv) {
   const postgresDsn = env.LMPS_POSTGRES_DSN;
   if (postgresDsn) localPoolConfig(postgresDsn);
   const authConfig = env.LMPS_LOCAL_AUTH_CONFIG;
+  if (env.LMPS_WEB_PUSH_CONFIG !== undefined && (!isAbsolute(env.LMPS_WEB_PUSH_CONFIG) || !authConfig || !postgresDsn)) throw new Error("Web Push requires private config and authenticated storage.");
   if (authConfig !== undefined && (!isAbsolute(authConfig) || !postgresDsn)) throw new Error('Local source authentication requires an absolute private config path and app database.');
   const reviewDsn = env.LMPS_LOCAL_REVIEW_DSN;
   if (reviewDsn) {
@@ -39,5 +46,13 @@ export function readConfig(env: NodeJS.ProcessEnv) {
   if (env.LMPS_DETECTION_WORKER !== undefined && !['0', '1'].includes(env.LMPS_DETECTION_WORKER)) throw new Error('Invalid local detection worker switch.');
   if (env.LMPS_DETECTION_WORKER === '1' && !detectionDsn) throw new Error('Local detection worker needs configured intake storage.');
   if(modelPublicKeyFile!==undefined && (!isAbsolute(modelPublicKeyFile)||!authConfig))throw new Error('Model evidence requires private trust config and authenticated app reads.');
-  return { ...(detectionDsn ? { detectionDsn, detectionWorker: env.LMPS_DETECTION_WORKER !== '0' } : {}), ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
+  const featureConfig = env.LMPS_LOCAL_FEATURE_CONFIG;
+  const offlineConfig = env.LMPS_LOCAL_OFFLINE_CONFIG, offlineDsn = env.LMPS_LOCAL_OFFLINE_DSN;
+  if (offlineConfig !== undefined || offlineDsn !== undefined) {
+    if (!offlineConfig || !isAbsolute(offlineConfig) || !offlineDsn || !authConfig || !postgresDsn
+      || localPoolConfig(offlineDsn, 'intake').port !== localPoolConfig(postgresDsn).port)
+      throw new Error('Offline monitoring requires an explicit private grant and authenticated same-instance intake storage.');
+  }
+  if (Object.keys(env).some(k => k.startsWith('LMPS_LOCAL_FEATURE_') && k !== 'LMPS_LOCAL_FEATURE_CONFIG') || (featureConfig !== undefined && (!isAbsolute(featureConfig) || !authConfig))) throw new Error('Invalid local feature configuration.');
+  return { ...(offlineConfig ? { offlineConfig, offlineDsn } : {}), ...(featureConfig ? { featureConfig } : {}), ...(detectionDsn ? { detectionDsn, detectionWorker: env.LMPS_DETECTION_WORKER !== '0' } : {}), ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
 }

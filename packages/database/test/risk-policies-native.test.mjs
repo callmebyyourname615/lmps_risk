@@ -57,7 +57,7 @@ before(async () => {
 });
 beforeEach(async () => {
   await owner.pool.query(
-    'TRUNCATE platform.local_label_adjudications,platform.local_model_receipts,platform.local_model_gate_policies,platform.local_case_outcomes,platform.local_case_events,platform.local_case_alerts,platform.local_cases,platform.local_risk_job_policy_bindings,platform.local_risk_policy_events,platform.local_risk_policy_bindings,platform.local_risk_policy_versions,platform.local_risk_job_attempts,platform.local_risk_jobs,platform.local_alert_reviews,platform.local_alerts,platform.local_alert_policies,platform.local_transaction_risks,platform.local_risk_policies,platform.local_transaction_revisions',
+    'TRUNCATE platform.local_label_adjudications,platform.local_model_receipts,platform.local_model_gate_policies,platform.local_case_outcomes,platform.local_case_events,platform.local_case_alerts,platform.local_cases,platform.local_risk_job_policy_bindings,platform.local_risk_policy_events,platform.local_risk_policy_bindings,platform.local_risk_policy_versions,platform.local_risk_job_attempts,platform.local_risk_jobs,platform.local_alert_reviews,platform.local_user_notification_reads,platform.local_alerts,platform.local_alert_policies,platform.local_transaction_risks,platform.local_risk_policies,platform.local_transaction_revisions',
   );
   ({ f, input } = riskJobFixture());
   await writer.append(f.f.revision);

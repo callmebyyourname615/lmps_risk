@@ -120,6 +120,28 @@
       "when": 1792281600016,
       "tag": "0016_local_label_adjudications",
       "breakpoints": true
-    }
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792281600017,
+      "tag": "0017_local_user_notifications",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792281600018,
+      "tag": "0018_local_notification_preferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792281600019,
+      "tag": "0019_local_web_push",
+      "breakpoints": true
+    },
+    { "idx": 20, "version": "7", "when": 1792281600020, "tag": "0020_source_intake_publications", "breakpoints": true }
   ]
 }

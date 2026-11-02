@@ -10,7 +10,7 @@ const PHASES = {
   P03: { paths: ['apps/risk-workers/src', 'apps/risk-workers/scripts/dataset-bulk.mjs', 'docs/architecture/adr/0004-event-backbone.md'], gate: 'Approved connector/backbone adoption, real-source cutover, historical sink and reconciliation.', dependencies: 'P01, P02' },
   P04: { paths: ['packages/risk/src', 'services/ml-inference/lmps_ml/replay.py'], gate: 'Adopted online engine/cache, source availability, concurrency and serving evidence.', dependencies: 'P03; approved draft for pre-transfer simulation' },
   P05: { paths: ['packages/risk/src', 'apps/risk-workers/src/rule-backtest.ts', 'services/ml-inference/lmps_ml/training.py'], gate: 'Actual-source/policy-reviewed features, verified identity for account graphs and capacity.', dependencies: 'P01, P04; bounded offline prototypes permitted separately' },
-  P06: { paths: ['apps/risk-portal/src', 'apps/risk-api/src/cases.controller.ts', 'apps/risk-api/src/labels.controller.ts'], gate: 'Approved workflow, authenticated full UI, attachments, real label maturity/sampling and export policy.', dependencies: 'P02, P05 integration' },
+  P06: { paths: ['apps/risk-api/src/monitoring.controller.ts', 'apps/risk-api/src/cases.controller.ts', 'apps/risk-api/src/labels.controller.ts'], gate: 'Approved workflow, authenticated full UI, attachments, real label maturity/sampling and export policy.', dependencies: 'P02, P05 integration' },
   P07: { paths: ['packages/database/src', 'docs/architecture/engineering-foundation-gates.md'], gate: 'User-owned Web App, recipients, browser/device targets and sandbox provider approval.', dependencies: 'P02, P06; mobile/provider decisions' },
   P08: { paths: ['services/ml-inference/lmps_ml/dataset.py', 'services/ml-inference/lmps_ml/evaluation.py', 'services/ml-inference/lmps_ml/serving.py'], gate: 'Eligible real features/labels, temporal evidence, governance and selected registry deployment.', dependencies: 'P05, P06; supervised claims require eligible labels' },
   P09: { paths: ['packages/contracts/src', 'apps/risk-api/src'], gate: 'Actual LMPS pre-transfer contract, payment authority, deadlines and approved degraded policy.', dependencies: 'P04, P05, P08; LMPS owner' },
@@ -70,6 +70,8 @@ export function render(root = ROOT) {
   const rows = inventory(root);
   const lines = [
     '# Ralph requirements map — approved intake, 2026-10-25',
+    '',
+    'Canonical Portal: the separately maintained [LMPS_Risk_Portal](../../../LMPS_Risk_Portal/). This backend has no embedded portal; P06 locations below refer to its API support. Historical UI evidence remains dated history.',
     '',
     'Source of truth: the existing sibling [plan](../../../plan/README.md), especially [104 MUST requirements](../../../plan/03-implementation-phases.md). The original plan is read-only to this pilot.',
     '',

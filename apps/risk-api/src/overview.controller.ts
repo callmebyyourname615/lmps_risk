@@ -15,7 +15,7 @@ class RiskCalendarDay {
   @ApiProperty({ type: Number, minimum: 0, description: 'New stored Alerts, once per Alert ID, irrespective of review state.' }) count!: number;
 }
 class RiskCalendarView {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty() workspace_key!: string;
   @ApiProperty({ format: 'date-time' }) as_of!: string;
@@ -32,7 +32,7 @@ class RiskCalendarHour {
   @ApiProperty({ minimum: 0 }) count!: number;
 }
 class RiskCalendarDayView {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty() workspace_key!: string;
   @ApiProperty({ format: 'date-time' }) as_of!: string;
@@ -43,7 +43,7 @@ class RiskCalendarDayView {
   @ApiProperty({ type: [RiskCalendarHour] }) hours!: RiskCalendarHour[];
 }
 class OverviewView {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty({ enum: [false] }) canonical_emission!: false;
   @ApiProperty({ enum: ['unverified'] }) source_semantics!: 'unverified';
@@ -111,7 +111,7 @@ export class OverviewController {
       });
       const total = hours.reduce((sum: number, hour: RiskCalendarHour) => sum + hour.count, 0);
       if (!Number.isSafeInteger(total)) throw new Error();
-      return { provenance: 'local_synthetic', execution_mode: 'test', workspace_key: request.principal.workspace,
+      return { provenance: this.database.provenance, execution_mode: 'test', workspace_key: request.principal.workspace,
         as_of: asOf, timezone: 'Asia/Vientiane', metric: 'alerts_created', date, total_alerts: total, hours };
     } catch (error) {
       if (error instanceof BadRequestException) throw error;
@@ -145,7 +145,7 @@ export class OverviewController {
       const days = row.days.map((day: { date: string; count: unknown }) => ({ date: day.date, count: safeCount(day.count) }));
       const total_alerts = days.reduce((n: number, day: RiskCalendarDay) => n + day.count, 0);
       if (!Number.isSafeInteger(total_alerts)) throw new Error();
-      return { provenance: 'local_synthetic', execution_mode: 'test', workspace_key: request.principal.workspace, as_of: row.as_of,
+      return { provenance: this.database.provenance, execution_mode: 'test', workspace_key: request.principal.workspace, as_of: row.as_of,
         timezone: 'Asia/Vientiane', metric: 'alerts_created', range: 'week_aligned_year', start_date: row.start_date, through_date: row.through_date, total_alerts, days };
     } catch (error) {
       throw new ServiceUnavailableException({ code: 'OVERVIEW_UNAVAILABLE', message: 'Risk calendar is unavailable.' });
@@ -261,7 +261,7 @@ export class OverviewController {
         active_cases.push({ case_id: view.case_id, title: view.title, state: view.state, updated_at: view.updated_at });
       }
       await client.query('COMMIT');
-      return { provenance: 'local_synthetic', execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified', workspace_key: workspace,
+      return { provenance: this.database.provenance, execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified', workspace_key: workspace,
         generated_at: totals.generated_at, scope: 'all_stored_history', consistency: 'repeatable_read', counts, charts, recent_transactions, pending_alerts, active_cases,
         measurements: { source_lag_seconds: null, production_tps: null, verified_account_identity: null } };
     } catch {

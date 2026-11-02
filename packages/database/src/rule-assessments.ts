@@ -48,7 +48,7 @@ export function validateAssessmentReport(input: unknown, digest: string): Backte
           || src.source_reference.namespace !== row.target.namespace || src.source_reference.mapping_version !== null
           || !/^synthetic[_-][A-Za-z0-9._:-]{1,117}$/.test(src.source_reference.record_ref)
           || typeof src.observed_at !== 'string' || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|[+-]\d\d:\d\d)$/.test(src.observed_at)
-          || !Number.isFinite(Date.parse(src.observed_at)) || src.publisher_version !== PUBLISHER_VERSION
+          || !Number.isFinite(Date.parse(src.observed_at)) || src.publisher_version !== (report.provenance==='user_supplied_file'?'source-intake-publisher-1':PUBLISHER_VERSION)
           || typeof src.capture_id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(src.capture_id)
           || !hex(src.snapshot_sha256) || !hex(src.evidence_sha256)) throw new Error();
       } else if (row.source !== null) throw new Error();

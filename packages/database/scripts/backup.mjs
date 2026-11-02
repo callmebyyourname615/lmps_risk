@@ -22,8 +22,11 @@ const OFFLINE_TABLES = { ...RISK_JOB_TABLES, 'platform.offline_dataset_batches':
 const POLICY_TABLES = { ...OFFLINE_TABLES, 'platform.local_risk_policy_versions': 'workspace_key,policy_id,policy_version', 'platform.local_risk_policy_bindings': 'workspace_key,namespace,currency', 'platform.local_risk_policy_events': 'workspace_key,request_id', 'platform.local_risk_job_policy_bindings': 'workspace_key,job_ref' };
 const CASE_TABLES = { ...POLICY_TABLES, 'platform.local_cases': 'workspace_key,case_id', 'platform.local_case_alerts': 'workspace_key,alert_id', 'platform.local_case_events': 'workspace_key,case_id,version', 'platform.local_case_outcomes': 'workspace_key,case_id,version' };
 const MODEL_TABLES = { ...CASE_TABLES, 'platform.local_model_gate_policies': 'workspace_key,policy_id,policy_version', 'platform.local_model_receipts': 'workspace_key,request_id' };
-const TABLES = { ...MODEL_TABLES, 'platform.local_label_adjudications': 'workspace_key,label_id,version' };
-const INVENTORIES = [TABLES, MODEL_TABLES, CASE_TABLES, POLICY_TABLES, OFFLINE_TABLES, RISK_JOB_TABLES, ALERT_TABLES, RISK_TABLES, RULE_TABLES, REVISION_TABLES, JOB_TABLES, AUDIT_TABLES, LEGACY_TABLES];
+const LABEL_TABLES = { ...MODEL_TABLES, 'platform.local_label_adjudications': 'workspace_key,label_id,version' };
+const INBOX_TABLES = { ...LABEL_TABLES, 'platform.local_user_notification_reads': 'workspace_key,subject,alert_id' };
+const PREFERENCE_TABLES = { ...INBOX_TABLES, 'platform.local_notification_preferences': 'workspace_key,subject' };
+const TABLES = { ...PREFERENCE_TABLES, 'platform.local_web_push_subscriptions':'subscription_id', 'platform.local_web_push_deliveries':'delivery_id' };
+const INVENTORIES = [TABLES, PREFERENCE_TABLES, INBOX_TABLES, LABEL_TABLES, MODEL_TABLES, CASE_TABLES, POLICY_TABLES, OFFLINE_TABLES, RISK_JOB_TABLES, ALERT_TABLES, RISK_TABLES, RULE_TABLES, REVISION_TABLES, JOB_TABLES, AUDIT_TABLES, LEGACY_TABLES];
 const MAX_DUMP_BYTES = 128 * 1024 * 1024;
 const rowLimit = table => table === 'platform.offline_dataset_rows' ? 1_000_000 : 1000;
 const BASE = join(ROOT, '.local/backups');
@@ -150,6 +153,30 @@ export async function verifyBackup(directory) {
   } catch { throw fail(); }
 }
 
+// Restore a verified backup into a NEW owned cluster. Existing directories are never overwritten.
+// The source cluster is never stopped or written. Credentials are generated for the new cluster.
+export async function forkBackup(directory, base, port) {
+  localMode(); let state, client;
+  try {
+    const manifest = await verifyBackup(directory);
+    const native = tools();
+    if (native.version !== manifest.postgres_version || !isAbsolute(base)) throw fail();
+    state = await initializeCluster(base, port); await startCluster(state);
+    await credentialTool(state, state.base, join(native.directory, 'pg_restore'), ['--clean', '--if-exists', '--single-transaction', '--exit-on-error', '--no-tablespaces', join(directory, 'database.dump')], (manifest.tables['platform.offline_dataset_rows']?.rows ?? 0) > 100000 ? 120000 : 10000);
+    client = await identify(state, 'lmps_risk_local');
+    await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+    const actual = await fingerprints(client, Object.fromEntries(Object.keys(manifest.tables).map(name => [name, TABLES[name]])));
+    if (!isDeepStrictEqual(actual, manifest.tables)) throw fail();
+    await client.query('COMMIT'); await client.end(); client = undefined;
+    await migrations(dsn(state, 'migration'));
+    return { state, backup_id: manifest.backup_id, tables: Object.keys(actual).length };
+  } catch {
+    await client?.end().catch(() => {});
+    if (state) await stopCluster(state).catch(() => {});
+    throw fail();
+  }
+}
+
 export async function restoreDrill(directory) {
   localMode(); let temporary, state, client, app;
   const started = Date.now();
@@ -168,6 +195,10 @@ export async function restoreDrill(directory) {
     await client.end(); client = undefined;
     await migrations(dsn(state, 'migration'));
     app = createDatabase(dsn(state));
+    if (manifest.tables['platform.local_notification_preferences']) {
+      await app.pool.query('SELECT 1 FROM platform.local_notification_preferences LIMIT 1');
+      for(const action of ['DELETE FROM','TRUNCATE']) {let denied=false;try{await app.pool.query(`${action} platform.local_notification_preferences`);}catch(error){denied=error.code==='42501';}if(!denied)throw fail();}
+    }
     if(manifest.tables['platform.local_label_adjudications']) {
       await app.pool.query('SELECT 1 FROM platform.local_label_adjudications LIMIT 1');
       for(const action of ['DELETE FROM','TRUNCATE']) {let denied=false;try{await app.pool.query(`${action} platform.local_label_adjudications`);}catch(error){denied=error.code==='42501';}if(!denied)throw fail();}

@@ -1,0 +1,73 @@
+/** Import-inert local synthetic integration. Native execution is parent-host only. */
+import { createHash } from 'node:crypto';
+import { constants as C, openSync, closeSync, fstatSync, readSync, writeFileSync, fsyncSync, lstatSync, mkdirSync, readdirSync, linkSync, unlinkSync } from 'node:fs';
+import { join, dirname, resolve, relative, isAbsolute } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process';
+const ROOT=fileURLToPath(new URL('../../../',import.meta.url)), SELF=fileURLToPath(import.meta.url), MAX=16777216;
+const check=v=>{if(!v)throw Error('P04_ACCEPTANCE_FAILED');};
+const encode=v=>JSON.stringify(v,(_k,x)=>x&&typeof x==='object'&&!Array.isArray(x)?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a<b?-1:a>b?1:0)):x);
+const hash=b=>createHash('sha256').update(b).digest('hex');
+const same=(a,b)=>check(encode(a)===encode(b));
+const phases=[
+ ['lifecycle','feature-contributions-acceptance.mjs','runFeatureContributionsAcceptance','verifyFeatureContributionEvidence'],
+ ['serving','feature-serving-acceptance.mjs','runFeatureServingAcceptance','verifyFeatureServingAcceptance'],
+ ['engine','feature-engine-acceptance.mjs','runFeatureEngineAcceptance','verifyFeatureEngineAcceptance'],
+ ['cache','feature-cache-acceptance.mjs','runFeatureCacheAcceptance','verifyFeatureCacheAcceptance']
+];
+const gates=['host_full_checks_publication_source_plan_git_promotion_receipts','parent_final_promoted_invocation','real_source_identity_masking_lifecycle_units','target_engine_cache_legal_retention_RPO_RTO_SLO_corporate_permissions','unsupported_cross_phase_semantics_historical_availability','production_adoption_original_master'];
+export function parseArguments(args){
+ check(Array.isArray(args)&&args.length===2&&args[0]==='--output');const output=args[1];
+ check(typeof output==='string'&&isAbsolute(output)&&resolve(output)===output&&!/[\\\x00-\x20\x7f]/.test(output));
+ const r=relative(join(ROOT,'.local'),output);check(r&&!r.startsWith('..')&&!isAbsolute(r)&&r.split('/').every(s=>/^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/.test(s)));return {output};
+}
+function ancestors(path){for(let p=path;;p=dirname(p)){const s=lstatSync(p);check(s.isDirectory()&&!s.isSymbolicLink()&&!(s.mode&0o022));if(p===join(ROOT,'.local')||p.startsWith(join(ROOT,'.local')+'/'))check(s.uid===process.getuid()&&(s.mode&511)===448);if(p===dirname(p))break;}}
+function read(path,max=MAX,priv=true){const fd=openSync(path,C.O_RDONLY|C.O_NOFOLLOW|C.O_NONBLOCK);try{const s=fstatSync(fd);check(s.isFile()&&s.nlink===1&&s.size<=max);if(priv)check(s.uid===process.getuid()&&(s.mode&511)===384);const b=Buffer.alloc(max+1);let n=0,k;while((k=readSync(fd,b,n,b.length-n,null))>0){n+=k;check(n<=max);}check(n===s.size);return b.subarray(0,n);}finally{closeSync(fd);}}
+const json=p=>{const b=read(p),v=JSON.parse(b);check(b.toString()===encode(v));return v;};
+function sync(p){const fd=openSync(p,C.O_RDONLY|C.O_DIRECTORY|C.O_NOFOLLOW);try{fsyncSync(fd);}finally{closeSync(fd);}}
+function write(p,v){const fd=openSync(p,C.O_WRONLY|C.O_CREAT|C.O_EXCL|C.O_NOFOLLOW,384);try{writeFileSync(fd,encode(v));fsyncSync(fd);}finally{closeSync(fd);}sync(dirname(p));}
+function inventory(output,limit=MAX){let bytes=0,entries=0;const files={};function walk(p){const s=lstatSync(p);check(!s.isSymbolicLink()&&s.uid===process.getuid()&&++entries<=4096);if(s.isDirectory()){if(limit===MAX)check((s.mode&511)===448);for(const n of readdirSync(p).sort())walk(join(p,n));}else{check(s.isFile()&&s.nlink===1);bytes+=s.size;check(bytes<=limit);if(limit===MAX){check((s.mode&511)===384&&!/lock|stage/.test(relative(output,p)));files[relative(output,p)]=hash(read(p));}}}walk(output);return {files,bytes};}
+function provenance(){const paths=[];function walk(dir){for(const n of readdirSync(join(ROOT,dir)).sort()){const p=join(dir,n),s=lstatSync(join(ROOT,p));check(!s.isSymbolicLink());if(s.isDirectory())walk(p);else if(/\.(ts|js|mjs|py|json)$/.test(n))paths.push(p);}}
+ for(const d of ['packages/contracts/src','packages/contracts/dist','packages/risk/src','packages/risk/dist','packages/risk/fixtures','packages/risk/test/fixtures/feature-streams','apps/risk-workers/src','apps/risk-workers/dist','apps/risk-workers/scripts','services/ml-inference/lmps_ml','apps/risk-api/src','apps/risk-api/dist'])walk(d);
+ paths.push('package.json','pnpm-lock.yaml','apps/risk-workers/test/pretransfer-simulator.test.mjs','apps/risk-workers/test/pretransfer-acceptance.test.mjs');return Object.fromEntries(paths.sort().map(p=>[p,hash(read(join(ROOT,p),4194304,false))]));}
+/** Pure assertion seam, never runtime proof or publication authority. */
+export function assertP04ClosedTrial(exitCode,signal,uncertain,elapsed){check(exitCode===0&&signal===null&&uncertain===false&&Number.isFinite(elapsed)&&elapsed>=0&&elapsed<=175000);}
+/** 150s work, 25s teardown reserve. Timeout/overflow/remaining group always fails. */
+async function trial(args,output){let bad=false,bytes=0;const start=performance.now(),child=spawn(process.execPath,args,{cwd:ROOT,detached:true,stdio:['ignore','pipe','pipe'],env:{PATH:process.env.PATH,NODE_ENV:'test',LMPS_ENVIRONMENT:'test',LMPS_EXECUTION_MODE:'test',PYTHONDONTWRITEBYTECODE:'1'}});
+ const kill=s=>{if(child.pid)try{process.kill(-child.pid,s);}catch(e){if(e.code!=='ESRCH')bad=true;}},stop=()=>{bad=true;kill('SIGTERM');};
+ const work=setTimeout(stop,150000),force=setTimeout(()=>{bad=true;kill('SIGKILL');},170000),monitor=setInterval(()=>{try{inventory(output,2147483648);}catch{stop();}},250);
+ process.on('SIGINT',stop);process.on('SIGTERM',stop);for(const s of [child.stdout,child.stderr])s.on('data',b=>{bytes+=b.length;if(bytes>65536)stop();});
+ try{const r=await new Promise(res=>{child.once('error',()=>res([-1,null]));child.once('close',(c,s)=>res([c,s]));});assertP04ClosedTrial(r[0],r[1],bad,performance.now()-start);try{process.kill(-child.pid,0);bad=true;kill('SIGTERM');}catch(e){check(e.code==='ESRCH');}assertP04ClosedTrial(r[0],r[1],bad,performance.now()-start);}finally{clearTimeout(work);clearTimeout(force);clearInterval(monitor);process.off('SIGINT',stop);process.off('SIGTERM',stop);kill('SIGKILL');}}
+const call=(module,name,value)=>['--input-type=module','-e',`const m=await import(${JSON.stringify(new URL(module,import.meta.url).href)});await m[${JSON.stringify(name)}](${JSON.stringify(value)});`];
+async function verifyPhases(output){for(const [name,module,,verify]of phases)await trial(call(module,verify,join(output,name)),output);}
+async function fixture(){const c=await import('../../../packages/contracts/dist/feature-parity.js'),p=await import('./feature-parity.mjs'),at='2026-01-01T12:00:00Z',future='2026-01-01T12:00:01Z';
+ const rec=(id,x={})=>({event_id:'synthetic_'+id,key:'synthetic_key',currency:'USD',revision:0,source_position:0,occurred_at:at,available_at:at,availability_sha256:'a'.repeat(64),record_sha256:'b'.repeat(64),amount:'1.25',active:true,...x});
+ const records=[rec('a'),rec('a',{revision:1,amount:'2.50'}),rec('a',{revision:2,amount:'99.00',available_at:future}),rec('b',{amount:'8.00'}),rec('b',{revision:1,active:false,amount:'8.00'}),rec('c',{currency:'EUR',amount:'7.00'}),rec('d',{available_at:null,availability_sha256:null}),rec('future',{available_at:future})].map((r,source_position)=>({...r,source_position}));
+ const input={version:c.FEATURE_PARITY_VERSION,mode:'local_synthetic',records},q=(id,ids,x={})=>({id:'synthetic_'+id,key:'synthetic_key',currency:'USD',as_of:at,anchor_at:at,window_seconds:3600,member_ids:ids.map(x=>'synthetic_'+x).sort(),...x});
+ const plan={version:input.version,mode:input.mode,input_sha256:c.featureParityInputHash(input),semantics:c.FEATURE_PARITY_SEMANTICS,runtime:p.runtimeBinding(),fixture:{now:at,retention_seconds:3600,coverage:'explicit_cohort_only'},queries:[q('usd',['a','b']),q('eur',['c'],{currency:'EUR'}),q('missing',['d']),q('empty',[]),q('future',['future'])]};return {input,plan};}
+/** Assertion seam only; cannot publish or issue native acceptance. */
+export async function assertP04ParityObservations(plan,input,r){
+ const c=await import('../../../packages/contracts/dist/feature-parity.js');
+ const p=await import('./feature-parity.mjs');same(r.provenance,p.provenance());same(r.runtime,plan.runtime);check(r.source_sha256===hash(encode(input))&&r.plan_sha256===hash(encode(plan)));
+ same(r.online.map(o=>[o.status,o.count,o.amount]),[['available','1','2.50'],['available','1','7.00'],['unavailable',null,null],['available','0','0.00'],['unavailable',null,null]]);same(r.online,r.offline);
+ const report=c.compareFeatureParity(plan,input,r.online,r.offline);same(report,r.report);check(!report.comparisons.some(x=>x.status==='mismatch'));check(r.production_ready===false);
+}
+async function evidenceInputs(output){const f=await fixture();same(json(join(output,'input.json')),f.input);same(json(join(output,'plan.json')),f.plan);const p=await import('./feature-parity.mjs'),r=await p.verify(join(output,'parity'));await assertP04ParityObservations(f.plan,f.input,r);
+ const c=await import('../../../packages/contracts/dist/feature-parity.js'),scope=json(join(output,'serving/store/publication.json')).publication.scope;
+ const health={plan:f.plan,now:f.plan.fixture.now,max_age_seconds:60,sources:r.online.map((o,i)=>({status:o.status,as_of:i===2?null:f.plan.fixture.now,available_at:i===2?null:i===4?'2026-01-01T12:00:01Z':f.plan.fixture.now,source_position:7,consumed_position:i===0?6:7,plan_sha256:c.featureParityPlanHash(f.plan)}))};return {context:{scope,...f},trial:{online:r.online,offline:r.offline,health}};}
+async function verifyHealth(output){const {context,trial:t}=await evidenceInputs(output),c=await import('../../../packages/contracts/dist/feature-parity.js'),s=await import('../../../packages/contracts/dist/feature-serving.js'),risk=await import('../../../packages/risk/dist/index.js'),h=v=>hash(encode(v));
+ const binding={scope:h(s.featureStoreScopeIdentity(context.scope)),plan:c.featureParityPlanHash(context.plan),corpus:h(context.input),binding:h(context),runtime:context.plan.runtime,semantics:context.plan.semantics,fixture_now:context.plan.fixture.now};
+ const summary={parity:c.compareFeatureParity(context.plan,context.input,t.online,t.offline),health:risk.evaluateFeatureHealth(t.health),trial_sha256:h(t),acceptance:'pending_independent_runtime_verification',production_ready:false};same([summary.health.status,summary.health.unknown,summary.health.lagging,summary.health.unavailable],['unavailable',2,1,2]);
+ const body={version:1,generation:1,binding,summary};same(json(join(output,'health/generation-1.json')),{...body,content_sha256:h(body)});const {FEATURE_EVIDENCE_POLICY}=await import('../dist/feature-evidence.js');same(json(join(output,'health/owner.json')),{version:1,binding,policy:FEATURE_EVIDENCE_POLICY});same(readdirSync(join(output,'health')).sort(),['generation-1.json','owner.json']);}
+async function verifyBody(output){ancestors(output);const before=provenance();inventory(output);await verifyPhases(output);await trial(['--test','apps/risk-workers/test/pretransfer-simulator.test.mjs','apps/risk-workers/test/pretransfer-acceptance.test.mjs'],output);await verifyHealth(output);same(before,provenance());const inv=inventory(output);delete inv.files['acceptance.json'];delete inv.files['pending.json'];return {version:1,mode:'local_synthetic',production_ready:false,source_hashes:before,evidence_hashes:inv.files,runtime:{node:process.version,python:(await fixture()).plan.runtime},owned_processes:0,simulator_boundary:'existing_bounded_tests_reexecuted_no_enforcement',remaining_gates:gates};}
+export async function verifyP04Acceptance(output){parseArguments(['--output',output]);ancestors(output);const a=json(join(output,'acceptance.json'));check(a.production_ready===false&&a.owned_processes===0);same(a.source_hashes,provenance());const inv=inventory(output);delete inv.files['acceptance.json'];same(inv.files,a.evidence_hashes);same(readdirSync(output).sort(),['acceptance.json','cache','engine','health','input.json','lifecycle','parity','plan.json','serving']);same(a,await verifyBody(output));return a;}
+let active=false;
+export async function runP04Acceptance(options){check(arguments.length===1&&options&&Object.getPrototypeOf(options)===Object.prototype);same(Reflect.ownKeys(options),['output']);const d=Object.getOwnPropertyDescriptor(options,'output');check(d&&'value'in d);const {output}=parseArguments(['--output',d.value]);check(!active);ancestors(dirname(output));try{lstatSync(output);throw Error('EXISTS');}catch(e){check(e.code==='ENOENT');}active=true;
+ try{const before=provenance();mkdirSync(output,{mode:448});sync(dirname(output));for(const [name,module,run,verify]of phases){await trial(call(module,run,{output:join(output,name)}),output);await trial(call(module,verify,join(output,name)),output);inventory(output);same(before,provenance());}
+ // B01 exact existing bounded concurrency/reservation boundary, never LMPS enforcement.
+ await trial(['--test','apps/risk-workers/test/pretransfer-simulator.test.mjs','apps/risk-workers/test/pretransfer-acceptance.test.mjs'],output);
+ const f=await fixture();write(join(output,'input.json'),f.input);write(join(output,'plan.json'),f.plan);await trial([join(ROOT,'apps/risk-workers/scripts/feature-parity.mjs'),'--source',join(output,'input.json'),'--plan',join(output,'plan.json'),'--output',join(output,'parity')],output);
+ const {context,trial:t}=await evidenceInputs(output),{openFeatureEvidence}=await import('../dist/feature-evidence.js'),store=openFeatureEvidence(join(output,'health'),context);try{store.publish(t);store.read(1,t);}finally{store.close();}await verifyHealth(output);same(before,provenance());
+ const body=await verifyBody(output);write(join(output,'pending.json'),body);await trial([SELF,'--verify-pending',output],output);same(json(join(output,'pending.json')),await verifyBody(output));check(inventory(output).bytes<=MAX);linkSync(join(output,'pending.json'),join(output,'acceptance.json'));unlinkSync(join(output,'pending.json'));sync(output);return body;
+ }finally{active=false;}}
+if(process.argv[1]&&resolve(process.argv[1])===SELF){try{const a=process.argv.slice(2);if(a.length===2&&a[0]==='--verify')await verifyP04Acceptance(parseArguments(['--output',a[1]]).output);else if(a.length===2&&a[0]==='--verify-pending'){const {output}=parseArguments(['--output',a[1]]);same(json(join(output,'pending.json')),await verifyBody(output));}else await runP04Acceptance(parseArguments(a));process.stdout.write('P04_LOCAL_SYNTHETIC_VERIFIED production_ready=false\n');}catch{process.stderr.write('P04_ACCEPTANCE_FAILED\n');process.exitCode=1;}}

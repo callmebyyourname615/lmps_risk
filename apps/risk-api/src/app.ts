@@ -4,6 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { readConfig } from './config.js';
+import { WebPushController } from './web-push.controller.js';
+import { WEB_PUSH, WebPushRuntime, readPushConfig } from './web-push-runtime.js';
 import { HealthController } from './health.controller.js';
 import { createDatabase, createAlertReviews, createRiskPolicies, createLocalCases } from '@lmps/database';
 import { POSTGRES_DATABASE, PostgresService } from './postgres.service.js';
@@ -24,31 +26,40 @@ import { ModelSignalsController, MODEL_TRUST } from './model-signals.controller.
 import { readModelTrustFile } from '@lmps/risk';
 import { LabelsController,LABEL_REVIEWS } from './labels.controller.js';
 import { createLabelReviews } from '@lmps/database';
-import { registerPortal } from './portal.js';
+import { AlertSummaryController } from './alert-summary.controller.js';
 import { OverviewController } from './overview.controller.js';
 import { NotificationsController } from './notifications.controller.js';
+import { NotificationPreferencesController } from './notification-preferences.controller.js';
+import { UserNotificationsController } from './user-notifications.controller.js';
 import { MonitoringController } from './monitoring.controller.js';
 import { DetectionController } from './detection.controller.js';
+import { OfflineMonitoringController } from './offline-monitoring.controller.js';
+import { OFFLINE_MONITORING, OfflineMonitoringService, loadOfflineMonitoringConfig } from './offline-monitoring.js';
 import { DETECTION_RUNTIME, DetectionRuntime } from './detection-runtime.js';
 
-export async function createApp(env: NodeJS.ProcessEnv = process.env) {
+import { FeaturesController } from './features.controller.js';
+import { FEATURE_READS, FeatureServingService, loadFeatureFixture, type FeatureCacheRuntime } from './feature-serving.service.js';
+
+export async function createApp(env: NodeJS.ProcessEnv = process.env, featureRuntime?: FeatureCacheRuntime) {
   const config = readConfig(env);
+  const offline = new OfflineMonitoringService(await loadOfflineMonitoringConfig(config.offlineConfig), config.offlineDsn);
+  const features = config.featureConfig ? new FeatureServingService(loadFeatureFixture(config.featureConfig), featureRuntime) : null;
   const modelTrust = config.modelPublicKeyFile ? await readModelTrustFile(config.modelPublicKeyFile) : null;
   const auth = config.authConfig ? await loadLocalAuthenticator(config.authConfig) : null;
-  const database = config.postgresDsn ? createDatabase(config.postgresDsn) : null;
+  const database = config.postgresDsn ? createDatabase(config.postgresDsn,'app',config.readNamespace) : null;
+  const push = new WebPushRuntime(database, await readPushConfig(env.LMPS_WEB_PUSH_CONFIG), undefined, env.LMPS_WEB_PUSH_WORKER !== "0");
   const reviews = config.reviewDsn ? createAlertReviews(config.reviewDsn) : null;
   const policies = config.policyDsn ? createRiskPolicies(config.policyDsn) : null;
   const labels = config.policyDsn ? createLabelReviews(config.policyDsn) : null;
   const cases = config.caseDsn ? createLocalCases(config.caseDsn) : null;
   const detection = new DetectionRuntime(config.detectionDsn, config.detectionWorker);
   @Module({
-    controllers: [HealthController, ...(auth ? [DetectionController, MonitoringController, NotificationsController, OverviewController, SourceController, OperationsController, AuditController, SyncController, TransactionsController, AssessmentsController, TransactionRiskController, AlertsController, RiskJobsController, RiskPoliciesController, CasesController, ModelSignalsController, LabelsController] : [])],
-    providers: [PostgresService, { provide: DETECTION_RUNTIME, useValue: detection }, {provide: LABEL_REVIEWS,useValue: labels}, {provide: MODEL_TRUST, useValue: modelTrust}, { provide: LOCAL_CASES, useValue: cases }, { provide: RISK_POLICIES, useValue: policies }, { provide: ALERT_REVIEWS, useValue: reviews }, ...(auth ? [LocalAccessGuard, { provide: LOCAL_AUTH, useValue: auth }] : []), { provide: POSTGRES_DATABASE, useValue: database }],
+    controllers: [HealthController, ...(auth && features ? [FeaturesController] : []), ...(auth ? [OfflineMonitoringController, WebPushController, AlertSummaryController, NotificationPreferencesController, UserNotificationsController, DetectionController, MonitoringController, NotificationsController, OverviewController, SourceController, OperationsController, AuditController, SyncController, TransactionsController, AssessmentsController, TransactionRiskController, AlertsController, RiskJobsController, RiskPoliciesController, CasesController, ModelSignalsController, LabelsController] : [])],
+    providers: [PostgresService, { provide: OFFLINE_MONITORING, useValue: offline }, { provide: FEATURE_READS, useValue: features }, { provide: WEB_PUSH, useValue: push }, { provide: DETECTION_RUNTIME, useValue: detection }, {provide: LABEL_REVIEWS,useValue: labels}, {provide: MODEL_TRUST, useValue: modelTrust}, { provide: LOCAL_CASES, useValue: cases }, { provide: RISK_POLICIES, useValue: policies }, { provide: ALERT_REVIEWS, useValue: reviews }, ...(auth ? [LocalAccessGuard, { provide: LOCAL_AUTH, useValue: auth }] : []), { provide: POSTGRES_DATABASE, useValue: database }],
   })
   class AppModule {}
   // Request bodies/URLs can contain account data; request logging is not enabled.
   const adapter = new FastifyAdapter({ logger: false, bodyLimit: 64 * 1024, requestIdHeader: false, genReqId: () => randomUUID() });
-  registerPortal(adapter.getInstance());
   adapter.getInstance().addHook('onSend', async (request, reply, payload) => {
     reply.header('X-Request-ID', request.id).header('Cache-Control', 'no-store');
     return payload;

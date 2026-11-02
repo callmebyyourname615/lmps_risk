@@ -16,7 +16,7 @@ class SourceEventView {
   @ApiProperty({ type: 'object', nullable: true, additionalProperties: { type: 'string', nullable: true }, description: 'Approved synthetic source fields only; amounts are decimal strings, raw codes remain uninterpreted.' }) fields!: Record<string, string | null> | null;
 }
 class SourcePage {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty({ format: 'uuid' }) capture_id!: string;
   @ApiProperty() workspace_key!: string;
@@ -53,10 +53,10 @@ export class SourceController {
         to_char(e.observed_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS observed_at, e.fields
         FROM platform.source_events e JOIN platform.source_records r
           ON (r.workspace_key,r.source_namespace,r.source_generation,r.record_id)=(e.workspace_key,e.source_namespace,e.source_generation,e.record_id)
-        WHERE e.workspace_key=$1 AND e.source_namespace='synthetic_snapshot' AND e.capture_epoch=$2 AND e.event_id>$3::bigint
+        WHERE e.workspace_key=$1 AND e.source_namespace=coalesce(nullif(current_setting('lmps.read_namespace',true),''),'synthetic_snapshot') AND e.capture_epoch=$2 AND e.event_id>$3::bigint
         ORDER BY e.event_id LIMIT $4`, [request.principal.workspace, capture, after, Number(limit) + 1]);
       const items = result.rows.slice(0, Number(limit)) as SourceEventView[];
-      return { provenance: 'local_synthetic', execution_mode: 'test', capture_id: capture, workspace_key: request.principal.workspace,
+      return { provenance: this.database.provenance, execution_mode: 'test', capture_id: capture, workspace_key: request.principal.workspace,
         items, next_cursor: result.rows.length > Number(limit) ? items.at(-1)!.event_id : null };
     } catch { throw new ServiceUnavailableException({ code: 'SOURCE_UNAVAILABLE', message: 'Local source evidence is unavailable.' }); }
   }

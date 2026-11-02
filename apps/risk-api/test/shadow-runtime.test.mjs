@@ -13,7 +13,7 @@ import { transactionRiskFixture } from '../../../packages/database/test/fixtures
 import { exportLabels } from '../../risk-workers/scripts/label-export.mjs';
 let temp,root,ports,runtime,labelId,caseId;
 before(async()=>{temp=await mkdtemp('/tmp/lmps-shadow-ops-');root=join(temp,'runtime');ports={api_port:await availablePort(),ml_port:await availablePort(),control_port:await availablePort()};
-  const initialized=await initializeShadowRuntime(root,ports);assert.equal(initialized.tables,31);runtime=await openShadowRuntime(root);});
+  const initialized=await initializeShadowRuntime(root,ports);assert.equal(initialized.tables,35);runtime=await openShadowRuntime(root);});
 after(async()=>{await runtime?.close();if(temp)await rm(temp,{recursive:true,force:true});});
 test('persistent actual ML/Core runtime serves signed inference, scoped label APIs and aggregate monitoring',async()=>{
   const f=transactionRiskFixture(),writer=createTransactionRevisions(dsn(runtime.state,'intake')),risks=createTransactionRisks(dsn(runtime.state,'intake'));

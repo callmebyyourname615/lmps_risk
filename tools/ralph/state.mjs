@@ -78,7 +78,8 @@ export function writeJson(file, value) {
 export function sourceSnapshot(root = ROOT) {
   const command = toolchain(root).git;
   const names = execFileSync(command, ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], { cwd: root, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 }).split('\0').filter(Boolean);
-  const source = [...new Set(names)].sort().filter(name => name !== TRACKER).map(name => {
+  const deleted = new Set(execFileSync(command, ['ls-files', '--deleted', '-z'], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean));
+  const source = [...new Set(names)].sort().filter(name => name !== TRACKER && !deleted.has(name)).map(name => {
     const file = join(root, name);
     const info = lstatSync(file);
     if (!info.isFile() || info.isSymbolicLink()) throw new Error('Source inventory includes a non-regular file.');

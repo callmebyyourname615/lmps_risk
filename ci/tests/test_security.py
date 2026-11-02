@@ -32,6 +32,29 @@ class SecurityTests(unittest.TestCase):
             subprocess.run(["git", "add", "--force", "tracked.private"], cwd=root, check=True)
             self.assertEqual(security.project_files(root), [".gitignore", "tracked.private", "visible.py"])
 
+    def test_notification_migration_review_keeps_other_sql_and_secrets_blocked(self):
+        names = (
+            "packages/database/migrations/0017_local_user_notifications.sql",
+            "packages/database/migrations/0018_local_notification_preferences.sql",
+            "packages/database/migrations/0019_local_web_push.sql",
+        )
+        for name in names:
+            with self.subTest(name=name):
+                self.assertFalse(security.forbidden_file(name))
+        for name in ("packages/database/migrations/0020_unreviewed.sql", "packages/database/migrations/export.sql", "private/0019_local_web_push.sql"):
+            self.assertTrue(security.forbidden_file(name))
+        value = "synthetic" + "Credential" + "93746152" + "zY"
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / names[0]
+            path.parent.mkdir(parents=True)
+            path.write_text("SET password = '" + value + "';\n")
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertFalse(security.scan(root, [names[0]]))
+            self.assertIn("FAIL secret finding", output.getvalue())
+            self.assertNotIn(value, output.getvalue())
+
     def test_symlink_rejected_without_following_target(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

@@ -6,7 +6,7 @@ import { createDatabase } from './index.js';
 
 export interface LocalTransactionRevision {
   format: 1;
-  provenance: 'local_synthetic';
+  provenance: 'local_synthetic' | 'user_supplied_file';
   execution_mode: 'test';
   workspace_key: string;
   expected_revision: number;
@@ -29,9 +29,12 @@ export function validateTransactionRevision(input: unknown): LocalTransactionRev
   try {
     localMode();
     const value = structuredClone(input) as LocalTransactionRevision;
+    // Upgrade legacy reader envelopes from verified source lineage, never relabel a file as synthetic.
+    if(value?.provenance==='local_synthetic'&&value.publication?.provenance==='user_supplied_file')value.provenance='user_supplied_file';
     if (!value || typeof value !== 'object' || Array.isArray(value)
       || Object.keys(value).sort().join(',') !== (Object.hasOwn(value, 'publication') ? 'execution_mode,expected_revision,format,provenance,publication,transaction,workspace_key' : 'execution_mode,expected_revision,format,provenance,transaction,workspace_key')
-      || value.format !== 1 || value.provenance !== 'local_synthetic' || value.execution_mode !== 'test'
+      || value.format !== 1 || !['local_synthetic','user_supplied_file'].includes(value.provenance) || value.execution_mode !== 'test'
+      || value.provenance==='user_supplied_file'&&value.publication?.provenance!=='user_supplied_file'
       || typeof value.workspace_key !== 'string' || !/^synthetic_[a-z0-9_]{1,40}$/.test(value.workspace_key)
       || !Number.isInteger(value.expected_revision) || value.expected_revision < 0 || value.expected_revision > 2147483646
       || !isTransaction(value.transaction)) throw new Error();
@@ -46,6 +49,7 @@ export function validateTransactionRevision(input: unknown): LocalTransactionRev
     if (Object.hasOwn(value, 'publication')) {
       const normalized = publicationTransaction(value.publication);
       if (normalized.publication.source.workspace_key !== value.workspace_key
+        || normalized.publication.provenance !== value.provenance
         || normalized.publication.binding.expected_revision !== value.expected_revision
         || !isDeepStrictEqual(normalized.transaction, tx)) throw new Error();
     }
@@ -70,8 +74,8 @@ export function createTransactionRevisions(dsn: string) {
         client = await database.pool.connect();
         await client.query('BEGIN ISOLATION LEVEL READ COMMITTED'); active = true;
         const inserted = await client.query(`INSERT INTO platform.local_transaction_revisions
-          (workspace_key,namespace,transaction_id,revision_number,payload,publication) VALUES ($1,$2,$3,$4,$5::jsonb,$6::jsonb)
-          ON CONFLICT DO NOTHING RETURNING revision_number`, [...key, payload, publication]);
+          (workspace_key,namespace,transaction_id,revision_number,payload,publication,provenance) VALUES ($1,$2,$3,$4,$5::jsonb,$6::jsonb,$7)
+          ON CONFLICT DO NOTHING RETURNING revision_number`, [...key, payload, publication,value.provenance]);
         if (!inserted.rowCount) {
           const stored = (await client.query(`SELECT payload,publication FROM platform.local_transaction_revisions
             WHERE workspace_key=$1 AND namespace=$2 AND transaction_id=$3 AND revision_number=$4`, key)).rows[0];

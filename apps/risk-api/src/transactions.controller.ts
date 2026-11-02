@@ -13,7 +13,7 @@ class TransactionRevisionView {
   publication!: LocalTransactionRevision['publication'] | null;
 }
 class TransactionRevisionPage {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty({ enum: [false] }) canonical_emission!: false;
   @ApiProperty({ enum: ['unverified'] }) source_semantics!: 'unverified';
@@ -36,7 +36,7 @@ class TransactionListItem {
   @ApiProperty() recorded_at!: string;
 }
 class TransactionListPage {
-  @ApiProperty({ enum: ['local_synthetic'] }) provenance!: 'local_synthetic';
+  @ApiProperty({ enum: ['local_synthetic','local_test'] }) provenance!: 'local_synthetic' | 'local_test';
   @ApiProperty({ enum: ['test'] }) execution_mode!: 'test';
   @ApiProperty({ enum: [false] }) canonical_emission!: false;
   @ApiProperty({ enum: ['unverified'] }) source_semantics!: 'unverified';
@@ -62,6 +62,18 @@ const invalidList = () => new BadRequestException({ code: 'INVALID_QUERY', messa
 @Controller('v1/local/transactions')
 export class TransactionsController {
   constructor(@Inject(POSTGRES_DATABASE) private readonly database: Database) {}
+  @Get('currencies')
+  @ApiOperation({ summary: 'List latest-revision currencies in the authenticated source scope; no FX or policy inference.' })
+  async currencies(@Req() request: ScopedRequest,@Query() query:Record<string,unknown>) {
+    if(Object.keys(query).length)throw invalidList();
+    try{
+      const result=await this.database.pool.query(`WITH latest AS (SELECT DISTINCT ON(namespace,transaction_id) payload FROM platform.local_transaction_revisions
+        WHERE workspace_key=$1 ORDER BY namespace,transaction_id,revision_number DESC)
+        SELECT payload->>'currency' AS currency,count(*)::text AS transactions FROM latest GROUP BY payload->>'currency' ORDER BY currency LIMIT 33`,[request.principal.workspace]);
+      if(result.rows.length>32||result.rows.some(row=>!(/^[A-Z]{3}$/).test(row.currency)||!Number.isSafeInteger(Number(row.transactions))||Number(row.transactions)<1))throw Error();
+      return {workspace_key:request.principal.workspace,provenance:this.database.provenance,execution_mode:'test',currencies:result.rows.map(row=>({currency:row.currency,transactions:Number(row.transactions)}))};
+    }catch{throw new ServiceUnavailableException({code:'TRANSACTIONS_UNAVAILABLE'});}
+  }
 
   @Get()
   @ApiOperation({ summary: 'List latest recorded revision per scoped namespace/Transaction ID; live keyset view, not a stable export or canonical payment inventory' })
@@ -119,7 +131,7 @@ export class TransactionsController {
           amount: tx.amount, currency: tx.currency, transaction_status: tx.transaction_status, observed_at: tx.observed_at, recorded_at: row.recorded_at };
       });
       const last = items.at(-1);
-      return { provenance: 'local_synthetic', execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified',
+      return { provenance: this.database.provenance, execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified',
         workspace_key: request.principal.workspace, pagination: 'live_committed_view_namespace_id_order', filters, items,
         next_cursor: result.rows.length > Number(limit) && last ? Buffer.from(JSON.stringify([...binding, last.namespace, last.transaction_id])).toString('base64url') : null };
     } catch { throw new ServiceUnavailableException({ code: 'TRANSACTIONS_UNAVAILABLE', message: 'Local transaction observations are unavailable.' }); }
@@ -167,7 +179,7 @@ export class TransactionsController {
         return { revision_number: row.revision_number, recorded_at: row.recorded_at,
           payload: validated.transaction, publication: validated.publication ?? null };
       });
-      return { provenance: 'local_synthetic', execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified',
+      return { provenance: this.database.provenance, execution_mode: 'test', canonical_emission: false, source_semantics: 'unverified',
         workspace_key: request.principal.workspace, namespace, transaction_id: id, view, pagination: 'live_committed_view',
         items, next_cursor: view === 'history' && result.rows.length > Number(limit) ? String(items.at(-1)!.revision_number) : null };
     } catch { throw new ServiceUnavailableException({ code: 'TRANSACTIONS_UNAVAILABLE', message: 'Local transaction observations are unavailable.' }); }

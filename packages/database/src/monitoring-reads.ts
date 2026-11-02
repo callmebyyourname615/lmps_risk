@@ -1,3 +1,4 @@
+import { readPoolProvenance } from './index.js';
 import type { Pool, PoolClient } from 'pg';
 import { performance } from 'node:perf_hooks';
 import { MONITORING_VERSION, MONITORING_LIMIT, MONITORING_ASSESSMENTS, MONITORING_DIMENSIONS,
@@ -55,7 +56,7 @@ export async function readMonitoringSnapshot(pool: Pool, workspace: string, filt
       WHERE workspace_key=$1 AND run_id=ANY($2::uuid[])`, [workspace, selected.rows.flatMap(row => row.run_id === null ? [] : [row.run_id])]);
     const frozenById = new Map(frozenRows.rows.map(row => [row.run_id, row]));
     const result: MonitoringSummary = {
-      version: MONITORING_VERSION, provenance: 'local_synthetic', execution_mode: 'test', canonical_emission: false,
+      version: MONITORING_VERSION, provenance: readPoolProvenance(pool), execution_mode: 'test', canonical_emission: false,
       workspace_key: workspace, as_of: asOf, consistency: 'request_repeatable_read', time_basis: 'latest_revision_recorded_at', filters: normalized,
       counts: { transactions: 0, assessed: 0, not_assessed: 0, flagged: 0, alerts: 0 },
       assessment_statuses: Object.fromEntries(MONITORING_ASSESSMENTS.map(s => [s, 0])) as MonitoringSummary['assessment_statuses'],
@@ -65,6 +66,7 @@ export async function readMonitoringSnapshot(pool: Pool, workspace: string, filt
     };
     const currencies = new Map<string, number>(), targets: Array<{ namespace: string; transaction_id: string; revision_number: number }> = [];
     const snapshot: MonitoringReadSnapshot = { summary: result, transactions: [], alerts: [], evidence: {}, network: [] };
+    snapshot.overview = { alert_states: {open:0,acknowledged:0,reviewed:0}, review_queue:{pending:0,urgent:0}, assessment_runs:[] };
     const transactionEvidence = new Map<string, MonitoringEvidence>();
     const makeRisk = (a: TransactionRiskResult | null, at: string): MonitoringRecord['risk'] => a ? {
       run_id: a.run_id, core_sha256: riskHash(a), status: a.assessment_status, recorded_at: at, as_of: a.as_of,
@@ -175,6 +177,8 @@ export async function readMonitoringSnapshot(pool: Pool, workspace: string, filt
       if (!alert || !keys.has(targetKey(alert.assessment.target.namespace, alert.assessment.target.transaction_id, alert.assessment.target.revision_number))) throw new Error();
       if (riskFiltered && !matching(alert.assessment).some(f => alert.snapshot.selected_risk_types.includes(f.code))) continue;
       result.counts.alerts++;
+      snapshot.overview!.alert_states[alert.state]++;
+      if (alert.state !== 'reviewed') { snapshot.overview!.review_queue.pending++; if (['critical','high'].includes(alert.snapshot.severity)) snapshot.overview!.review_queue.urgent++; }
       const a = alert.assessment, base = transactionEvidence.get(targetKey(a.target.namespace, a.target.transaction_id, a.target.revision_number))!;
       const record: MonitoringRecord = { ...base.record, record_key: keyFor('alert', a.target.namespace, a.target.transaction_id, a.target.revision_number, alert.alert_id),
         kind: 'alert', recorded_at: alert.created_at, alert_id: alert.alert_id, risk: makeRisk(a, row.risk_at),
@@ -182,6 +186,11 @@ export async function readMonitoringSnapshot(pool: Pool, workspace: string, filt
           policy: { policy_id: alert.snapshot.policy.policy_id, version: alert.snapshot.policy.version, sha256: riskHash(alert.snapshot.policy) } } };
       snapshot.alerts.push(record); snapshot.evidence[record.record_key] = { ...base, record, window: windowFor(row.window_request) };
     }
+    const runs = await client.query(`SELECT to_char(r.recorded_at AT TIME ZONE $3,'YYYY-MM-DD') AS date,count(*)::text AS n
+      FROM platform.local_transaction_risks r JOIN jsonb_to_recordset($2::jsonb) AS t(namespace text,transaction_id text,revision_number integer)
+        ON (r.namespace,r.transaction_id,r.revision_number)=(t.namespace,t.transaction_id,t.revision_number)
+      WHERE r.workspace_key=$1 AND r.recorded_at<=$4::timestamptz GROUP BY 1 ORDER BY 1`,[workspace,JSON.stringify(targets),normalized.timezone,asOf]);
+    snapshot.overview!.assessment_runs = runs.rows.map(row => { const count=Number(row.n); if (!Number.isSafeInteger(count)||count<0) throw new Error(); return {date:row.date,count}; });
     result.currencies = [...currencies].sort(([a], [b]) => a.localeCompare(b)).map(([currency, transactions]) => ({ currency, transactions }));
     deadline();
     if (!isMonitoringSummary(result)) throw new Error();

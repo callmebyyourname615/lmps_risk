@@ -6,7 +6,7 @@ import { ArgumentsHost, Body, Catch, Controller, ExceptionFilter, Get, HttpExcep
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { BaseExceptionFilter } from '@nestjs/core';
 import type { FastifyReply } from 'fastify';
-import { listLocalAlerts, readLocalAlert, type AlertView, type AlertQuery, type Database, type createAlertReviews } from '@lmps/database';
+import { listLocalAlerts, readLocalAlert, validateTransactionRevision, type AlertView, type AlertQuery, type Database, type createAlertReviews } from '@lmps/database';
 import { alertText, AlertError, localizedAlertCatalog, localizedRiskCatalog, localizeRiskResult, riskHash, riskMessage, selectRiskLocale, validateAlertReview } from '@lmps/risk';
 import { ALERT_UUID, RISK_CODES, type Locale } from '@lmps/risk';
 import { LOCAL_SCOPE, LocalAccessGuard, type ScopedRequest } from './local-auth.js';
@@ -101,6 +101,26 @@ export class AlertsController {
     if (input.risk_code !== undefined) { if (!RISK_CODES.includes(input.risk_code as typeof RISK_CODES[number])) invalid(); query.risk_code = input.risk_code as string; }
     const locale = this.locale(request, reply), page = await listLocalAlerts(this.database.pool, request.principal.workspace, query);
     return { ...page, locale, items: page.items.map(view => summary(view, locale)) };
+  }
+  @Get(':alert_id/transaction')
+  @SetMetadata(LOCAL_SCOPE,['alerts:read','transactions:read'])
+  @ApiOperation({summary:'Read the immutable target revision amount/currency bound to this Alert; separate from immutable Alert hash'})
+  async transaction(@Req() request:ScopedRequest,@Param('alert_id') id:string,@Query() query:Record<string,unknown>) {
+    if(!ALERT_UUID.test(id)||Object.keys(query).length)invalid();
+    const client=await this.database.pool.connect();
+    try {
+      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      const view=await readLocalAlert(client,request.principal.workspace,id);
+      if(!view)throw new AlertError('ALERT_NOT_FOUND');
+      const target=view.assessment.target;
+      const row=(await client.query('SELECT payload,publication FROM platform.local_transaction_revisions WHERE workspace_key=$1 AND namespace=$2 AND transaction_id=$3 AND revision_number=$4',[request.principal.workspace,target.namespace,target.transaction_id,target.revision_number])).rows[0];
+      if(!row)throw new AlertError('ALERT_NOT_FOUND');
+      const revision=validateTransactionRevision({format:1,provenance:'local_synthetic',execution_mode:'test',workspace_key:request.principal.workspace,expected_revision:target.revision_number-1,transaction:row.payload,...(row.publication===null?{}:{publication:row.publication})});
+      const hash=riskHash(revision);
+      if(view.assessment.revision_sha256!==null&&view.assessment.revision_sha256!==hash)throw new Error();
+      await client.query('COMMIT');
+      return {alert_id:id,target,amount:revision.transaction.amount,currency:revision.transaction.currency,revision_sha256:hash,assessment_sha256:view.snapshot.assessment_sha256};
+    }catch(error){await client.query('ROLLBACK').catch(()=>{});throw error;}finally{client.release(true);}
   }
   @Get(':alert_id')
   @ApiOperation({ summary: 'Read immutable alert/assessment evidence and protected review history; null for unknown/foreign workspace' })

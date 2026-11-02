@@ -21,15 +21,15 @@ export interface SyntheticRule {
 }
 export interface BacktestTarget { namespace: string; transaction_id: string; revision_number: number }
 export interface BacktestManifest {
-  format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; evaluator_version: typeof RULE_EVALUATOR_VERSION;
+  format: 1; provenance: 'local_synthetic' | 'user_supplied_file'; execution_mode: 'test'; evaluator_version: typeof RULE_EVALUATOR_VERSION;
   run_id: string; workspace_key: 'synthetic_local'; rules: SyntheticRule[]; targets: BacktestTarget[];
 }
 export interface BacktestObservation { target: BacktestTarget; revision: unknown | null }
 type Outcome = 'match' | 'no_match' | 'not_applicable' | 'unavailable';
 export interface BacktestReport {
-  format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; evaluator_version: typeof RULE_EVALUATOR_VERSION;
+  format: 1; provenance: 'local_synthetic' | 'user_supplied_file'; execution_mode: 'test'; evaluator_version: typeof RULE_EVALUATOR_VERSION;
   normalizer_version: typeof NORMALIZER_VERSION; codebook_version: typeof CODEBOOK_VERSION;
-  purpose: 'synthetic_stateless_backtest'; canonical_emission: false; enforcement: false; source_semantics: 'unverified';
+  purpose: 'synthetic_stateless_backtest' | 'intake_stateless_backtest'; canonical_emission: false; enforcement: false; source_semantics: 'unverified';
   historical_availability: 'unverified'; status: 'partial' | 'complete'; run_id: string; workspace_key: 'synthetic_local';
   manifest_sha256: string; rules_sha256: string; input_set_sha256: string; rules: SyntheticRule[];
   counts: { targets: number; available_inputs: number; unavailable_inputs: number; matched_observations: number;
@@ -54,7 +54,7 @@ export function validateBacktestManifest(input: unknown): BacktestManifest {
     localMode();
     const m = structuredClone(input) as BacktestManifest;
     if (!exact(m, ['format', 'provenance', 'execution_mode', 'evaluator_version', 'run_id', 'workspace_key', 'rules', 'targets'])
-      || m.format !== 1 || m.provenance !== 'local_synthetic' || m.execution_mode !== 'test' || m.evaluator_version !== RULE_EVALUATOR_VERSION
+      || m.format !== 1 || !['local_synthetic','user_supplied_file'].includes(m.provenance) || m.execution_mode !== 'test' || m.evaluator_version !== RULE_EVALUATOR_VERSION
       || typeof m.run_id !== 'string' || !uuid.test(m.run_id) || m.workspace_key !== 'synthetic_local'
       || !Array.isArray(m.rules) || m.rules.length < 1 || m.rules.length > 20
       || !Array.isArray(m.targets) || m.targets.length < 1 || m.targets.length > 100
@@ -122,7 +122,8 @@ export function evaluateBacktest(input: unknown, observations: BacktestObservati
         const checked = validateTransactionRevision(revision);
         if (checked.workspace_key !== manifest.workspace_key || checked.transaction.source_reference.namespace !== target.namespace
           || checked.transaction.transaction_id !== target.transaction_id || checked.expected_revision + 1 !== target.revision_number) throw new Error();
-        if (checked.publication) { value = checked; availability = 'available'; }
+        if (checked.provenance!==manifest.provenance)throw Error();
+        if (checked.publication&&checked.transaction.transaction_status!=='unknown') { value = checked; availability = 'available'; }
         else availability = 'not_normalized';
       } catch { availability = 'invalid'; }
     }
@@ -138,9 +139,9 @@ export function evaluateBacktest(input: unknown, observations: BacktestObservati
         publisher_version: value.publication!.publisher_version, capture_id: value.publication!.capture_id,
         snapshot_sha256: value.publication!.snapshot_sha256, evidence_sha256: value.publication!.evidence_sha256 } : null, results };
   });
-  const report: BacktestReport = { format: 1, provenance: 'local_synthetic', execution_mode: 'test', evaluator_version: RULE_EVALUATOR_VERSION,
+  const report: BacktestReport = { format: 1, provenance: manifest.provenance, execution_mode: 'test', evaluator_version: RULE_EVALUATOR_VERSION,
     normalizer_version: NORMALIZER_VERSION, codebook_version: CODEBOOK_VERSION,
-    purpose: 'synthetic_stateless_backtest', canonical_emission: false, enforcement: false, source_semantics: 'unverified',
+    purpose: manifest.provenance==='user_supplied_file'?'intake_stateless_backtest':'synthetic_stateless_backtest', canonical_emission: false, enforcement: false, source_semantics: 'unverified',
     historical_availability: 'unverified', status: counts.unavailable_inputs ? 'partial' : 'complete',
     run_id: manifest.run_id, workspace_key: manifest.workspace_key, manifest_sha256: ruleEvidenceHash(manifest), rules_sha256: ruleEvidenceHash(manifest.rules),
     input_set_sha256: ruleEvidenceHash(rows.map(row => ({ target: row.target, availability: row.availability, sha256: row.input_sha256 }))),

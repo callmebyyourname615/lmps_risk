@@ -9,7 +9,7 @@ import { revision } from '../../../../packages/database/test/fixtures/transactio
 import { publicationFixture } from '../../../../packages/contracts/fixtures/synthetic-publication.mjs';
 import { publicationTransaction } from '../../../../packages/contracts/dist/synthetic-publication.js';
 
-export async function transactionListFixture() {
+export async function transactionListFixture({readNamespace}={}) {
   let temporary, state, writer, owner, app;
   const close = async () => {
     await app?.close(); await writer?.close(); await owner?.close();
@@ -51,7 +51,7 @@ export async function transactionListFixture() {
     await append('foreign_secret', 'synthetic_transactions', 1, 'USD', 'synthetic_other');
     expected.sort((a, b) => a.namespace === b.namespace ? a.transaction_id < b.transaction_id ? -1 : a.transaction_id === b.transaction_id ? 0 : 1 : a.namespace < b.namespace ? -1 : 1);
     const auth = await authFixture(temporary);
-    ({ app } = await createApp({ LMPS_ENVIRONMENT: 'test', LMPS_POSTGRES_DSN: dsn(state), LMPS_LOCAL_AUTH_CONFIG: auth.path }));
+    ({ app } = await createApp({ LMPS_ENVIRONMENT: 'test', LMPS_POSTGRES_DSN: dsn(state), LMPS_LOCAL_AUTH_CONFIG: auth.path, ...(readNamespace?{LMPS_READ_NAMESPACE:readNamespace}:{}) }));
     await app.listen(0, '127.0.0.1'); const origin = await app.getUrl();
     return { app, origin, expected, temporary, state, owner, writer, close,
       token: changes => auth.token({ sub: 'synthetic_transaction_reader', scope: 'alerts:read transactions:read risk:read', ...changes }),

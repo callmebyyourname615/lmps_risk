@@ -30,7 +30,7 @@ export function validateAlertReview(input: unknown): AlertReviewCommand {
   return structuredClone(input);
 }
 export interface AlertSnapshot {
-  format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; workspace_key: 'synthetic_local';
+  format: 1; provenance: 'local_synthetic' | 'user_supplied_file'; execution_mode: 'test'; workspace_key: 'synthetic_local';
   assessment_run_id: string; assessment_sha256: string; policy: AlertPolicy; selected_risk_types: RiskCode[]; severity: Severity;
 }
 // Only validated, frozen assessment results may reach this projection. A null score never becomes zero.
@@ -41,7 +41,7 @@ export function projectAlert(result: TransactionRiskResult, input: unknown): { r
   const findings = result.findings.filter(f => f.status === 'triggered' && policy.included_codes.includes(f.code)
     && f.severity !== null && ALERT_SEVERITIES.indexOf(f.severity) >= ALERT_SEVERITIES.indexOf(policy.minimum_severity));
   if (!findings.length) return { reason_code: 'ALERT_NO_MATCH', snapshot: null };
-  return { reason_code: 'ALERT_CREATED', snapshot: { format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: result.workspace_key,
+  return { reason_code: 'ALERT_CREATED', snapshot: { format: 1, provenance: result.provenance, execution_mode: 'test', workspace_key: result.workspace_key,
     assessment_run_id: result.run_id, assessment_sha256: riskHash(result), policy,
     selected_risk_types: RISK_CODES.filter(code => findings.some(f => f.code === code)),
     severity: ALERT_SEVERITIES[Math.max(...findings.map(f => ALERT_SEVERITIES.indexOf(f.severity!)))]! } };

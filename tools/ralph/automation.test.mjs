@@ -864,3 +864,18 @@ test('API extension never grants another batch or arbitrary app prefix',()=>{
   manifest.tasks[0].checkGroup='workers';assert.throws(()=>validateManifest(manifest,batch));
  }
 });
+
+
+test('source snapshots retain tracked deletion evidence without staging or changing the index', context => {
+  const { root } = fixture(context);
+  execFileSync('/opt/homebrew/bin/git', ['add', 'application.txt'], { cwd: root });
+  const before = sourceSnapshot(root);
+  assert.ok(before.source.some(row => row.name === 'application.txt'));
+  rmSync(join(root, 'application.txt'));
+  const after = sourceSnapshot(root);
+  assert.ok(!after.source.some(row => row.name === 'application.txt'));
+  assert.equal(after.indexSha256, before.indexSha256);
+  assert.equal(after.head, before.head);
+  assert.equal(after.branch, before.branch);
+  assert.notEqual(digest(after), digest(before));
+});

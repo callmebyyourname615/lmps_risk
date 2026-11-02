@@ -123,7 +123,7 @@ export function createDetectionHandoff(dsn: string) {
         const configured = await policies(client, { namespace: null, currency: null });
         for (const policy of configured.filter(policy => policy.status === 'ready')) {
           if (attempted >= limit) break;
-          const candidates = await client.query(`SELECT l.namespace,l.transaction_id,l.revision_number FROM (
+          const candidates = await client.query(`SELECT l.namespace,l.transaction_id,l.revision_number,l.publication->>'provenance' AS provenance FROM (
             SELECT DISTINCT ON(transaction_id) * FROM platform.local_transaction_revisions WHERE workspace_key='synthetic_local' AND namespace=$1
             ORDER BY transaction_id,revision_number DESC
           ) l WHERE l.payload->>'currency'=$2 AND l.publication IS NOT NULL
@@ -131,13 +131,14 @@ export function createDetectionHandoff(dsn: string) {
             AND NOT EXISTS(SELECT 1 FROM platform.local_transaction_risks r WHERE r.workspace_key=l.workspace_key AND (r.namespace,r.transaction_id,r.revision_number)=(l.namespace,l.transaction_id,l.revision_number)
               AND r.snapshot->'observation'->>'revision_sha256' IS NOT NULL)
             ORDER BY l.recorded_at,l.transaction_id LIMIT $3`, [policy.namespace, policy.currency, limit - attempted]);
-          for (const target of candidates.rows) {
+          for (const candidate of candidates.rows) {
+            const {provenance,...target}=candidate;
             attempted++;
             await client.query('BEGIN');
             try {
               const job = randomUUID();
               const receipt = await enqueueApprovedRiskJob(client, { format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', job_ref: job,
-                risk_request: { format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', run_id: job, target, policy: null, context: null },
+                risk_request: { format: 1, provenance: provenance==='user_supplied_file'?'user_supplied_file':'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', run_id: job, target, policy: null, context: null },
                 alert_policy: policy.alert_policy }, { namespace: policy.namespace, currency: policy.currency, policy_id: policy.policy_id, policy_version: policy.policy_version, expected_generation: policy.generation });
               await client.query('COMMIT'); if (receipt.status === 'inserted') inserted++;
             } catch (error) { await client.query('ROLLBACK'); throw error; }

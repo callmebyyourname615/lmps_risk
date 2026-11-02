@@ -37,6 +37,15 @@
       "types": "./dist/offline-dataset.d.ts",
       "import": "./dist/offline-dataset.js"
     },
+    "./offline-monitoring": {
+      "types": "./dist/offline-monitoring.d.ts",
+      "import": "./dist/offline-monitoring.js"
+    },
+    "./intake-observation": {
+      "types": "./dist/intake-observation.d.ts",
+      "import": "./dist/intake-observation.js"
+    },
+    "./source-publication": { "types": "./dist/source-publication.d.ts", "import": "./dist/source-publication.js" },
     "./risk-policy": {
       "types": "./dist/risk-policy.d.ts",
       "import": "./dist/risk-policy.js"
@@ -73,6 +82,8 @@
     "./historical-dataset": "./dist/historical-dataset.js",
     "./notification-subscription": "./dist/notification-subscription.js",
     "./notification-payload": "./dist/notification-payload.js",
+    "./feature-api": "./dist/feature-api.js",
+    "./feature-parity": "./dist/feature-parity.js",
     "./label-review": {
       "types": "./dist/label-review.d.ts",
       "import": "./dist/label-review.js"

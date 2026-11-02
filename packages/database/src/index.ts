@@ -3,9 +3,10 @@ import pg, { type PoolConfig } from 'pg';
 export type DatabaseRole = 'app' | 'migration' | 'intake' | 'outbox' | 'reviewer' | 'policy' | 'case';
 export type PostgresStatus = 'available' | 'unavailable' | 'not_configured';
 
-export function localPoolConfig(dsn: string, role: DatabaseRole = 'app'): PoolConfig {
+export function localPoolConfig(dsn: string, role: DatabaseRole = 'app', readNamespace?: string): PoolConfig {
   try {
     if (!['app', 'migration', 'intake', 'outbox', 'reviewer', 'policy', 'case'].includes(role)) throw new Error();
+    if(readNamespace!==undefined&&(role!=='app'||!/^synthetic_[a-z0-9_]{1,40}$/.test(readNamespace)))throw new Error();
     const url = new URL(dsn);
     const user = { app: 'lmps_app', migration: 'lmps_migrator', intake: 'lmps_intake', outbox: 'lmps_outbox', reviewer: 'lmps_reviewer', policy: 'lmps_policy', case: 'lmps_case' }[role];
     const port = Number(url.port);
@@ -22,19 +23,23 @@ export function localPoolConfig(dsn: string, role: DatabaseRole = 'app'): PoolCo
       statement_timeout: role === 'migration' ? 5000 : 1000,
       lock_timeout: 500, idle_in_transaction_session_timeout: 5000,
       query_timeout: role === 'migration' ? 5500 : 1500,
-      options: '-c search_path=pg_catalog -c timezone=UTC',
+      options: '-c search_path=pg_catalog -c timezone=UTC'+(readNamespace?' -c lmps.read_namespace='+readNamespace:''),
     };
   } catch {
     throw new Error('Invalid local PostgreSQL configuration.');
   }
 }
 
-export function createDatabase(dsn: string, role: DatabaseRole = 'app') {
-  const pool = new pg.Pool(localPoolConfig(dsn, role));
+const poolProvenance=new WeakMap<pg.Pool,'local_synthetic'|'local_test'>();
+export const readPoolProvenance=(pool:pg.Pool)=>poolProvenance.get(pool)??'local_synthetic';
+export function createDatabase(dsn: string, role: DatabaseRole = 'app', readNamespace?: string) {
+  const pool = new pg.Pool(localPoolConfig(dsn, role,readNamespace));
+  const provenance=readNamespace?'local_test' as const:'local_synthetic' as const;poolProvenance.set(pool,provenance);
   // Idle backend failures must not crash the process or log credentials/query values.
   pool.on('error', () => {});
   return {
     pool,
+    provenance,
     async health(): Promise<PostgresStatus> {
       try {
         await pool.query('SELECT 1');

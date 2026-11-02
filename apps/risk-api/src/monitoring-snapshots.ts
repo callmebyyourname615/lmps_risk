@@ -55,6 +55,11 @@ export class MonitoringSnapshots {
     if (Buffer.byteLength(JSON.stringify(result)) > 2 * 1024 * 1024) throw new MonitoringReadError('MONITORING_SCOPE_TOO_LARGE');
     return result;
   }
+  overview(principal: Principal, id: string) {
+    const {payload,session}=this.entry(principal,id);
+    if (!payload.overview) throw new MonitoringReadError();
+    return {...session,overview:payload.overview};
+  }
   network(principal: Principal, id: string, query: NetworkQuery) {
     const entry = this.entry(principal, id);
     return selectMonitoringNetwork(entry.payload, entry.session, query);

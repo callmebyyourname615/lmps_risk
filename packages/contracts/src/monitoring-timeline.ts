@@ -15,7 +15,7 @@ export interface TimelineAlert {
   patterns: string[]; snapshot_sha256: string; policy: { policy_id: string; version: string; sha256: string };
 }
 export interface MonitoringTimeline {
-  version: 'local-monitoring-timeline-1'; provenance: 'local_synthetic'; execution_mode: 'test'; canonical_emission: false;
+  version: 'local-monitoring-timeline-1'; provenance: 'local_synthetic' | 'local_test'; execution_mode: 'test'; canonical_emission: false;
   workspace_key: string; target: TimelineTarget; as_of: string; consistency: 'request_repeatable_read'; time_basis: 'recorded_at';
   revisions: TimelineRevision[]; assessments: TimelineAssessment[]; alerts: TimelineAlert[];
   coverage: { revisions: number; assessment_runs: number; assessed_revisions: number; missing_assessments: number; alerts: number; revision_history_complete: boolean };

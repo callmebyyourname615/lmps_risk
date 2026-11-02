@@ -80,6 +80,8 @@ before(async () => {
     const generated = await alerts.generate({ ...af.generation, assessment_run_id: positive.request.run_id });
     await reviews.review('synthetic_local', generated.alert_id, 'synthetic_reviewer', af.ack);
     await reviews.review('synthetic_local', generated.alert_id, 'synthetic_reviewer', af.review);
+    await app.pool.query('SELECT * FROM platform.read_local_user_notification($1,$2,$3)', ['synthetic_local','synthetic_reader',generated.alert_id]);
+    await app.pool.query('SELECT * FROM platform.save_notification_preferences($1,$2,$3,$4)', ['synthetic_local','synthetic_reader',0,JSON.stringify({enabled:false,severities:['high'],dimensions:['fraud'],quiet_hours:{enabled:false,start:'22:00',end:'07:00',timezone:'UTC'}})]);
   } finally { await positiveWriter.close(); await positiveRisks.close(); await alerts.close(); await reviews.close(); }
   const riskJobs = createRiskJobs(dsn(source, 'intake'));
   try {
@@ -109,6 +111,8 @@ test('native backup exports a consistent owned snapshot, writes only private art
   assert.equal(manifest.tables['platform.local_rule_versions'].rows, 2); assert.equal(manifest.tables['platform.local_assessment_runs'].rows, 1);
   assert.equal(manifest.tables['platform.local_alerts'].rows, 1); assert.equal(manifest.tables['platform.local_alert_policies'].rows, 1);
   assert.equal(manifest.tables['platform.local_alert_reviews'].rows, 2);
+  assert.equal(manifest.tables['platform.local_user_notification_reads'].rows, 1);
+  assert.equal(manifest.tables['platform.local_notification_preferences'].rows, 1);
   assert.equal(manifest.tables['platform.local_risk_jobs'].rows, 2); assert.equal(manifest.tables['platform.local_risk_job_attempts'].rows, 1);
   for (const name of ['manifest.json', 'database.dump']) assert.equal((await lstat(join(backup.directory, name))).mode & 0o077, 0);
   await assert.rejects(lstat(join(backup.directory, 'temporary.pgpass')), { code: 'ENOENT' });
@@ -126,6 +130,8 @@ test('actual restore into a separate disposable cluster matches frozen evidence/
   assert.equal(result.table_counts['platform.local_rule_versions'], 2); assert.equal(result.table_counts['platform.local_assessment_runs'], 1);
   assert.equal(result.table_counts['platform.local_risk_jobs'], 2); assert.equal(result.table_counts['platform.local_risk_job_attempts'], 1);
   assert.equal(result.table_counts['platform.local_alerts'], 1); assert.equal(result.table_counts['platform.local_alert_reviews'], 2);
+  assert.equal(result.table_counts['platform.local_user_notification_reads'], 1);
+  assert.equal(result.table_counts['platform.local_notification_preferences'], 1);
   assert.equal(running(source), true);
   assert.equal((await app.pool.query('SELECT count(*)::int AS n FROM platform.source_events')).rows[0].n, 2);
   assert.equal((await app.pool.query('SELECT state FROM platform.local_outbox_intents')).rows[0].state, 'accepted');
@@ -171,7 +177,7 @@ test('pre-audit backups still restore their original schema and migration prefix
   const legacy = await verifyBackup(legacyBackup.directory); assert.equal(legacy.tables['platform.audit_events'], undefined);
   const result = await restoreDrill(legacyBackup.directory); assert.equal(result.status, 'PASS');
   assert.equal(result.table_counts['platform.audit_events'], undefined); assert.equal(result.table_counts['lmps_migrations.__drizzle_migrations'], 4);
-  assert.equal((await owner.pool.query('SELECT count(*)::int AS n FROM lmps_migrations.__drizzle_migrations')).rows[0].n, 17);
+  assert.equal((await owner.pool.query('SELECT count(*)::int AS n FROM lmps_migrations.__drizzle_migrations')).rows[0].n, 21);
 });
 
 

@@ -65,6 +65,11 @@ export class MonitoringController {
     if (Object.keys(input).join(',') !== 'record' || typeof input.record !== 'string') throw new BadRequestException({ code: 'MONITORING_INVALID_QUERY' });
     return this.snapshots.evidence(request.principal, id, input.record);
   }
+  @Get('snapshots/:id/overview')
+  overview(@Req() request: ScopedRequest, @Param('id') id: string, @Query() input: Record<string, unknown>) {
+    if (Object.keys(input).length) throw new BadRequestException({code:'MONITORING_INVALID_QUERY'});
+    return this.snapshots.overview(request.principal,id);
+  }
   @Get('snapshots/:id/network')
   @ApiOperation({ summary: 'Read bounded synthetic-only directed flow from the same frozen revisions as monitoring records; unresolved identities are never linked.' })
   network(@Req() request: ScopedRequest, @Param('id') id: string, @Query() input: Record<string, unknown>) {

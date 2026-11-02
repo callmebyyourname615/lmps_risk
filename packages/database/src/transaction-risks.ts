@@ -17,6 +17,7 @@ export function riskObservation(target: RiskTarget, raw: unknown | null): RiskOb
       || value.expected_revision + 1 !== target.revision_number) throw new Error();
     if (!value.publication) return { ...absent, status: 'not_normalized' };
     const normalized = normalizeSynthetic(value.publication.normalization_input);
+    if(normalized.state!=='known')return {...absent,status:'not_normalized'};
     return validateRiskObservation({ status: 'available', revision_sha256: riskHash(value), amount: tx.amount,
       reversed_amount: normalized.candidate?.cumulative_reversed_amount ?? '0.00', currency: tx.currency,
       transaction_status: tx.transaction_status, observed_at: tx.observed_at });

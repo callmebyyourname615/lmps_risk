@@ -2,19 +2,21 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import type { Transaction } from './generated/transaction.js';
 import { normalizeSynthetic, type SyntheticNormalizationInput } from './synthetic-normalization.js';
+import { sourcePublicationTransaction, type SourcePublication } from './source-publication.js';
 
 export const PUBLISHER_VERSION = 'synthetic-publisher-0.1.0-draft.1';
 export interface PublicationBinding {
   event_key: string; transaction_id: string; transaction_revision: string; expected_revision: number;
   currency: { raw: string; code: string; decimal_places: 2 };
 }
-export interface SyntheticPublication {
+export interface SyntheticPublicationRecord {
   format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; publisher_version: typeof PUBLISHER_VERSION;
   capture_id: string; snapshot_sha256: string; evidence_sha256: string;
   source: { workspace_key: string; source_namespace: string; source_generation: string; capture_epoch: string;
     event_key: string; source_table: string; source_key: Record<string, string>; operation: string; observed_at: string };
   binding: PublicationBinding; normalization_input: SyntheticNormalizationInput;
 }
+export type SyntheticPublication = SyntheticPublicationRecord | SourcePublication;
 export const PUBLICATION_MAX_BYTES = 48 * 1024;
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 function exact(value: unknown, keys: string[]): boolean {
@@ -35,8 +37,9 @@ export function validatePublicationBinding(input: unknown): PublicationBinding {
 
 // Recompute from strict raw input: a caller-provided candidate/status is never proof.
 export function publicationTransaction(input: unknown): { publication: SyntheticPublication; transaction: Transaction } {
+  if (input && typeof input === 'object' && 'publisher_version' in input && input.publisher_version === 'source-intake-publisher-1') return sourcePublicationTransaction(input);
   try {
-    const p = structuredClone(input) as SyntheticPublication;
+    const p = structuredClone(input) as SyntheticPublicationRecord;
     if (!exact(p, ['format', 'provenance', 'execution_mode', 'publisher_version', 'capture_id', 'snapshot_sha256', 'evidence_sha256', 'source', 'binding', 'normalization_input'])
       || p.format !== 1 || p.provenance !== 'local_synthetic' || p.execution_mode !== 'test' || p.publisher_version !== PUBLISHER_VERSION
       || typeof p.capture_id !== 'string' || !uuid.test(p.capture_id)
@@ -77,6 +80,8 @@ export function publicationTransaction(input: unknown): { publication: Synthetic
 // A declared revision identifies one complete synthetic observation, never an additive financial delta.
 // Cross-capture replay keeps the first publication and its lineage; later capture source/evidence/bindings remain private files.
 export function publicationIdentity(p: SyntheticPublication) {
+  if(p.provenance==='user_supplied_file')return {publisher_version:p.publisher_version,workspace:p.source.workspace_key,namespace:p.source.source_namespace,generation:p.source.source_generation,
+    transaction_id:p.binding.transaction_id,revision:p.binding.transaction_revision,expected_revision:p.binding.expected_revision,values:p.origin.values,mapping:p.origin.mapping};
   const { source_reference: _reference, observed_at: _observed, ...raw } = p.normalization_input;
   const { event_key: _event, ...binding } = p.binding;
   return { publisher_version: p.publisher_version, workspace_key: p.source.workspace_key,

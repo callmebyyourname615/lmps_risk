@@ -77,13 +77,15 @@ export function createOfflineDatasets(dsn: string) {
   }
   return {
     close: database.close,
-    async readComplete(workspace: string, batch: string, datasetHash: string) {
+    async readComplete(workspace: string, batch: string, datasetHash: string, maxRows = DATASET_MAX_ROWS) {
       reference(workspace, batch);
+      if (!Number.isInteger(maxRows) || maxRows < 1 || maxRows > DATASET_MAX_ROWS) throw new OfflineDatasetError('DATASET_INVALID_INPUT');
       if (typeof datasetHash !== 'string' || datasetHash.length !== 64 || !/^[0-9a-f]{64}$/.test(datasetHash)) throw new OfflineDatasetError('DATASET_INVALID_INPUT');
       return transaction(async client => {
         const record = (await client.query('SELECT * FROM platform.offline_dataset_batches WHERE workspace_key=$1 AND batch_ref=$2', [workspace, batch])).rows[0];
         if (!record) throw new OfflineDatasetError('DATASET_NOT_FOUND');
         const manifest = evidence(record), state = view(record);
+        if (manifest.expected_rows > maxRows) throw new OfflineDatasetError('DATASET_BLOCKED');
         if (state.status !== 'complete' || state.reconciliation_status !== 'matched' || state.loaded_rows !== manifest.expected_rows
           || !record.reconciled_at || record.source_kind !== 'user_supplied_file' || record.execution_mode !== 'offline_analysis'
           || record.source_semantics !== 'unverified') throw new OfflineDatasetError('DATASET_BLOCKED');

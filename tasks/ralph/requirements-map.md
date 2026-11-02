@@ -1,5 +1,7 @@
 # Ralph requirements map — approved intake, 2026-10-25
 
+Canonical Portal: the separately maintained [LMPS_Risk_Portal](../../../LMPS_Risk_Portal/). This backend has no embedded portal; P06 locations below refer to its API support. Historical UI evidence remains dated history.
+
 Source of truth: the existing sibling [plan](../../../plan/README.md), especially [104 MUST requirements](../../../plan/03-implementation-phases.md). The original plan is read-only to this pilot.
 
 This is a traceability/review map, not a new implementation score or authorization to execute all requirements. Historical scores/evidence below are explicitly the No.41 assessment from [2026-10-24](../../docs/implementation-status/plan-progress-2026-10-24.md). They are not current after No.42-51. Current reported local evidence is in [implementation status](../../docs/implementation-status/current.md) and the [No.47-51 runbook](../../docs/operations/real-shadow-foundation.md). The previously reported970 tests have not been re-run by the intake pilot.
@@ -146,7 +148,7 @@ Latest reported local overlay: No.43/50 report actual local baselines and same-c
 
 Dependencies: P02, P05 integration.
 
-Existing implementation locations to review: [apps/risk-portal/src](../../apps/risk-portal/src), [apps/risk-api/src/cases.controller.ts](../../apps/risk-api/src/cases.controller.ts), [apps/risk-api/src/labels.controller.ts](../../apps/risk-api/src/labels.controller.ts). These links establish location, not verification or target-gate completion.
+Existing implementation locations to review: [apps/risk-api/src/monitoring.controller.ts](../../apps/risk-api/src/monitoring.controller.ts), [apps/risk-api/src/cases.controller.ts](../../apps/risk-api/src/cases.controller.ts), [apps/risk-api/src/labels.controller.ts](../../apps/risk-api/src/labels.controller.ts). These links establish location, not verification or target-gate completion.
 
 Next target gate: Approved workflow, authenticated full UI, attachments, real label maturity/sampling and export policy.
 

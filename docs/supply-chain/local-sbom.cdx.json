@@ -439,25 +439,6 @@
       "version": "12.0.2"
     },
     {
-      "bom-ref": "npm:@oxc-project/types@0.139.0",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "@oxc-project/types",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "0.139.0"
-    },
-    {
       "bom-ref": "npm:@pinojs/redact@0.4.0",
       "licenses": [
         {
@@ -475,44 +456,6 @@
       ],
       "type": "library",
       "version": "0.4.0"
-    },
-    {
-      "bom-ref": "npm:@rolldown/binding-darwin-arm64@1.1.5",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "@rolldown/binding-darwin-arm64",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.1.5"
-    },
-    {
-      "bom-ref": "npm:@rolldown/pluginutils@1.0.1",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "@rolldown/pluginutils",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.0.1"
     },
     {
       "bom-ref": "npm:@scarf/scarf@1.4.0",
@@ -686,7 +629,7 @@
       "version": "8.23.1"
     },
     {
-      "bom-ref": "npm:@types/react-dom@19.2.3",
+      "bom-ref": "npm:@types/web-push@3.6.4",
       "licenses": [
         {
           "license": {
@@ -694,7 +637,7 @@
           }
         }
       ],
-      "name": "@types/react-dom",
+      "name": "@types/web-push",
       "properties": [
         {
           "name": "lmps:license-source",
@@ -702,26 +645,7 @@
         }
       ],
       "type": "library",
-      "version": "19.2.3"
-    },
-    {
-      "bom-ref": "npm:@types/react@19.2.14",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "@types/react",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "19.2.14"
+      "version": "3.6.4"
     },
     {
       "bom-ref": "npm:abstract-logging@2.0.1",
@@ -741,6 +665,25 @@
       ],
       "type": "library",
       "version": "2.0.1"
+    },
+    {
+      "bom-ref": "npm:agent-base@7.1.4",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "agent-base",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "7.1.4"
     },
     {
       "bom-ref": "npm:ajv-formats@3.0.1",
@@ -800,6 +743,25 @@
       "version": "2.0.1"
     },
     {
+      "bom-ref": "npm:asn1.js@5.4.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "asn1.js",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "5.4.1"
+    },
+    {
       "bom-ref": "npm:atomic-sleep@1.0.0",
       "licenses": [
         {
@@ -857,6 +819,25 @@
       "version": "4.0.4"
     },
     {
+      "bom-ref": "npm:bn.js@4.12.5",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "bn.js",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "4.12.5"
+    },
+    {
       "bom-ref": "npm:brace-expansion@5.0.12",
       "licenses": [
         {
@@ -874,6 +855,25 @@
       ],
       "type": "library",
       "version": "5.0.12"
+    },
+    {
+      "bom-ref": "npm:buffer-equal-constant-time@1.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "BSD-3-Clause"
+          }
+        }
+      ],
+      "name": "buffer-equal-constant-time",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.1"
     },
     {
       "bom-ref": "npm:content-disposition@2.0.1",
@@ -912,25 +912,6 @@
       ],
       "type": "library",
       "version": "1.1.1"
-    },
-    {
-      "bom-ref": "npm:csstype@3.2.3",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "csstype",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "3.2.3"
     },
     {
       "bom-ref": "npm:debug@4.4.3",
@@ -1009,25 +990,6 @@
       "version": "2.0.3"
     },
     {
-      "bom-ref": "npm:detect-libc@2.1.2",
-      "licenses": [
-        {
-          "license": {
-            "name": "Apache-2.0"
-          }
-        }
-      ],
-      "name": "detect-libc",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "2.1.2"
-    },
-    {
       "bom-ref": "npm:drizzle-orm@0.45.4",
       "licenses": [
         {
@@ -1045,6 +1007,25 @@
       ],
       "type": "library",
       "version": "0.45.4"
+    },
+    {
+      "bom-ref": "npm:ecdsa-sig-formatter@1.0.11",
+      "licenses": [
+        {
+          "license": {
+            "name": "Apache-2.0"
+          }
+        }
+      ],
+      "name": "ecdsa-sig-formatter",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.11"
     },
     {
       "bom-ref": "npm:es-toolkit@1.52.0",
@@ -1332,25 +1313,6 @@
       "version": "9.9.0"
     },
     {
-      "bom-ref": "npm:fsevents@2.3.3",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "fsevents",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "2.3.3"
-    },
-    {
       "bom-ref": "npm:glob@13.0.6",
       "licenses": [
         {
@@ -1387,6 +1349,44 @@
       ],
       "type": "library",
       "version": "2.0.1"
+    },
+    {
+      "bom-ref": "npm:http_ece@1.2.0",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "http_ece",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "1.2.0"
+    },
+    {
+      "bom-ref": "npm:https-proxy-agent@7.0.6",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "https-proxy-agent",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "7.0.6"
     },
     {
       "bom-ref": "npm:iconv-lite@0.7.3",
@@ -1598,6 +1598,44 @@
       "version": "1.0.0"
     },
     {
+      "bom-ref": "npm:jwa@2.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "jwa",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "2.0.1"
+    },
+    {
+      "bom-ref": "npm:jws@4.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "jws",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "4.0.1"
+    },
+    {
       "bom-ref": "npm:light-my-request@6.6.0",
       "licenses": [
         {
@@ -1615,44 +1653,6 @@
       ],
       "type": "library",
       "version": "6.6.0"
-    },
-    {
-      "bom-ref": "npm:lightningcss-darwin-arm64@1.32.0",
-      "licenses": [
-        {
-          "license": {
-            "name": "MPL-2.0"
-          }
-        }
-      ],
-      "name": "lightningcss-darwin-arm64",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.32.0"
-    },
-    {
-      "bom-ref": "npm:lightningcss@1.32.0",
-      "licenses": [
-        {
-          "license": {
-            "name": "MPL-2.0"
-          }
-        }
-      ],
-      "name": "lightningcss",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.32.0"
     },
     {
       "bom-ref": "npm:load-esm@1.0.3",
@@ -1750,6 +1750,25 @@
       "version": "3.0.0"
     },
     {
+      "bom-ref": "npm:minimalistic-assert@1.0.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "ISC"
+          }
+        }
+      ],
+      "name": "minimalistic-assert",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "1.0.1"
+    },
+    {
       "bom-ref": "npm:minimatch@10.2.6",
       "licenses": [
         {
@@ -1824,25 +1843,6 @@
       ],
       "type": "library",
       "version": "2.1.3"
-    },
-    {
-      "bom-ref": "npm:nanoid@3.3.19",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "nanoid",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "3.3.19"
     },
     {
       "bom-ref": "npm:on-exit-leak-free@2.1.2",
@@ -2054,25 +2054,6 @@
       "version": "1.0.5"
     },
     {
-      "bom-ref": "npm:picocolors@1.1.1",
-      "licenses": [
-        {
-          "license": {
-            "name": "ISC"
-          }
-        }
-      ],
-      "name": "picocolors",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.1.1"
-    },
-    {
       "bom-ref": "npm:picomatch@4.0.7",
       "licenses": [
         {
@@ -2147,25 +2128,6 @@
       ],
       "type": "library",
       "version": "10.4.0"
-    },
-    {
-      "bom-ref": "npm:postcss@8.5.23",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "postcss",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "8.5.23"
     },
     {
       "bom-ref": "npm:postgres-array@2.0.0",
@@ -2320,44 +2282,6 @@
       "version": "4.0.4"
     },
     {
-      "bom-ref": "npm:react-dom@19.2.4",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "react-dom",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "19.2.4"
-    },
-    {
-      "bom-ref": "npm:react@19.2.4",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "react",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "19.2.4"
-    },
-    {
       "bom-ref": "npm:real-require@1.0.0",
       "licenses": [
         {
@@ -2472,25 +2396,6 @@
       "version": "1.4.1"
     },
     {
-      "bom-ref": "npm:rolldown@1.1.5",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "rolldown",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.1.5"
-    },
-    {
       "bom-ref": "npm:rxjs@7.8.2",
       "licenses": [
         {
@@ -2508,6 +2413,25 @@
       ],
       "type": "library",
       "version": "7.8.2"
+    },
+    {
+      "bom-ref": "npm:safe-buffer@5.2.1",
+      "licenses": [
+        {
+          "license": {
+            "name": "MIT"
+          }
+        }
+      ],
+      "name": "safe-buffer",
+      "properties": [
+        {
+          "name": "lmps:license-source",
+          "value": "package.json"
+        }
+      ],
+      "type": "library",
+      "version": "5.2.1"
     },
     {
       "bom-ref": "npm:safe-regex2@5.1.2",
@@ -2565,25 +2489,6 @@
       ],
       "type": "library",
       "version": "2.1.2"
-    },
-    {
-      "bom-ref": "npm:scheduler@0.27.0",
-      "licenses": [
-        {
-          "license": {
-            "name": "MIT"
-          }
-        }
-      ],
-      "name": "scheduler",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "0.27.0"
     },
     {
       "bom-ref": "npm:secure-json-parse@4.1.1",
@@ -2679,25 +2584,6 @@
       ],
       "type": "library",
       "version": "4.2.1"
-    },
-    {
-      "bom-ref": "npm:source-map-js@1.2.2",
-      "licenses": [
-        {
-          "license": {
-            "name": "BSD-3-Clause"
-          }
-        }
-      ],
-      "name": "source-map-js",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "1.2.2"
     },
     {
       "bom-ref": "npm:split2@4.2.0",
@@ -2966,15 +2852,15 @@
       "version": "7.24.6"
     },
     {
-      "bom-ref": "npm:vite@8.1.6",
+      "bom-ref": "npm:web-push@3.6.7",
       "licenses": [
         {
           "license": {
-            "name": "MIT"
+            "name": "MPL-2.0"
           }
         }
       ],
-      "name": "vite",
+      "name": "web-push",
       "properties": [
         {
           "name": "lmps:license-source",
@@ -2982,7 +2868,7 @@
         }
       ],
       "type": "library",
-      "version": "8.1.6"
+      "version": "3.6.7"
     },
     {
       "bom-ref": "npm:xtend@4.0.2",
@@ -4377,25 +4263,6 @@
       "version": "0.0.0"
     },
     {
-      "bom-ref": "workspace:@lmps/risk-portal@0.0.0",
-      "licenses": [
-        {
-          "license": {
-            "name": "UNLICENSED"
-          }
-        }
-      ],
-      "name": "@lmps/risk-portal",
-      "properties": [
-        {
-          "name": "lmps:license-source",
-          "value": "package.json"
-        }
-      ],
-      "type": "library",
-      "version": "0.0.0"
-    },
-    {
       "bom-ref": "workspace:@lmps/risk-workers@0.0.0",
       "licenses": [
         {
@@ -4462,7 +4329,7 @@
     "properties": [
       {
         "name": "lmps:pnpm-lock-sha256",
-        "value": "59a1568eb34d1a932978ea7d2cddd047cde220cf7e6b9ba6a3962bf69b4c2e92"
+        "value": "250a5a9ce0fe693098c98f12c1f1225f23551ed6d060c4935a45997e2dfb6cf8"
       },
       {
         "name": "lmps:uv-lock-sha256",

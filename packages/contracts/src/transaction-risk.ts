@@ -25,7 +25,7 @@ export interface RiskContext {
   flagged_accounts: string[] | null; flagged_accounts_version: string | null;
 }
 export interface TransactionRiskRequest {
-  format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; workspace_key: 'synthetic_local';
+  format: 1; provenance: 'local_synthetic' | 'user_supplied_file'; execution_mode: 'test'; workspace_key: 'synthetic_local';
   run_id: string; target: RiskTarget; policy: RiskPolicy | null; context: RiskContext | null;
 }
 export interface RiskObservation {
@@ -42,7 +42,7 @@ export interface DimensionScore {
   reason_code: string; coverage: { configured: number; evaluated: number; triggered: number; unavailable: number; not_applicable: number; not_evaluated: number };
 }
 export interface TransactionRiskResult {
-  format: 1; provenance: 'local_synthetic'; execution_mode: 'test'; workspace_key: 'synthetic_local'; run_id: string; target: RiskTarget;
+  format: 1; provenance: 'local_synthetic' | 'user_supplied_file'; execution_mode: 'test'; workspace_key: 'synthetic_local'; run_id: string; target: RiskTarget;
   engine_version: string; catalog_version: string; policy: { policy_id: string; version: string; sha256: string } | null;
   assessment_id: string; as_of: string | null; reason_codes: string[];
   input_sha256: string; revision_sha256: string | null; feature_snapshot_sha256: string | null;
@@ -68,7 +68,7 @@ const targetProperties = { namespace: string('^synthetic_[a-z0-9_]{1,40}$', 50),
 const target = object(targetProperties);
 export const transactionRiskRequestSchema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  ...object({ format: { const: 1 }, provenance: { const: 'local_synthetic' }, execution_mode: { const: 'test' }, workspace_key: { const: 'synthetic_local' },
+  ...object({ format: { const: 1 }, provenance: { enum: ['local_synthetic','user_supplied_file'] }, execution_mode: { const: 'test' }, workspace_key: { const: 'synthetic_local' },
     run_id: string('^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$', 36), target,
     policy: nullable(object({ policy_id: synthetic, version: synthetic, currency, window_seconds: integer(1, 86400), baseline_windows: integer(1, 30), graph_depth: integer(2, 5),
       minimum_amount: amount, structuring_ceiling: amount, near_threshold_bps: integer(1, 9999), severity_bps: object({ medium: integer(1, 10000), high: integer(1, 10000), critical: integer(1, 10000) }),

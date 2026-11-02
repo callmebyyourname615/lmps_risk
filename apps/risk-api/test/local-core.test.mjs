@@ -12,6 +12,7 @@ import { CORE_DEMO, runCoreDemo } from '../scripts/core-demo.mjs';
 
 let temp, state, owner, original, first, saved;
 const oldTables = ['source_records', 'source_events', 'local_outbox_intents', 'local_outbox_attempts', 'audit_events', 'local_sync_jobs', 'local_sync_attempts'];
+const notificationTables = ['local_user_notification_reads', 'local_notification_preferences', 'local_web_push_subscriptions', 'local_web_push_deliveries'].sort();
 const tableCount = async () => Number((await owner.pool.query("SELECT count(*) AS n FROM pg_tables WHERE schemaname IN ('platform','lmps_migrations')")).rows[0].n);
 const legacyRows = async () => {
   const result = {};
@@ -54,8 +55,11 @@ test('upgrade from six migrations preserves existing data, role credentials and 
   for (const prepare of [prepareReviewer, preparePolicy, prepareCase]) await prepare(state);
   assert.deepEqual((await loadState(state.base)).passwords, passwords);
   const result = await migrations(dsn(state, 'migration'), true);
-  assert.equal(result.length, 17); assert.ok(result.every(row => row.status === 'applied'));
-  assert.equal(await tableCount(), 31);
+  assert.equal(result.length, 21); assert.ok(result.every(row => row.status === 'applied'));
+  assert.deepEqual(result.slice(-4).map(row => row.migration), ['0017_local_user_notifications', '0018_local_notification_preferences', '0019_local_web_push', '0020_source_intake_publications']);
+  assert.equal(await tableCount(), 35);
+  const added = await owner.pool.query("SELECT tablename FROM pg_tables WHERE schemaname='platform' AND tablename=ANY($1::text[]) ORDER BY tablename", [notificationTables]);
+  assert.deepEqual(added.rows.map(row => row.tablename), notificationTables);
   assert.deepEqual(await legacyRows(), original);
   assert.deepEqual(await migrations(dsn(state, 'migration'), true), result);
 });
@@ -109,9 +113,10 @@ test('local runtime serves real TCP/OpenAPI with short-lived scoped tokens, norm
   } finally { await runtime.close(); }
   await assert.rejects(lstat(runtime.directory), { code: 'ENOENT' });
 });
-test('current demo backup restores all 31 tables and reader grants in an isolated cluster', async () => {
+test('current demo backup restores all 35 tables and reader grants in an isolated cluster', async () => {
   const restored = await restoreDrill(saved.directory);
-  assert.equal(restored.status, 'PASS'); assert.equal(Object.keys(restored.table_counts).length, 31);
+  assert.equal(restored.status, 'PASS'); assert.equal(Object.keys(restored.table_counts).length, 35);
+  for (const name of notificationTables) assert.equal(restored.table_counts['platform.' + name], 0);
   assert.equal(restored.table_counts['platform.local_case_events'], 6);
   assert.equal(restored.app_read_only_checked, true); assert.equal(restored.workers_started, false);
 });
@@ -121,5 +126,5 @@ test('invalid ports and live execution reject before opening the local core runt
   process.env.LMPS_EXECUTION_MODE = 'live';
   try { await assert.rejects(runCoreDemo(state)); }
   finally { if (previous === undefined) delete process.env.LMPS_EXECUTION_MODE; else process.env.LMPS_EXECUTION_MODE = previous; }
-  assert.equal(await tableCount(), 31);
+  assert.equal(await tableCount(), 35);
 });

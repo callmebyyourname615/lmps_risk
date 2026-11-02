@@ -1,0 +1,24 @@
+{
+  "format": 1,
+  "mode": "local_synthetic",
+  "binary": "/Users/macbookpro/.cache/lmps-redis-fixture/8.10.1/redis-server",
+  "source_binary": "/opt/homebrew/Cellar/redis/8.10.1/bin/redis-server",
+  "version": "8.10.1",
+  "sha256": "48a07c38 92d5982a 1af6c3fb b9db896b 50e7aa56 4b1d4e6a bcb12fcb 6b6b6e0d",
+  "observationDate": "2026-10-28",
+  "provenance": "Parent verified a byte-identical private copy of the installed Homebrew binary because Cellar permits group writes. Rehash both installed source and private executable before launch; execute only beneath private ancestors. No download, new runtime installation or global permission change. Host-specific hash, not a portable artifact pin or license/adoption approval.",
+  "limits": {
+    "maxmemoryBytes": 16777216,
+    "maxclients": 8,
+    "requestBytes": 2097152,
+    "replyBytes": 2097152,
+    "processOutputBytes": 65536,
+    "commandTimeoutMs": 1000,
+    "startupTimeoutMs": 5000,
+    "lifetimeMs": 150000,
+    "teardownTimeoutMs": 2000,
+    "scratchBytes": 2147483648,
+    "retainedEvidenceBytes": 16777216
+  },
+  "policy": "Fresh private directory and owned process only; authenticated TCP loopback and private Unix socket transport. Persistence, replication, modules and disk commands disabled. No existing Redis instance/data use. No payload diagnostics. Parent native trial pending; production_ready=false."
+}

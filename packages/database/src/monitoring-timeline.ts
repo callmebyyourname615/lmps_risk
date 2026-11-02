@@ -1,3 +1,4 @@
+import { readPoolProvenance } from './index.js';
 import { performance } from 'node:perf_hooks';
 import type { Pool } from 'pg';
 import { normalizeSynthetic } from '@lmps/contracts/synthetic-normalization';
@@ -29,7 +30,7 @@ export async function readMonitoringTimeline(pool: Pool, workspace: string, targ
     if ([metadata, riskMeta, alertMeta].some(result => result.rows.length > 100)
       || [...metadata.rows, ...riskMeta.rows, ...alertMeta.rows].reduce((sum, row) => sum + row.bytes, 0) > 8 * 1024 * 1024) tooLarge();
     check();
-    const result: MonitoringTimeline = { version: 'local-monitoring-timeline-1', provenance: 'local_synthetic', execution_mode: 'test', canonical_emission: false,
+    const result: MonitoringTimeline = { version: 'local-monitoring-timeline-1', provenance: readPoolProvenance(pool), execution_mode: 'test', canonical_emission: false,
       workspace_key: workspace, target, as_of: asOf, consistency: 'request_repeatable_read', time_basis: 'recorded_at', revisions: [], assessments: [], alerts: [],
       coverage: { revisions: 0, assessment_runs: 0, assessed_revisions: 0, missing_assessments: 0, alerts: 0, revision_history_complete: true },
       limits: { revisions: 100, assessments: 100, alerts: 100, scope_complete: true },

@@ -39,7 +39,7 @@ before(async()=>{
   config={dsn:dsn(state,'intake'),endpoint:`http://127.0.0.1:${port}/v1/shadow/score`,token_file:join(ml,'auth.token'),public_key_file:join(ml,'public.json')};
 });
 beforeEach(async()=>{
-  await owner.pool.query('TRUNCATE platform.local_label_adjudications,platform.local_risk_job_policy_bindings,platform.local_risk_job_attempts,platform.local_risk_jobs,platform.local_model_receipts,platform.local_model_gate_policies,platform.local_case_outcomes,platform.local_case_events,platform.local_case_alerts,platform.local_cases,platform.local_alert_reviews,platform.local_alerts,platform.local_alert_policies,platform.local_transaction_risks,platform.local_risk_policies');
+  await owner.pool.query('TRUNCATE platform.local_label_adjudications,platform.local_risk_job_policy_bindings,platform.local_risk_job_attempts,platform.local_risk_jobs,platform.local_model_receipts,platform.local_model_gate_policies,platform.local_case_outcomes,platform.local_case_events,platform.local_case_alerts,platform.local_cases,platform.local_alert_reviews,platform.local_user_notification_reads,platform.local_alerts,platform.local_alert_policies,platform.local_transaction_risks,platform.local_risk_policies');
   f=transactionRiskFixture();await writer.append(f.revision);await risks.evaluate(f.request);
 });
 after(async()=>{

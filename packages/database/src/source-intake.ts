@@ -4,7 +4,7 @@ import { createDatabase } from './index.js';
 type SourceTable = 'transfer' | 'transfer_hist' | 'transfer_old' | 'member';
 export interface LocalSourceEvent {
   schema_version: 1;
-  provenance: 'local_synthetic';
+  provenance: 'local_synthetic' | 'user_supplied_file';
   execution_mode: 'test';
   workspace_key: string;
   source_namespace: string;
@@ -45,7 +45,7 @@ export function validateSourceEvent(input: unknown): LocalSourceEvent {
   try {
     const value: unknown = structuredClone(input);
     if (!exact(value, ['schema_version', 'provenance', 'execution_mode', 'workspace_key', 'source_namespace', 'source_generation', 'capture_epoch', 'event_key', 'source_table', 'source_key', 'operation', 'observed_at', 'fields'])) throw new Error();
-    if (value.schema_version !== 1 || value.provenance !== 'local_synthetic' || value.execution_mode !== 'test') throw new Error();
+    if (value.schema_version !== 1 || !['local_synthetic','user_supplied_file'].includes(String(value.provenance)) || value.execution_mode !== 'test') throw new Error();
     for (const name of ['workspace_key', 'source_namespace']) if (typeof value[name] !== 'string' || !/^synthetic_[a-z0-9_]{1,40}$/.test(value[name])) throw new Error();
     for (const name of ['source_generation', 'capture_epoch', 'event_key']) if (typeof value[name] !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,79}$/.test(value[name])) throw new Error();
     if (typeof value.source_table !== 'string' || !['transfer', 'transfer_hist', 'transfer_old', 'member'].includes(value.source_table)) throw new Error();
@@ -106,7 +106,9 @@ export async function appendSourceEvent(client: PoolClient, input: unknown): Pro
   if (process.env.NODE_ENV === 'production' || !['local', 'test'].includes(process.env.LMPS_ENVIRONMENT ?? 'local') || (process.env.LMPS_EXECUTION_MODE ?? 'test') !== 'test') throw new IntakeError('INVALID_EVENT');
   const event = validateSourceEvent(input);
   const identity = [event.workspace_key, event.source_namespace, event.source_generation, event.source_table, JSON.stringify(event.source_key)];
-  const inserted = await client.query('INSERT INTO platform.source_records (workspace_key, source_namespace, source_generation, source_table, source_key) VALUES ($1,$2,$3,$4,$5::jsonb) ON CONFLICT (workspace_key, source_namespace, source_generation, source_table, source_key) DO NOTHING RETURNING record_id', identity);
+  const inserted = event.provenance==='user_supplied_file'
+    ? await client.query('SELECT platform.intake_file_record($1,$2,$3,$4,$5::jsonb) AS record_id',identity)
+    : await client.query('INSERT INTO platform.source_records (workspace_key, source_namespace, source_generation, source_table, source_key) VALUES ($1,$2,$3,$4,$5::jsonb) ON CONFLICT (workspace_key, source_namespace, source_generation, source_table, source_key) DO NOTHING RETURNING record_id',identity);
   // A separate READ COMMITTED statement sees the committed conflict winner.
   const record = inserted.rows[0] ?? (await client.query('SELECT record_id FROM platform.source_records WHERE workspace_key=$1 AND source_namespace=$2 AND source_generation=$3 AND source_table=$4 AND source_key=$5::jsonb', identity)).rows[0];
   if (!record) throw new Error();

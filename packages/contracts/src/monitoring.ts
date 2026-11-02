@@ -11,7 +11,7 @@ export interface MonitoringFilters {
   pattern: string | null; from: string | null; to: string | null; timezone: 'Asia/Vientiane' | 'UTC';
 }
 export interface MonitoringSummary {
-  version: typeof MONITORING_VERSION; provenance: 'local_synthetic'; execution_mode: 'test';
+  version: typeof MONITORING_VERSION; provenance: 'local_synthetic' | 'local_test'; execution_mode: 'test';
   canonical_emission: false; workspace_key: string; as_of: string;
   consistency: 'request_repeatable_read'; time_basis: 'latest_revision_recorded_at';
   filters: MonitoringFilters;
@@ -42,6 +42,7 @@ export interface MonitoringEvidence {
 }
 export interface MonitoringReadSnapshot {
   summary: MonitoringSummary; transactions: MonitoringRecord[]; alerts: MonitoringRecord[]; evidence: Record<string, MonitoringEvidence>;
+  overview?: { alert_states: Record<'open' | 'acknowledged' | 'reviewed', number>; review_queue: { pending: number; urgent: number }; assessment_runs: Array<{ date: string; count: number }> };
   network?: import('./monitoring-network.js').NetworkTransfer[];
 }
 export interface MonitoringFeed {
@@ -104,7 +105,7 @@ export function parseMonitoringFilters(input: unknown): MonitoringFilters {
 /** Response checks are independent of storage and cannot turn absent telemetry into zero. */
 export function isMonitoringSummary(v: unknown): v is MonitoringSummary {
   if (!object(v) || Object.keys(v).sort().join(',') !== 'as_of,assessment_statuses,availability,canonical_emission,consistency,counts,currencies,dimensions,execution_mode,filters,limits,provenance,time_basis,version,workspace_key'
-    || v.version !== MONITORING_VERSION || v.provenance !== 'local_synthetic' || v.execution_mode !== 'test' || v.canonical_emission !== false
+    || v.version !== MONITORING_VERSION || !['local_synthetic','local_test'].includes(String(v.provenance)) || v.execution_mode !== 'test' || v.canonical_emission !== false
     || typeof v.workspace_key !== 'string' || !/^synthetic_[a-z0-9_]{1,40}$/.test(v.workspace_key) || !monitoringTime(v.as_of)
     || v.consistency !== 'request_repeatable_read' || v.time_basis !== 'latest_revision_recorded_at' || !object(v.filters)) return false;
   try {
