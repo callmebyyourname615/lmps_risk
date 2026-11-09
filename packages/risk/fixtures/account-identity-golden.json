@@ -1,0 +1,6 @@
+{
+  "synthetic_only": true,
+  "description": "Public fixture: HMAC-SHA-256 with 32 zero bytes; never a deployed key.",
+  "mapping_sha256_words": ["e841d9ed", "4108e750", "59b325f2", "32658f9c", "3b1f2ead", "ff33c7dc", "d8f364cb", "b3c5328e"],
+  "token_hex_words": ["4195327d", "47f81c00", "ecc3c094", "31de05b7", "0fa49ef2", "aaba3e2c", "16ba0306", "272e09f3"]
+}

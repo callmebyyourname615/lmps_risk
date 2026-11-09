@@ -1,5 +1,13 @@
 # Verification and CI
 
+## Standalone Core verification — 2026-11-04
+
+Core's ordinary and fresh-source suites use a local synthetic Portal policy fixture and no longer require the sibling Portal checkout. `portal-intake-policy.mjs` loads the canonical sibling policy only when its operator-facing default is called; it never falls back to the test fixture. Native tests explicitly inject the fixture and retain policy evidence, approval, currency and replay checks. The sibling Portal's `test/intake-policy-fixture.test.mjs` independently checks fixture fields/hash against its actual bound policy when both projects are tested together.
+
+`pnpm verify:fresh` copies only this repository's Git-visible files. No Portal source or ignored environment/database files are staged; original source mutation and temporary-copy cleanup remain checked. Root `pnpm test` includes `test:intake-tools`, including the binding/preview/application regressions. Workflow tests bind the existing Ubuntu CI configuration to the workspace Node/pnpm pins and test-only environment. Earlier notes about copying three sibling policy files describe the superseded workaround.
+
+Hosted Ubuntu execution still requires a separately authorized publication and an actual GitHub run. Local verification and workflow tests do not establish that result or approve a production Ubuntu release, OCI runtime, legal terms or operational owners.
+
 No.41.1 adds four bulk-plan contract checks, five native worker checks (including actual SIGKILL/resume and OS fencing), and `pnpm test:bulk-files` with six standard-library streaming/dedup/format/privacy tests. All ordinary CI data is invented and uses disposable clusters; no persistent project state or real export is copied. The explicit `pnpm test:bulk:scale --output /absolute/private/new-directory` acceptance separately runs100k→1m backup/restore with invented data and retains private metrics; it is not included in the ordinary test total. The user deferred the flash-drive2GB trial. [Bulk workflow/bounds](../docs/operations/bulk-import.md).
 
 No.40.1 adds seven contract and eight worker/private-CLI tests to the existing Node suites and `pnpm test:source-semantics` (five Python evidence checks) to root `pnpm test`. All use invented bundles; no real mapping, source credentials or database state is needed. Tests distinguish owner-declared coverage from independently verified semantics and operational readiness, including unknown/reversal/time/money/privacy/immutable-version cases. [Source semantics runbook](../docs/operations/source-semantics.md).

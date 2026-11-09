@@ -142,6 +142,26 @@
       "tag": "0019_local_web_push",
       "breakpoints": true
     },
-    { "idx": 20, "version": "7", "when": 1792281600020, "tag": "0020_source_intake_publications", "breakpoints": true }
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1792281600020,
+      "tag": "0020_source_intake_publications",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792281600021,
+      "tag": "0021_local_core_detection",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1792281600022,
+      "tag": "0022_intake_joint_mapping",
+      "breakpoints": true
+    }
   ]
 }

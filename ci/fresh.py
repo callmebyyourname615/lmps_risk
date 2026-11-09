@@ -10,7 +10,6 @@ import tempfile
 
 from security import ROOT, project_files, scan
 
-
 def main():
     files = project_files(ROOT)
     if not scan(ROOT, files):
@@ -22,7 +21,9 @@ def main():
         spec = json.loads((ROOT / 'infrastructure/mariadb/runtime.json').read_text())
         env['LMPS_MARIADB_BASE'] = str(ROOT / '.local/mariadb-runtime' / spec['formula'] / spec['bottle_version'])
     with tempfile.TemporaryDirectory(prefix="lmps-fresh-") as temp:
-        target = Path(temp)
+        owner = Path(temp)
+        target = owner / "repo"
+        target.mkdir()
         for name in files:
             destination = target / name
             destination.parent.mkdir(parents=True, exist_ok=True)

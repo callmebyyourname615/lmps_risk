@@ -5,7 +5,7 @@ import { normalizeSynthetic } from '@lmps/contracts/synthetic-normalization';
 import { parseTimelineTarget, type MonitoringTimeline, type TimelineTarget } from '@lmps/contracts/monitoring-timeline';
 import { riskHash } from '@lmps/risk';
 import { validateTransactionRevision } from './transaction-revisions.js';
-import { validateFrozenTransactionRisk, type FrozenTransactionRisk } from './transaction-risks.js';
+import { validateFrozenTransactionRisk, observationMatchesRevision, type FrozenTransactionRisk } from './transaction-risks.js';
 import { validateAlertRow } from './alerts.js';
 import { MonitoringReadError } from './monitoring-reads.js';
 
@@ -37,10 +37,12 @@ export async function readMonitoringTimeline(pool: Pool, workspace: string, targ
       availability: { account_identity: 'unverified', payment_time: 'unverified', source_connectivity: 'not_attested' } };
     const revisions = await client.query(`SELECT revision_number,payload,publication,to_char(recorded_at AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS at
       FROM platform.local_transaction_revisions WHERE (workspace_key,namespace,transaction_id)=($1,$2,$3) ORDER BY revision_number`, args);
+    const revisionEnvelopes = new Map<number, ReturnType<typeof validateTransactionRevision>>();
     for (const row of revisions.rows) {
       check();
       const revision = validateTransactionRevision({ format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: workspace,
         expected_revision: row.revision_number - 1, transaction: row.payload, ...(row.publication ? { publication: row.publication } : {}) });
+      revisionEnvelopes.set(row.revision_number, revision);
       const transaction = revision.transaction, normalized = revision.publication ? normalizeSynthetic(revision.publication.normalization_input) : null;
       const candidate = normalized?.state === 'known' ? normalized.candidate : null;
       const reversed = candidate ? candidate.cumulative_reversed_amount ?? '0.00' : null;
@@ -67,7 +69,12 @@ export async function readMonitoringTimeline(pool: Pool, workspace: string, targ
       if (request.workspace_key !== workspace || request.run_id !== row.run_id || request.target.namespace !== target.namespace
         || request.target.transaction_id !== target.transaction_id || request.target.revision_number !== row.revision_number) throw new MonitoringReadError();
       const bound = value.observation.revision_sha256 !== null;
-      if (bound && (!revision || value.observation.revision_sha256 !== revision.revision_sha256)) throw new MonitoringReadError();
+      if (bound && (!revision || !observationMatchesRevision(value.observation, revisionEnvelopes.get(row.revision_number)!))) throw new MonitoringReadError();
+      // Expose the separately verified legacy envelope hash without changing either frozen evidence or the canonical hash.
+      if (bound && revision && value.observation.revision_sha256 !== revision.revision_sha256) {
+        if (revision.legacy_revision_sha256 && revision.legacy_revision_sha256 !== value.observation.revision_sha256) throw new MonitoringReadError();
+        revision.legacy_revision_sha256 = value.observation.revision_sha256!;
+      }
       frozenByRun.set(row.run_id, { value, hash: row.snapshot_sha256 });
       result.assessments.push({ recorded_at: row.at, bound, core_sha256: riskHash(value.result), result: value.result,
         window: request.policy ? { seconds: request.policy.window_seconds, baseline_windows: request.policy.baseline_windows,

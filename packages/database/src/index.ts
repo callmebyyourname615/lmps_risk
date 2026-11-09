@@ -1,4 +1,7 @@
 import pg, { type PoolConfig } from 'pg';
+export * from './core-detection.js';
+export { analyzeIntakeRevisionHistory, INTAKE_AUDIT_MAX_REVISIONS } from './intake-revision-audit.js';
+export { readIntakeHealth, IntakeHealthError } from './intake-health.js';
 
 export type DatabaseRole = 'app' | 'migration' | 'intake' | 'outbox' | 'reviewer' | 'policy' | 'case';
 export type PostgresStatus = 'available' | 'unavailable' | 'not_configured';
@@ -66,11 +69,12 @@ export { createRuleAssessments, validateRuleVersion, validateAssessmentReport, R
 export { createTransactionRisks, riskObservation, validateFrozenTransactionRisk, type FrozenTransactionRisk } from './transaction-risks.js';
 
 export { createLocalAlerts, createAlertReviews, readLocalAlert, listLocalAlerts, validateAlertRow, type AlertView, type AlertQuery } from './alerts.js';
+export { createCoreInbox } from './core-inbox.js';
 
 export { createRiskJobs, validateRiskJobInput, riskJobInputHash, RiskJobError, type RiskJobClaim } from './risk-jobs.js';
 
 export { listRiskJobs, readRiskJob, readRiskJobAttempts } from './risk-job-reads.js';
-export { createDetectionHandoff, readDetectionHealth, DetectionError } from './detection-handoff.js';
+export { createDetectionHandoff, readDetectionHealth, DetectionError, type DetectionFeatureReader, type DetectionFeatureEvidence } from './detection-handoff.js';
 
 export { createOfflineDatasets, datasetRowsHash, datasetRowHash, datasetIdentity, validateDatasetSnapshot } from './offline-datasets.js';
 

@@ -40,7 +40,7 @@ import { DETECTION_RUNTIME, DetectionRuntime } from './detection-runtime.js';
 import { FeaturesController } from './features.controller.js';
 import { FEATURE_READS, FeatureServingService, loadFeatureFixture, type FeatureCacheRuntime } from './feature-serving.service.js';
 
-export async function createApp(env: NodeJS.ProcessEnv = process.env, featureRuntime?: FeatureCacheRuntime) {
+export async function createApp(env: NodeJS.ProcessEnv = process.env, featureRuntime?: FeatureCacheRuntime, detectionFeatures?: import('@lmps/database').DetectionFeatureReader) {
   const config = readConfig(env);
   const offline = new OfflineMonitoringService(await loadOfflineMonitoringConfig(config.offlineConfig), config.offlineDsn);
   const features = config.featureConfig ? new FeatureServingService(loadFeatureFixture(config.featureConfig), featureRuntime) : null;
@@ -52,7 +52,8 @@ export async function createApp(env: NodeJS.ProcessEnv = process.env, featureRun
   const policies = config.policyDsn ? createRiskPolicies(config.policyDsn) : null;
   const labels = config.policyDsn ? createLabelReviews(config.policyDsn) : null;
   const cases = config.caseDsn ? createLocalCases(config.caseDsn) : null;
-  const detection = new DetectionRuntime(config.detectionDsn, config.detectionWorker);
+  const detectionReader = detectionFeatures ?? (config.detectionFeatureContext && features ? async (target: import('@lmps/risk').RiskTarget, signal: AbortSignal) => features.detectionEvidence(target, signal) : undefined);
+  const detection = new DetectionRuntime(config.detectionDsn, config.detectionWorker, 2000, detectionReader);
   @Module({
     controllers: [HealthController, ...(auth && features ? [FeaturesController] : []), ...(auth ? [OfflineMonitoringController, WebPushController, AlertSummaryController, NotificationPreferencesController, UserNotificationsController, DetectionController, MonitoringController, NotificationsController, OverviewController, SourceController, OperationsController, AuditController, SyncController, TransactionsController, AssessmentsController, TransactionRiskController, AlertsController, RiskJobsController, RiskPoliciesController, CasesController, ModelSignalsController, LabelsController] : [])],
     providers: [PostgresService, { provide: OFFLINE_MONITORING, useValue: offline }, { provide: FEATURE_READS, useValue: features }, { provide: WEB_PUSH, useValue: push }, { provide: DETECTION_RUNTIME, useValue: detection }, {provide: LABEL_REVIEWS,useValue: labels}, {provide: MODEL_TRUST, useValue: modelTrust}, { provide: LOCAL_CASES, useValue: cases }, { provide: RISK_POLICIES, useValue: policies }, { provide: ALERT_REVIEWS, useValue: reviews }, ...(auth ? [LocalAccessGuard, { provide: LOCAL_AUTH, useValue: auth }] : []), { provide: POSTGRES_DATABASE, useValue: database }],

@@ -22,13 +22,5 @@ data/
 *.dump
 *.backup
 *.log
+codex-session-*.md
 .DS_Store
-.ralph-tui/session.json
-.ralph-tui/session.lock
-.ralph-tui/session.json.lock
-.ralph-tui/progress.md
-.ralph-tui/iterations/
-.ralph-tui/lock
-.ralph-tui/*.json
-.ralph-tui/*.lock
-.ralph-tui/reports/

@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from 'node:util';
 import type { Transaction } from './generated/transaction.js';
 import { normalizeSynthetic, type SyntheticNormalizationInput } from './synthetic-normalization.js';
 import { sourcePublicationTransaction, type SourcePublication } from './source-publication.js';
+import { unresolvedIdentityAccount } from './account-identity.js';
 
 export const PUBLISHER_VERSION = 'synthetic-publisher-0.1.0-draft.1';
 export interface PublicationBinding {
@@ -37,7 +38,8 @@ export function validatePublicationBinding(input: unknown): PublicationBinding {
 
 // Recompute from strict raw input: a caller-provided candidate/status is never proof.
 export function publicationTransaction(input: unknown): { publication: SyntheticPublication; transaction: Transaction } {
-  if (input && typeof input === 'object' && 'publisher_version' in input && input.publisher_version === 'source-intake-publisher-1') return sourcePublicationTransaction(input);
+  if (input && typeof input === 'object' && 'publisher_version' in input
+    && ['source-intake-publisher-1','source-intake-publisher-2'].includes(String(input.publisher_version))) return sourcePublicationTransaction(input);
   try {
     const p = structuredClone(input) as SyntheticPublicationRecord;
     if (!exact(p, ['format', 'provenance', 'execution_mode', 'publisher_version', 'capture_id', 'snapshot_sha256', 'evidence_sha256', 'source', 'binding', 'normalization_input'])
@@ -65,7 +67,7 @@ export function publicationTransaction(input: unknown): { publication: Synthetic
       || raw.observed_at !== s.observed_at || candidate.raw_currency !== b.currency.raw
       || (candidate.synthetic_payment_ref !== null && candidate.synthetic_payment_ref !== b.transaction_id)) throw new Error();
     const id = createHash('sha256').update(JSON.stringify([s.workspace_key, s.source_namespace, b.transaction_id, b.transaction_revision])).digest('hex');
-    const unresolved = { status: 'unresolved' as const, source_representation: 'unknown' as const, reason_code: 'STABLE_IDENTITY_UNVERIFIED' };
+    const unresolved = unresolvedIdentityAccount();
     const transaction: Transaction = { schema_version: '0.1.0-draft.1', execution_mode: 'test',
       run_id: 'synthetic_capture_' + p.capture_id, correlation_id: 'synthetic_' + id,
       transaction_id: b.transaction_id, transaction_revision: b.transaction_revision,
@@ -81,7 +83,8 @@ export function publicationTransaction(input: unknown): { publication: Synthetic
 // Cross-capture replay keeps the first publication and its lineage; later capture source/evidence/bindings remain private files.
 export function publicationIdentity(p: SyntheticPublication) {
   if(p.provenance==='user_supplied_file')return {publisher_version:p.publisher_version,workspace:p.source.workspace_key,namespace:p.source.source_namespace,generation:p.source.source_generation,
-    transaction_id:p.binding.transaction_id,revision:p.binding.transaction_revision,expected_revision:p.binding.expected_revision,values:p.origin.values,mapping:p.origin.mapping};
+    transaction_id:p.binding.transaction_id,revision:p.binding.transaction_revision,expected_revision:p.binding.expected_revision,values:p.origin.values,mapping:p.origin.mapping,
+    ...(p.publisher_version==='source-intake-publisher-2'?{review:p.origin.review}:{})};
   const { source_reference: _reference, observed_at: _observed, ...raw } = p.normalization_input;
   const { event_key: _event, ...binding } = p.binding;
   return { publisher_version: p.publisher_version, workspace_key: p.source.workspace_key,

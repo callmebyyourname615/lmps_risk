@@ -66,6 +66,8 @@ def encoded(value):
 def decode_field(value):
     if value == r"\N":
         return None
+    if "\\" not in value:
+        return value
     escapes = {"\\": "\\", "t": "\t", "n": "\n", "r": "\r", "0": "\0"}
     result, i = [], 0
     while i < len(value):

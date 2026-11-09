@@ -1,5 +1,4 @@
 import { createHash } from 'node:crypto';
-import { createPolicyWorkspace,policyHash } from '../../LMPS_Risk_Portal/src/policies.ts';
 import { createDatabase,createRiskPolicies,createRiskJobs,createDetectionHandoff,createRuleAssessments,RULE_EVALUATOR_VERSION } from '../packages/database/dist/index.js';
 import { dsn } from '../packages/database/scripts/local.mjs';
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -7,7 +6,8 @@ const uuid=value=>{const h=hash(value);return `${h.slice(0,8)}-${h.slice(8,12)}-
 
 // Copy the existing Portal binding and its literal values into the owned Intake test environment.
 // The original Portal two amount rules also execute unchanged through the existing backtest module.
-export async function configurePortalIntakePolicy(state) {
+export async function configurePortalIntakePolicy(state, source) {
+  const {createPolicyWorkspace,policyHash}=source??await import('../../LMPS_Risk_Portal/src/policies.ts');
   const portal=createPolicyWorkspace(),ids=[...new Set(portal.bindings.map(binding=>binding.policyId))];
   if(ids.length!==1)throw Error('Ambiguous Portal policy binding.');
   const selected=portal.policies.find(policy=>policy.id===ids[0]);

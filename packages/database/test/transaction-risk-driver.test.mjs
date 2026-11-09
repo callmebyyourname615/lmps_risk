@@ -5,6 +5,29 @@ import pg from 'pg';
 import { evaluateTransactionRisk, riskHash, validateRiskRequest } from '@lmps/risk';
 import { createTransactionRisks, riskObservation, validateFrozenTransactionRisk } from '../dist/index.js';
 import { transactionRiskFixture } from './fixtures/transaction-risk.mjs';
+import { makeSourcePublication } from '@lmps/contracts/source-publication';
+import { validateTransactionRevision } from '../dist/transaction-revisions.js';
+import { observationMatchesRevision } from '../dist/transaction-risks.js';
+
+test('unnormalized file observations retain their exact legacy envelope binding without accepting corruption', () => {
+  const projected=makeSourcePublication({workspace:'synthetic_local',namespace:'synthetic_csv',generation:randomUUID(),batch:randomUUID(),
+    dataset_sha256:'a'.repeat(64),rows_sha256:'b'.repeat(64),source_namespace:'lmps_transfer',row_number:1,
+    values:['1','2026-11-03 00:00:00','1.00','LAK','ERROR','2026-11-03 00:00:01'],observed_at:'2026-11-04T00:00:00.000Z',expected_revision:0});
+  const raw={format:1,provenance:'local_synthetic',execution_mode:'test',workspace_key:'synthetic_local',expected_revision:0,...projected};
+  const target={namespace:'synthetic_csv',transaction_id:raw.transaction.transaction_id,revision_number:1};
+  const observation=riskObservation(target,raw),canonical=validateTransactionRevision(raw);
+  assert.equal(observation.status,'not_normalized');
+  assert.notEqual(observation.revision_sha256,riskHash(canonical));
+  assert.equal(observationMatchesRevision(observation,canonical),true);
+  for(const change of [o=>o.revision_sha256='f'.repeat(64),o=>o.amount='1.00',o=>o.status='invalid']){
+    const corrupt=structuredClone(observation);change(corrupt);assert.equal(observationMatchesRevision(corrupt,canonical),false);
+  }
+  const changed=structuredClone(canonical);changed.transaction.amount='2.00';
+  assert.equal(observationMatchesRevision(observation,changed),false);
+  const f=transactionRiskFixture();
+  assert.equal(observationMatchesRevision(f.observation,f.revision),true);
+  assert.equal(observationMatchesRevision({...f.observation,revision_sha256:riskHash({...f.revision,provenance:'user_supplied_file'})},f.revision),false);
+});
 
 async function driver(t, handle) {
   const calls = [], client = { async query(sql, args) { calls.push(sql); return handle(sql, args); }, release() {} };

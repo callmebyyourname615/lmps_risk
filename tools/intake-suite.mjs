@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { ROOT } from '../packages/database/scripts/local.mjs';
 
 export const INTAKE_SUITES = [
+  ['intake-tools', 'tools'],
   ['contracts', 'packages/contracts/test'], ['risk', 'packages/risk/test'],
   ['database', 'packages/database/test'], ['workers', 'apps/risk-workers/test'],
   ['api', 'apps/risk-api/test'], ['portal', '../LMPS_Risk_Portal/test'],

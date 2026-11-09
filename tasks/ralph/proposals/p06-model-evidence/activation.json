@@ -1,0 +1,26 @@
+{
+  "status": "proposal",
+  "executable": false,
+  "registrationPerformed": false,
+  "implementationApproved": false,
+  "trackerPrepared": true,
+  "trackerPath": "tasks/ralph/batches/rlp-b14.json",
+  "selectedHome": "pluse",
+  "candidateBatchId": "rlp-b14",
+  "supportsRequirements": ["P06-01", "P06-02", "P06-04"],
+  "targetRequirementsCompleted": [],
+  "productionReady": false,
+  "activationRequires": [
+    "Explicit approval of the four product implementation stories and exact write scope",
+    "Isolated workspace prepared from current reviewed application and canonical Portal source",
+    "Protected launcher/config/path reconciliation after repository relocation",
+    "Reviewed exact manifest and unchanged fixed quality/resource/deadline/source-plan-Git checks",
+    "Explicit disposable host fixture and real browser verification authority"
+  ],
+  "unverifiedProductionInputs": [
+    "Source permissions, lifecycle, timezone, history and revision attestation",
+    "Stable account identity, masking boundary and account linkage",
+    "Independent eligible labels and reviewed outcome/model/policy meaning",
+    "Production identity, ownership, legal, retention, workload/SLO and release adoption"
+  ]
+}

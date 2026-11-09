@@ -55,6 +55,37 @@ class SecurityTests(unittest.TestCase):
             self.assertIn("FAIL secret finding", output.getvalue())
             self.assertNotIn(value, output.getvalue())
 
+    def test_intake_migration_review_retains_secret_scanning_and_sql_path_boundary(self):
+        name = "packages/database/migrations/0020_source_intake_publications.sql"
+        value = "synthetic" + "Credential" + "93746152" + "zY"
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            path = root / name
+            path.parent.mkdir(parents=True)
+            path.write_text("CREATE TABLE synthetic_example (id bigint);\n")
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertTrue(security.scan(root, [name]))
+                for other in ("private/0020_source_intake_publications.sql", "packages/database/migrations/0021_unreviewed.sql"):
+                    self.assertFalse(security.scan(root, [other]))
+                path.write_text("SET password = '" + value + "';\n")
+                self.assertFalse(security.scan(root, [name]))
+            self.assertIn("FAIL publication policy", output.getvalue())
+            self.assertIn("FAIL secret finding", output.getvalue())
+            self.assertNotIn(value, output.getvalue())
+
+    def test_core_migration_is_scanned_and_other_sql_remains_blocked(self):
+        name = "packages/database/migrations/0021_local_core_detection.sql"
+        self.assertFalse(security.forbidden_file(name))
+        self.assertTrue(security.forbidden_file("private/0021_local_core_detection.sql"))
+        self.assertTrue(security.forbidden_file("packages/database/migrations/0021_unreviewed.sql"))
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / name
+            path.parent.mkdir(parents=True)
+            path.write_text("SET password = '" + "synthetic" + "Credential" + "93746152" + "zY';\n")
+            with redirect_stdout(io.StringIO()):
+                self.assertFalse(security.scan(Path(temp), [name]))
+
     def test_symlink_rejected_without_following_target(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -150,6 +181,18 @@ class SecurityTests(unittest.TestCase):
 
 
 class TemplateTests(unittest.TestCase):
+    def test_github_template_matches_workspace_toolchain_and_test_environment(self):
+        template = yaml.load((security.ROOT / ".github/workflows/verify.yml").read_text(), Loader=yaml.BaseLoader)
+        manifest = json.loads((security.ROOT / "package.json").read_text())
+        job = template["jobs"]["verify"]
+        self.assertEqual(job["runs-on"], "ubuntu-24.04")
+        self.assertEqual(job["env"]["LMPS_ENVIRONMENT"], "test")
+        self.assertEqual(job["env"]["LMPS_EXECUTION_MODE"], "test")
+        setup = next(step for step in job["steps"] if step.get("uses", "").startswith("actions/setup-node@"))
+        self.assertEqual(setup["with"]["node-version"], (security.ROOT / ".node-version").read_text().strip())
+        self.assertEqual(setup["with"]["node-version"], manifest["devEngines"]["runtime"]["version"])
+        self.assertIn({"run": "npm install --global " + manifest["packageManager"]}, job["steps"])
+
     def test_github_template_has_pinned_actions_and_read_only_permissions(self):
         template = yaml.load((security.ROOT / ".github/workflows/verify.yml").read_text(), Loader=yaml.BaseLoader)
         self.assertEqual(template["permissions"], {"contents": "read"})

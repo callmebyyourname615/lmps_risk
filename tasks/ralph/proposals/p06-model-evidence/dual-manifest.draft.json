@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "batchId": "rlp-b14",
+  "predecessor": "rlp-b13",
+  "state": "draft",
+  "roots": { "backend": "current-checkout", "portal": "sibling:LMPS_Risk_Portal" },
+  "tracker": "tasks/ralph/batches/rlp-b14.json",
+  "tasks": [
+    {
+      "id": "US-1401",
+      "dependsOn": [],
+      "files": { "backend": [], "portal": ["src/api/model-receipt-client.ts", "src/api/alert-client.ts", "vite.config.ts", "test/api-model-receipts.test.mjs"] },
+      "checkGroup": "portal"
+    },
+    {
+      "id": "US-1402",
+      "dependsOn": ["US-1401"],
+      "files": { "backend": [], "portal": ["src/ModelReceiptPanel.tsx", "src/locales/api-model-receipts.ts", "src/api-model-receipts.css", "src/ApiHealthPage.tsx", "src/locales/api-health.ts", "test/support/model-receipt-fixture.mjs", "test/api-model-receipts-native.mjs"] },
+      "checkGroup": "portal-browser"
+    },
+    {
+      "id": "US-1403",
+      "dependsOn": ["US-1402"],
+      "files": { "backend": [], "portal": ["test/api-model-receipts.test.mjs", "test/api-model-receipts-native.mjs", "test/support/model-receipt-fixture.mjs"] },
+      "checkGroup": "portal-browser"
+    },
+    {
+      "id": "US-1404",
+      "dependsOn": ["US-1403"],
+      "files": { "backend": ["docs/implementation-status/current.md"], "portal": ["MODEL-RECEIPTS-API.md"] },
+      "checkGroup": "full"
+    }
+  ],
+  "verification": {
+    "selectedHome": "pluse",
+    "minimumFreeBytes": 6442450944,
+    "agentTimeoutMs": 1200000,
+    "checkTimeoutMs": 600000,
+    "buildTimeoutMs": 180000,
+    "nativeTrialTimeoutMs": 180000,
+    "nodeSuiteTimeoutMs": 480000,
+    "agentNetworkEnabled": false,
+    "hostLoopbackOnly": true,
+    "automaticRetry": false,
+    "automaticAccountRotation": false,
+    "automaticCommit": false,
+    "productionReady": false
+  }
+}

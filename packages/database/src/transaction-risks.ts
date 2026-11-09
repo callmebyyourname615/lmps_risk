@@ -4,7 +4,7 @@ import { normalizeSynthetic } from '@lmps/contracts/synthetic-normalization';
 import { evaluateTransactionRisk, riskHash, RiskError, validateRiskRequest, validateRiskObservation,
   type RiskObservation, type RiskTarget, type TransactionRiskRequest, type TransactionRiskResult } from '@lmps/risk';
 import { createDatabase } from './index.js';
-import { validateTransactionRevision } from './transaction-revisions.js';
+import { validateTransactionRevision, type LocalTransactionRevision } from './transaction-revisions.js';
 
 export interface FrozenTransactionRisk { request: TransactionRiskRequest; observation: RiskObservation; result: TransactionRiskResult }
 export function riskObservation(target: RiskTarget, raw: unknown | null): RiskObservation {
@@ -22,6 +22,15 @@ export function riskObservation(target: RiskTarget, raw: unknown | null): RiskOb
       reversed_amount: normalized.candidate?.cumulative_reversed_amount ?? '0.00', currency: tx.currency,
       transaction_status: tx.transaction_status, observed_at: tx.observed_at });
   } catch { return absent; }
+}
+/** Bind immutable evidence, including the legacy pre-upgrade envelope used for unnormalized file rows. */
+export function observationMatchesRevision(observation: RiskObservation, revision: LocalTransactionRevision): boolean {
+  if (observation.revision_sha256 === riskHash(revision)) return true;
+  if (observation.status !== 'not_normalized' || revision.provenance !== 'user_supplied_file'
+    || revision.publication?.provenance !== 'user_supplied_file') return false;
+  const target = { namespace: revision.transaction.source_reference.namespace,
+    transaction_id: revision.transaction.transaction_id, revision_number: revision.expected_revision + 1 };
+  return isDeepStrictEqual(observation, riskObservation(target, { ...revision, provenance: 'local_synthetic' }));
 }
 export function validateFrozenTransactionRisk(input: unknown, digest: string): FrozenTransactionRisk {
   try {

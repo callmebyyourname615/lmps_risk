@@ -177,7 +177,7 @@ test('pre-audit backups still restore their original schema and migration prefix
   const legacy = await verifyBackup(legacyBackup.directory); assert.equal(legacy.tables['platform.audit_events'], undefined);
   const result = await restoreDrill(legacyBackup.directory); assert.equal(result.status, 'PASS');
   assert.equal(result.table_counts['platform.audit_events'], undefined); assert.equal(result.table_counts['lmps_migrations.__drizzle_migrations'], 4);
-  assert.equal((await owner.pool.query('SELECT count(*)::int AS n FROM lmps_migrations.__drizzle_migrations')).rows[0].n, 21);
+  assert.equal((await owner.pool.query('SELECT count(*)::int AS n FROM lmps_migrations.__drizzle_migrations')).rows[0].n, 23);
 });
 
 

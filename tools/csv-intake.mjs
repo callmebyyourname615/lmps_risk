@@ -15,7 +15,8 @@ import { configurePortalIntakePolicy,evaluatePortalAmountRules,drainIntakeDetect
 const execute=promisify(execFile),digest=value=>createHash('sha256').update(value).digest('hex');
 const uuid=hex=>`${hex.slice(0,8)}-${hex.slice(8,12)}-4${hex.slice(13,16)}-a${hex.slice(17,20)}-${hex.slice(20,32)}`;
 
-export async function importCsvFile(path) {
+export async function importCsvFile(path, { evaluate = true } = {}) {
+  if(typeof evaluate!=='boolean')throw Error();
   const profile=runtimeProfile();if(profile.profile!=='intake')throw Error();
   const state=await loadState(profile.stateDirectory),source=await open(resolve(path),constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);
   let bytes;
@@ -43,18 +44,18 @@ export async function importCsvFile(path) {
   const snapshot=await readOfflineDataset(request.manifest,copy);
   const staged=await importOfflineDataset(connection,snapshot);
   const published=await publishOfflineBatch(connection,{...request.publication,batch_ref:staged.batch_ref});
-  let risk={status:'publication_incomplete'};
-  if(published.status==='complete'){
+  let risk={status:published.status==='complete'&&!evaluate?'not_requested':'publication_incomplete'};
+  if(published.status==='complete'&&evaluate){
     const {selected,receipt}=await configurePortalIntakePolicy(state);
     await writeFile(join(ROOT,'.local/environments/intake/portal-policy.json'),JSON.stringify(receipt,null,2),{mode:0o600});
     const assessments=await evaluatePortalAmountRules(state,selected);
     await writeFile(join(directory,'amount-assessments.json'),JSON.stringify(assessments,null,2),{mode:0o600});
     risk={status:'evaluated',amount_assessment_batches:assessments.length,...await drainIntakeDetection(state)};
   }
-  const report={...published,staging_status:staged.status,publication_request_sha256:digest(JSON.stringify(request.publication)),risk_dispatch:'existing_detection_worker_policy_binding',risk,production_sync:false};
+  const report={...published,staging_status:staged.status,publication_request_sha256:digest(JSON.stringify(request.publication)),risk_dispatch:evaluate?'existing_detection_worker_policy_binding':'not_requested',risk,production_sync:false};
   await writeFile(join(directory,'result.json'),JSON.stringify(report,null,2),{mode:0o600});return report;
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  try{const {values}=parseArgs({options:{input:{type:'string'}}});if(!values.input)throw Error();const result=await importCsvFile(values.input);console.info(JSON.stringify(result));if(result.status!=='complete')process.exitCode=2;}
+  try{const {values}=parseArgs({options:{input:{type:'string'},'publish-only':{type:'boolean',default:false}}});if(!values.input)throw Error();const result=await importCsvFile(values.input,{evaluate:!values['publish-only']});console.info(JSON.stringify(result));if(result.status!=='complete')process.exitCode=2;}
   catch{console.error('CSV_INTAKE_FAILED; committed progress and private receipts retained; source values and credentials withheld.');process.exitCode=1;}
 }

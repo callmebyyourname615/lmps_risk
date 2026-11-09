@@ -15,7 +15,6 @@ lightgbm = { "cmake.define.USE_OPENMP" = "OFF" }
 
 [tool.uv.workspace]
 members = ["services/*", "tools/*"]
-exclude = ["tools/ralph"]
 
 [dependency-groups]
 security = [

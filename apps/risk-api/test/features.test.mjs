@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 import { readFileSync, mkdirSync, mkdtempSync, writeFileSync, rmSync, statSync, symlinkSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -103,6 +104,20 @@ test('private B07 fixture reads are bounded, scope-bound and read only; config r
 });
 test('feature and app imports are inert without fixtures or native services', () => {
   for(const name of ['feature-serving.service.js','features.controller.js','app.js']) execFileSync(process.execPath,['--input-type=module','-e',`await import(${JSON.stringify(new URL('../dist/'+name,import.meta.url).href)})`],{timeout:10000,stdio:'pipe'});
+});
+test('explicit configured detection evidence binds one target and never falls back from required cache', () => {
+  const selected = structuredClone(scope); selected.plan.queries = [selected.plan.queries[0]];
+  const p = publication(corpus.events, selected), target = { namespace: selected.plan.namespace, transaction_id: selected.plan.queries[0].target, revision_number: 1 };
+  const s = new FeatureServingService({...fixture,scope:selected},undefined,{publication:()=>p});
+  const signal = new AbortController();
+  const result = s.detectionEvidence(target,signal.signal,'2026-01-01T12:01:00Z');
+  assert.equal(result.publication,p);assert.equal(result.serving_request.query.target,target.transaction_id);
+  assert.throws(()=>s.detectionEvidence({...target,namespace:'synthetic_other'},signal.signal));
+  signal.abort();assert.throws(()=>s.detectionEvidence(target,signal.signal));
+  assert.throws(()=>new FeatureServingService({...fixture,scope:selected,cache_policy:'required'},undefined,{publication:()=>assert.fail('fallback')}).detectionEvidence(target,new AbortController().signal));
+  for(const env of [{LMPS_DETECTION_FEATURE_CONTEXT:'1'},{LMPS_DETECTION_FEATURE_CONTEXT:'yes'}])assert.throws(()=>readConfig(env));
+  const dsn=role=>{const url=new URL('postgresql://127.0.0.1:18503/lmps_risk_local');url.username=role;url.password=randomUUID();return url.href;};
+  assert.equal(readConfig({LMPS_POSTGRES_DSN:dsn('lmps_app'),LMPS_LOCAL_AUTH_CONFIG:'/private/auth.json',LMPS_LOCAL_DETECTION_DSN:dsn('lmps_intake'),LMPS_LOCAL_FEATURE_CONFIG:'/private/features.json',LMPS_DETECTION_FEATURE_CONTEXT:'1'}).detectionFeatureContext,true);
 });
 test('real existing auth guard enforces token/permission before controller and workspace IO', async () => {
   const root=resolve('.local');mkdirSync(root,{recursive:true,mode:0o700});const dir=mkdtempSync(join(root,'feature-unit-'));

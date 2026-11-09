@@ -10,6 +10,9 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 SYNTHETIC_SQL = "tools/schema-metadata/tests/fixtures/schema.sql"
 REVIEWED_MIGRATIONS = {"packages/database/migrations/0000_foundation.sql", "packages/database/migrations/0001_local_source_intake.sql", "packages/database/migrations/0002_intake_column_grants.sql", "packages/database/migrations/0003_local_outbox.sql", "packages/database/migrations/0004_local_audit.sql", "packages/database/migrations/0005_local_sync_jobs.sql", "packages/database/migrations/0006_local_transaction_revisions.sql", "packages/database/migrations/0007_local_normalization_publications.sql", "packages/database/migrations/0008_local_rule_assessments.sql", "packages/database/migrations/0009_local_transaction_risks.sql", "packages/database/migrations/0010_local_alerts.sql", "packages/database/migrations/0011_local_risk_jobs.sql", "packages/database/migrations/0012_offline_datasets.sql", "packages/database/migrations/0013_local_risk_policy_lifecycle.sql", "packages/database/migrations/0014_local_cases.sql", "packages/database/migrations/0015_local_model_receipts.sql", "packages/database/migrations/0016_local_label_adjudications.sql", "packages/database/migrations/0017_local_user_notifications.sql", "packages/database/migrations/0018_local_notification_preferences.sql", "packages/database/migrations/0019_local_web_push.sql"}
+REVIEWED_MIGRATIONS.add("packages/database/migrations/0020_source_intake_publications.sql")
+REVIEWED_MIGRATIONS.add("packages/database/migrations/0021_local_core_detection.sql")
+REVIEWED_MIGRATIONS.add("packages/database/migrations/0022_intake_joint_mapping.sql")
 PRIVATE_SUFFIXES = {".pem", ".key", ".p12", ".pfx", ".dump", ".backup", ".csv", ".parquet", ".jsonl", ".sql"}
 PRIVATE_DIRECTORIES = {"secrets", "private", "data", ".local", ".venv", "node_modules", "dist", "__pycache__"}
 

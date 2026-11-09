@@ -33,7 +33,7 @@ export async function openCoreApi(state, port, options = {}) {
     const auth = await authFixture(directory);
     const offlineConfig = options.offlineMonitoringConfig ?? process.env.LMPS_LOCAL_OFFLINE_CONFIG;
     ({ app } = await createApp({ LMPS_ENVIRONMENT: 'local', ...(process.env.LMPS_WEB_PUSH_CONFIG ? {LMPS_WEB_PUSH_CONFIG:process.env.LMPS_WEB_PUSH_CONFIG} : {}), ...(process.env.LMPS_WEB_PUSH_WORKER ? {LMPS_WEB_PUSH_WORKER:process.env.LMPS_WEB_PUSH_WORKER} : {}), LMPS_EXECUTION_MODE: 'test', LMPS_API_PORT: String(port),
-      LMPS_POSTGRES_DSN: dsn(state), LMPS_LOCAL_AUTH_CONFIG: auth.path, ...(process.env.LMPS_READ_NAMESPACE?{LMPS_READ_NAMESPACE:process.env.LMPS_READ_NAMESPACE}:{}), ...(options.modelPublicKeyFile ? {LMPS_ML_PUBLIC_KEY_FILE: options.modelPublicKeyFile} : {}),
+      LMPS_POSTGRES_DSN: dsn(state), LMPS_LOCAL_AUTH_CONFIG: auth.path, ...(process.env.LMPS_LOCAL_FEATURE_CONFIG ? {LMPS_LOCAL_FEATURE_CONFIG:process.env.LMPS_LOCAL_FEATURE_CONFIG} : {}), ...(process.env.LMPS_DETECTION_FEATURE_CONTEXT ? {LMPS_DETECTION_FEATURE_CONTEXT:process.env.LMPS_DETECTION_FEATURE_CONTEXT} : {}), ...(process.env.LMPS_READ_NAMESPACE?{LMPS_READ_NAMESPACE:process.env.LMPS_READ_NAMESPACE}:{}), ...(options.modelPublicKeyFile ? {LMPS_ML_PUBLIC_KEY_FILE: options.modelPublicKeyFile} : {}),
       ...(offlineConfig ? { LMPS_LOCAL_OFFLINE_CONFIG: offlineConfig, LMPS_LOCAL_OFFLINE_DSN: dsn(state, 'intake') } : {}),
       LMPS_LOCAL_REVIEW_DSN: dsn(state, 'reviewer'), LMPS_LOCAL_POLICY_DSN: dsn(state, 'policy'), LMPS_LOCAL_CASE_DSN: dsn(state, 'case'),
       LMPS_LOCAL_DETECTION_DSN: dsn(state, 'intake'), LMPS_DETECTION_WORKER: options.detectionWorker === true ? '1' : '0' }));

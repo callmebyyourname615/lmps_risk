@@ -1,6 +1,8 @@
 import { BadRequestException, Controller, Get, Header, Inject, Param, Query, Req, ServiceUnavailableException, SetMetadata, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiParam, ApiProperty, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Database } from '@lmps/database';
+import { readIntakeHealth, IntakeHealthError } from '@lmps/database';
+import { intakeHealthSchema } from './intake-health.schema.js';
 import { LOCAL_SCOPE, LocalAccessGuard, type ScopedRequest } from './local-auth.js';
 import { POSTGRES_DATABASE } from './postgres.service.js';
 
@@ -31,6 +33,24 @@ class SourcePage {
 @Controller('v1/local/source')
 export class SourceController {
   constructor(@Inject(POSTGRES_DATABASE) private readonly database: Database) {}
+  @Get('health')
+  @Header('Cache-Control', 'no-store')
+  @SetMetadata(LOCAL_SCOPE, ['source:read', 'transactions:read', 'policies:read'])
+  @ApiOperation({ summary: 'Read aggregate published file intake evidence in one snapshot; configured namespace, no demo receipts or verified identity' })
+  @ApiOkResponse({ schema: intakeHealthSchema })
+  @ApiResponse({ status: 400, description: 'INTAKE_HEALTH_INVALID_QUERY' })
+  @ApiResponse({ status: 401, description: 'UNAUTHORIZED' })
+  @ApiResponse({ status: 403, description: 'FORBIDDEN' })
+  @ApiResponse({ status: 503, description: 'INTAKE_HEALTH_UNAVAILABLE or INTAKE_HEALTH_SCOPE_TOO_LARGE; no partial counts' })
+  async health(@Req() request: ScopedRequest, @Query() query: Record<string, unknown>) {
+    if (Object.keys(query).length) throw new BadRequestException({ code: 'INTAKE_HEALTH_INVALID_QUERY', message: 'Intake health does not accept query parameters.' });
+    try {
+      if (!this.database) throw new IntakeHealthError();
+      return await readIntakeHealth(this.database.pool, request.principal.workspace);
+    } catch (error) {
+      throw new ServiceUnavailableException({ code: error instanceof IntakeHealthError ? error.code : 'INTAKE_HEALTH_UNAVAILABLE', message: 'Intake health is unavailable; private values withheld.' });
+    }
+  }
   @Get('captures/:capture_id/events')
   @Header('Cache-Control', 'no-store')
   @ApiOperation({ summary: 'Read synthetic source evidence in the authenticated workspace; not a payment/score API' })

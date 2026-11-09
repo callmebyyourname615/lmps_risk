@@ -1,0 +1,91 @@
+{
+  "name": "Proposed P06 read-only Model receipt inspection",
+  "branchName": "ralph/p06-model-receipt-inspection",
+  "description": "Unregistered proposal only. Implementation requires the separate activation gates in activation.json. Inspect existing local synthetic Model receipts within canonical Portal Health without changing backend APIs, identity or production gates.",
+  "userStories": [
+    {
+      "id": "US-1401",
+      "title": "Add the fixed Model receipt GET client and configured proxy",
+      "description": "As an analyst, I want an explicit known request lookup so that I can inspect the existing backend-validated local model evidence.",
+      "acceptanceCriteria": [
+        "Change only canonical Portal src/api/model-receipt-client.ts, src/api/alert-client.ts, vite.config.ts and test/api-model-receipts.test.mjs after separately approved registration.",
+        "Use only GET /v1/local/model-receipts/:request_id with strict lowercase UUIDv4, the existing memory-only same-origin bearer session, omitted cookies, no-store, abort and existing configured runtime target. No arbitrary URLs or caller credentials.",
+        "Validate the existing exact ModelReceiptView, request_id equality, policy/model/task references, canonical nine-decimal probability strings, allowed null/unavailable forms and synthetic_shadow_only/training_eligible=false/enforcement=false markers. Do not invent a workspace_key absent from this DTO; bind request lifecycle to the verified session and enforce tenancy in backend fixture tests.",
+        "The envelope intentionally has no locale. Bypass localization-envelope validation only for this fixed GET. Preserve every existing transport and proxy route/profile.",
+        "Keep null receipt, unavailable model, ML_NOT_CONFIGURED, ML_STORAGE_UNAVAILABLE, 401/403, invalid input, malformed response and network errors distinguishable; never substitute zero, safe or demo evidence.",
+        "Do not recompute receipt_sha256 from the redacted DTO or claim browser verification of the original snapshot/signature. Do not infer request_id equals assessment_run_id.",
+        "No backend API/schema, business write, model fitting/inference, dependency, login/logout, account rotation, production permission or source-account assumption is authorized by this proposal.",
+        "Quality gate in canonical Portal: ./node_modules/.bin/tsc --noEmit --incremental false",
+        "Quality gate in canonical Portal: node --experimental-strip-types --test test/*.test.mjs",
+        "Quality gate in canonical Portal: ./node_modules/.bin/vite build"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": "",
+      "dependsOn": []
+    },
+    {
+      "id": "US-1402",
+      "title": "Integrate an explicit Model receipt inspection panel into Health",
+      "description": "As an analyst, I want a read-only Health panel so that I can inspect a known receipt and its original references without changing business state.",
+      "acceptanceCriteria": [
+        "Change only canonical Portal src/ModelReceiptPanel.tsx, src/locales/api-model-receipts.ts, src/api-model-receipts.css, src/ApiHealthPage.tsx, src/locales/api-health.ts, test/support/model-receipt-fixture.mjs and test/api-model-receipts-native.mjs.",
+        "Add a Model inspection tab using an explicit known request UUID; retain Detection/Operations/Risk/Sync behavior and existing session/permissions, tokens/fonts, EN/LO, shared disclosure, keyboard and reduced-motion behavior.",
+        "Display exact returned policy/task/model/version/artifact/dataset/feature/receipt references, probabilities and recorded actor/time. Keep raw probability strings and synthetic scope; do not average model probabilities and rule risk indices or imply production accuracy.",
+        "Offer Assessment and Alert links only from validated returned IDs, with no inferred hash parameter or fabricated reverse lookup. A request UUID may differ from its Assessment run UUID. No receipt inventory is inferred from a single lookup endpoint.",
+        "Treat receipt_sha256 as a stored reference; no browser-verification badge, fabricated external artifact bytes or historical current-cache linkage. Preserve null/unknown/unavailable meanings and all production/source/identity gates.",
+        "Hide obsolete evidence on request, tab, route, locale or session changes; abort old reads. Error/retry, refresh, null receipt, missing trust, denial and unavailable model remain explicit. Never fall back to fixture data in product code.",
+        "Introduce a real executable native browser smoke and owned disposable fixture; it must exercise an actual backend GET and validate UI behavior. No project business database writes, real source, model fitting, inference, new dependency or service adoption.",
+        "Quality gate in canonical Portal: ./node_modules/.bin/tsc --noEmit --incremental false",
+        "Quality gate in canonical Portal: node --experimental-strip-types --test test/*.test.mjs",
+        "Quality gate in canonical Portal: ./node_modules/.bin/vite build",
+        "UI quality gate in canonical Portal: node test/api-model-receipts-native.mjs using the existing explicit Playwright module and approved owned fixtures; actual browser evidence is mandatory"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "",
+      "dependsOn": ["US-1401"]
+    },
+    {
+      "id": "US-1403",
+      "title": "Accept native Model receipt reads and the complete browser state matrix",
+      "description": "As a reviewer, I want actual scoped API and browser proof so that unavailable or stale model evidence cannot be presented as a successful result.",
+      "acceptanceCriteria": [
+        "Extend only canonical Portal test/api-model-receipts.test.mjs, test/api-model-receipts-native.mjs and test/support/model-receipt-fixture.mjs. Preserve all implementation and original test assertions.",
+        "Use actual NestJS, an owned disposable PostgreSQL fixture and existing synthetic signed model fixture patterns. Cover available and unavailable receipts, null/foreign request IDs, distinct request/run IDs, optional Alert references, missing trust, corrupt storage, outage/recovery and both required scopes.",
+        "Browser acceptance must exercise loading/empty/error/denied/unavailable/ready states, exact nine-decimal values and hashes, request and session races, stale read cancellation, refresh/retry and safe navigation. Capture actual requests and prove no business POST or fixture fallback occurred.",
+        "Verify EN/LO, keyboard navigation, shared disclosures, reduced motion and 320/375/414/768px layouts without overflow or runtime errors. Preserve other Health tabs and session renewal.",
+        "Do not claim a client-recomputed snapshot hash, model signature proof, model availability beyond the recorded receipt, calibrated real accuracy, verified accounts, population coverage or production readiness.",
+        "No persistent project writes, real source connection, model fitting/inference, account switching, downloads or new dependencies. Confirm cleanup of only owned processes/listeners/fixtures and retain bounded private receipts with current source hashes.",
+        "Quality gate in canonical Portal: ./node_modules/.bin/tsc --noEmit --incremental false",
+        "Quality gate in canonical Portal: node --experimental-strip-types --test test/*.test.mjs",
+        "Quality gate in canonical Portal: ./node_modules/.bin/vite build",
+        "UI quality gate in canonical Portal: node test/api-model-receipts-native.mjs using the existing explicit Playwright module and approved owned fixtures; actual browser evidence is mandatory"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "",
+      "dependsOn": ["US-1402"]
+    },
+    {
+      "id": "US-1404",
+      "title": "Close the local Model receipt readback with current-source checks and honest handoff",
+      "description": "As a maintainer, I want a reproducible local handoff so that future work can distinguish accepted read-only support from unverified production targets.",
+      "acceptanceCriteria": [
+        "Change only canonical Portal MODEL-RECEIPTS-API.md and an append to backend docs/implementation-status/current.md. Preserve all prior history, original plan/master/catalog/104-item score definitions and earlier task receipts.",
+        "Document the exact GET contract, scope and session boundaries, explicit request lookup, redacted-hash limitation, field meanings, error states, actual commands, evidence paths and source/identity/production gates.",
+        "Run actual final promoted-source native/browser acceptance, independently inspect current source/evidence and zero owned processes/listeners/resources, and append only successful actual evidence. A diagnostic pass or unexecuted command cannot close this story.",
+        "Final backend gates: pnpm typecheck; pnpm test; pnpm build; pnpm verify:fresh; trusted tools/ralph/automation.test.mjs and tools/ralph/current-status.test.mjs; .venv/bin/python -B ci/security.py. Preserve existing disk/resource/deadline/source-plan-Git guards and intermittent MariaDB failure history.",
+        "No root lint script exists; online advisories are separate and must be reported as skipped when offline. Every original P06 target remains open; production_ready=false, training eligibility and enforcement remain false.",
+        "Quality gate in canonical Portal: ./node_modules/.bin/tsc --noEmit --incremental false",
+        "Quality gate in canonical Portal: node --experimental-strip-types --test test/*.test.mjs",
+        "Quality gate in canonical Portal: ./node_modules/.bin/vite build",
+        "UI quality gate in canonical Portal: node test/api-model-receipts-native.mjs using the existing explicit Playwright module and approved owned fixtures; actual browser evidence is mandatory"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "",
+      "dependsOn": ["US-1403"]
+    }
+  ]
+}

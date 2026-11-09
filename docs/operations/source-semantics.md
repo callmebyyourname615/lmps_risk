@@ -1,5 +1,7 @@
 # No.40.1 — LMPS source semantics and risk readiness
 
+The workflow below applies to the22-field pilot bundle. For the newer222-row six-column Intake cohort, use the shared [Intake source contract and15-pattern eligibility audit](intake-source-contract.md); do not fabricate absent selector fields to pass this mapping validator.
+
 `dataset:semantics` validates a versioned source-owner declaration against the verified22-field evidence from No.39.1. It reads private files only: no LMPS connection, PostgreSQL write, migration, normalization, assessment or operational Alert is performed. The existing No.39.1 amount-screen policy/results remain unchanged.
 
 ## Run the real pilot as draft

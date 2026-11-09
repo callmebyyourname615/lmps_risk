@@ -67,6 +67,49 @@ class VerificationTests(unittest.TestCase):
             self.assertEqual((root / "source.py").read_text(), "synthetic source")
             self.assertFalse(targets[0].exists())
 
+    def test_fresh_checkout_needs_no_sibling_and_copies_no_private_state(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "backend"
+            (root / "tools").mkdir(parents=True)
+            (root / "tools/portal-intake-policy.mjs").write_text("// synthetic source")
+            (root / ".env").write_text("private canary never copied")
+            (root / "infrastructure/mariadb").mkdir(parents=True)
+            (root / "infrastructure/mariadb/runtime.json").write_text(json.dumps({"formula": "mariadb@11.8", "bottle_version": "synthetic"}))
+            targets = []
+
+            def command(command, **kwargs):
+                target = kwargs["cwd"]
+                targets.append(target)
+                self.assertEqual((target / "tools/portal-intake-policy.mjs").read_text(), "// synthetic source")
+                self.assertFalse((target / ".env").exists())
+                self.assertFalse((target.parent / "LMPS_Risk_Portal").exists())
+
+            with patch.object(fresh, "ROOT", root), patch.object(fresh, "project_files", return_value=["tools/portal-intake-policy.mjs"]), patch.object(fresh, "scan", return_value=True), patch.object(fresh.subprocess, "run", side_effect=command):
+                self.assertEqual(fresh.main(), 0)
+            self.assertEqual(len(targets), 4)
+            self.assertFalse(targets[0].parent.exists())
+
+    def test_fresh_detects_original_source_changes_and_cleans_temporary_copy(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "source.py").write_text("synthetic source")
+            targets = []
+
+            def command(command, **kwargs):
+                targets.append(kwargs["cwd"])
+                if command == ["pnpm", "verify:offline"]:
+                    (root / "source.py").write_text("changed source")
+
+            with patch.object(fresh, "ROOT", root), patch.object(fresh, "project_files", return_value=["source.py"]), patch.object(fresh, "scan", return_value=True), patch.object(fresh.subprocess, "run", side_effect=command), patch.dict(fresh.os.environ, {"LMPS_MARIADB_BASE": "/synthetic/runtime"}):
+                with self.assertRaisesRegex(RuntimeError, "Original source changed"):
+                    fresh.main()
+            self.assertFalse(targets[0].parent.exists())
+
+    def test_fresh_failed_publication_scan_starts_no_commands(self):
+        with patch.object(fresh, "project_files", return_value=["source.py"]), patch.object(fresh, "scan", return_value=False), patch.object(fresh.subprocess, "run") as run:
+            self.assertEqual(fresh.main(), 1)
+            run.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

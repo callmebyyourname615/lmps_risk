@@ -25,8 +25,10 @@ const MODEL_TABLES = { ...CASE_TABLES, 'platform.local_model_gate_policies': 'wo
 const LABEL_TABLES = { ...MODEL_TABLES, 'platform.local_label_adjudications': 'workspace_key,label_id,version' };
 const INBOX_TABLES = { ...LABEL_TABLES, 'platform.local_user_notification_reads': 'workspace_key,subject,alert_id' };
 const PREFERENCE_TABLES = { ...INBOX_TABLES, 'platform.local_notification_preferences': 'workspace_key,subject' };
-const TABLES = { ...PREFERENCE_TABLES, 'platform.local_web_push_subscriptions':'subscription_id', 'platform.local_web_push_deliveries':'delivery_id' };
-const INVENTORIES = [TABLES, PREFERENCE_TABLES, INBOX_TABLES, LABEL_TABLES, MODEL_TABLES, CASE_TABLES, POLICY_TABLES, OFFLINE_TABLES, RISK_JOB_TABLES, ALERT_TABLES, RISK_TABLES, RULE_TABLES, REVISION_TABLES, JOB_TABLES, AUDIT_TABLES, LEGACY_TABLES];
+const PUSH_TABLES = { ...PREFERENCE_TABLES, 'platform.local_web_push_subscriptions':'subscription_id', 'platform.local_web_push_deliveries':'delivery_id' };
+const TABLES = { ...PUSH_TABLES, 'platform.core_identity_keys':'workspace_key,key_id,key_version',
+  'platform.core_identity_mappings':'workspace_key,namespace,institution,mapping_version', 'platform.core_detection_checkpoints':'workspace_key,runtime_id' };
+const INVENTORIES = [TABLES, PUSH_TABLES, PREFERENCE_TABLES, INBOX_TABLES, LABEL_TABLES, MODEL_TABLES, CASE_TABLES, POLICY_TABLES, OFFLINE_TABLES, RISK_JOB_TABLES, ALERT_TABLES, RISK_TABLES, RULE_TABLES, REVISION_TABLES, JOB_TABLES, AUDIT_TABLES, LEGACY_TABLES];
 const MAX_DUMP_BYTES = 128 * 1024 * 1024;
 const rowLimit = table => table === 'platform.offline_dataset_rows' ? 1_000_000 : 1000;
 const BASE = join(ROOT, '.local/backups');
@@ -195,6 +197,11 @@ export async function restoreDrill(directory) {
     await client.end(); client = undefined;
     await migrations(dsn(state, 'migration'));
     app = createDatabase(dsn(state));
+    if(manifest.tables['platform.core_detection_checkpoints']) {
+      for(const table of ['platform.core_identity_keys','platform.core_identity_mappings','platform.core_detection_checkpoints']) {
+        let denied=false;try{await app.pool.query(`SELECT 1 FROM ${table} LIMIT 1`);}catch(error){denied=error.code==='42501';}if(!denied)throw fail();
+      }
+    }
     if (manifest.tables['platform.local_notification_preferences']) {
       await app.pool.query('SELECT 1 FROM platform.local_notification_preferences LIMIT 1');
       for(const action of ['DELETE FROM','TRUNCATE']) {let denied=false;try{await app.pool.query(`${action} platform.local_notification_preferences`);}catch(error){denied=error.code==='42501';}if(!denied)throw fail();}

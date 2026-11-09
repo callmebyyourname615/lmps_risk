@@ -47,6 +47,9 @@ function baseConfig(env: NodeJS.ProcessEnv) {
   if (env.LMPS_DETECTION_WORKER === '1' && !detectionDsn) throw new Error('Local detection worker needs configured intake storage.');
   if(modelPublicKeyFile!==undefined && (!isAbsolute(modelPublicKeyFile)||!authConfig))throw new Error('Model evidence requires private trust config and authenticated app reads.');
   const featureConfig = env.LMPS_LOCAL_FEATURE_CONFIG;
+  const detectionFeatureContext = env.LMPS_DETECTION_FEATURE_CONTEXT === '1';
+  if (env.LMPS_DETECTION_FEATURE_CONTEXT !== undefined && !['0', '1'].includes(env.LMPS_DETECTION_FEATURE_CONTEXT)
+    || detectionFeatureContext && (!featureConfig || !detectionDsn)) throw new Error('Detection feature context requires explicit feature and detection configuration.');
   const offlineConfig = env.LMPS_LOCAL_OFFLINE_CONFIG, offlineDsn = env.LMPS_LOCAL_OFFLINE_DSN;
   if (offlineConfig !== undefined || offlineDsn !== undefined) {
     if (!offlineConfig || !isAbsolute(offlineConfig) || !offlineDsn || !authConfig || !postgresDsn
@@ -54,5 +57,5 @@ function baseConfig(env: NodeJS.ProcessEnv) {
       throw new Error('Offline monitoring requires an explicit private grant and authenticated same-instance intake storage.');
   }
   if (Object.keys(env).some(k => k.startsWith('LMPS_LOCAL_FEATURE_') && k !== 'LMPS_LOCAL_FEATURE_CONFIG') || (featureConfig !== undefined && (!isAbsolute(featureConfig) || !authConfig))) throw new Error('Invalid local feature configuration.');
-  return { ...(offlineConfig ? { offlineConfig, offlineDsn } : {}), ...(featureConfig ? { featureConfig } : {}), ...(detectionDsn ? { detectionDsn, detectionWorker: env.LMPS_DETECTION_WORKER !== '0' } : {}), ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
+  return { detectionFeatureContext, ...(offlineConfig ? { offlineConfig, offlineDsn } : {}), ...(featureConfig ? { featureConfig } : {}), ...(detectionDsn ? { detectionDsn, detectionWorker: env.LMPS_DETECTION_WORKER !== '0' } : {}), ...(modelPublicKeyFile ? {modelPublicKeyFile} : {}), ...(caseDsn ? { caseDsn } : {}), ...(policyDsn ? { policyDsn } : {}), ...(reviewDsn ? { reviewDsn } : {}), environment, executionMode: 'test' as const, port, ...(postgresDsn ? { postgresDsn } : {}), ...(authConfig ? { authConfig } : {}) };
 }

@@ -1,4 +1,8 @@
 import { createHash } from 'node:crypto';
+export * from './product-amount.js';
+export * from './observed-mask.js';
+export { evaluateRiskReferences } from './risk-reference.js';
+export * from './account-identity.js';
 import { isDeepStrictEqual } from 'node:util';
 import { isRiskObservation, isTransactionRiskRequest, MAX_RISK_INPUT_BYTES,
   type RiskCode, type RiskEvent, type RiskFinding, type RiskObservation, type RiskTarget, type TransactionRiskRequest, type TransactionRiskResult, type DimensionScore } from '@lmps/contracts/transaction-risk';
@@ -155,3 +159,7 @@ export * from './feature-contributions.js';
 
 export * from './feature-window-state.js';
 export * from './feature-health.js';
+
+export * from './feature-risk.js';
+
+export * from './feature-risk-alerts.js';

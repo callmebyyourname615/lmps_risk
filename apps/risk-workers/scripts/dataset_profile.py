@@ -100,11 +100,14 @@ def private_file(directory, name):
         raise
 
 
+CONTROL_CHARACTERS = re.compile(r"[\x00-\x1f\x7f]")
+
+
 def valid_value(name, value, spec):
     kind, width, nullable = spec
     if value is None:
         return nullable
-    if len(value) > width or any(ord(c) < 32 or ord(c) == 127 for c in value):
+    if len(value) > width or CONTROL_CHARACTERS.search(value):
         return False
     if kind == "integer":
         return bool(re.fullmatch(r"(?:0|-?[1-9][0-9]{0,9})", value)) and -2147483648 <= int(value) <= 2147483647
@@ -114,7 +117,7 @@ def valid_value(name, value, spec):
         if not re.fullmatch(r"[1-9][0-9]{3}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}", value):
             return False
         try:
-            datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+            datetime.fromisoformat(value)
             return True
         except ValueError:
             return False

@@ -78,7 +78,7 @@ test('bootstrap does not accept risk assessment mutations', async () => {
 });
 
 test('local defaults and the upper port bound are valid', () => {
-  assert.deepEqual(readConfig({}), { environment: 'local', executionMode: 'test', port: 18501 });
+  assert.deepEqual(readConfig({}), { detectionFeatureContext: false, environment: 'local', executionMode: 'test', port: 18501 });
   assert.equal(readConfig({ LMPS_API_PORT: '65535' }).port, 65535);
 });
 

@@ -1,0 +1,33 @@
+# Phase review — 2026-11-04
+
+Reviewed the original P00–P11 definitions in `plan/03-implementation-phases.md`, the Monitoring-first release scope, current implementation history and the canonical Portal P06 gap ledger. This is a phase/gate review, not a new 104-item score or production acceptance. Older queue entries and percentage estimates must retain their original dates; later implementation evidence supersedes their implementation claims, not their target requirements.
+
+| Phase | Current implemented support | Remaining target work |
+| --- | --- | --- |
+| P00 Engineering foundation | Strict TS/Python workspace, pinned tools, local builds/tests, frozen-source verification and supply-chain checks. | Hosted Ubuntu CI, release-image/license acceptance, selected infrastructure and named operational owners/budgets. |
+| P01 Source/identity/semantics | CSV export verification, exact composite observation keys, versioned test mappings, source-review/readiness tools and synthetic identity/tokenizer. | Independently reviewed lifecycle/refund/units/time and history evidence, account identity/masking/linkage, references, approved source access and representative profiling. Operator test mapping does not close these gates. |
+| P02 Data/API/auth/audit | Versioned local storage, immutable assessments, scoped JWT reads, idempotency/concurrency, policy/Case APIs, audit and outbox. | Production IdP/workspace/institution entitlements, deployed secret/key controls, retention/export policy, production schema/workload and operational observability acceptance. |
+| P03 Ingestion/events/history | File staging/reconciliation, corrections/retry, automatic local assessment handoff and preserved original evidence. Joint mapping v2 is applied to four changed Intake revisions. | Authorized continuous source capture, snapshot-to-change handoff and completeness/checkpoints, adopted backbone/registry and historical storage/query decisions. A downloaded sample is not live synchronization. |
+| P04 Stateful features/serving | Local durable contribution/stream state, serving/cache adapters, parity/health/evidence tools and an explicit synthetic detection feature-reader binding. | Adopted engine/cache and production recovery/operations, verified source identity/history/freshness, representative workload and real-source adapter acceptance. Old B09–B11 queue text is not evidence that this code is absent. |
+| P05 Rules/models/graph | Fifteen executable detector families, separate risk indices, approved local policy jobs/Alerts, synthetic references, feature-to-risk bridge and SQL/Python graph benchmark. | Approved per-currency policies including THB, real reference authority/matching, automatic reference/model orchestration where required, eligible features/graph/history and actual detection-yield validation. |
+| P06 Monitoring/evidence | API-backed Overview/records/Live Feed/Timeline/Trends/Network/Health and immutable Assessment evidence; read-only Model receipt lookup. | Remaining cross-module/production acceptance and feature-health/historical lineage boundaries. Optional later scope: API-bound Case start/notes/outcomes/close/reopen, adjudication workflow, QA Portal, authorized exports/attachments. Redacted model receipts do not expose a browser-recomputable full snapshot. |
+| P07 Mobile/Push | Mobile/PWA monitoring, personal preferences/inbox, badge, subscription APIs and standard Web Push/VAPID sender. | Operator VAPID setup and explicit device consent, real browser/phone receipt tests, HTTPS/trusted production identity and approved recipient/delivery/escalation operations. Provider acceptance is not proof of device receipt. Optional for Monitoring-only release. |
+| P08 Evaluation/model lifecycle | Local/synthetic Isolation Forest, Logistic Regression, LightGBM, MLflow/artifact-pinned serving, shadow comparison and coverage tools. | Representative eligible datasets/history/labels, calibration/performance evidence, model approval/monitoring and production registry/serving operations. Synthetic coverage is not real accuracy. No Deep Learning/GNN completion is established. |
+| P09 Pre-transfer | Bound draft contracts and a bounded simulator exist. | Actual LMPS interception contract, authority, deadline/degraded policy, durable decisions, kill switch and staging acceptance. Optional for Monitoring-only release. |
+| P10 Security/load/DR | Native local failure/retry/backup/restore and security/publication checks. | Selected production deployment/IaC, real security/auth acceptance, representative end-to-end load, agreed SLO/RPO/RTO, PITR/HA/failover and operational drills. |
+| P11 Shadow/release/operations | Local synthetic shadow/recovery demonstrations. | Authorized real-source shadow, owner sign-offs, controlled Monitoring release, rollback/on-call and continuous operational review. No production release is established. |
+
+## Next order for the main Monitoring release
+
+1. Close P01 owner inputs and approve currency policies; preserve explicit unknown/unavailable for everything unsupported. The two unknown results in the bound sample remain unresolved. Do not infer refund completion.
+2. Complete the approved P03 continuous capture/reconciliation path and eligible P04/P05 automatic assessment/reference/model integration.
+3. Complete production P02 authentication/authorization and P06 evidence/health acceptance against that source and policy scope.
+4. Complete P08 evaluation for the engines actually used, then P10 security/load/recovery and P11 approved shadow/release.
+
+Optional Case/label writes, Push and payment enforcement remain in the full plan but need not delay a separately approved Monitoring-only release. Work possible without owner data includes bounded synthetic integration and P06 health/evidence acceptance; it cannot substitute for source authorization or establish production eligibility.
+
+## Verification boundary
+
+This continuation completed the existing seven-suite Intake regression against disposable local fixtures, not the persistent Intake database: 222 test files, 1,525 tests passed, zero failed and five existing opt-in parent-native graph tests skipped. Backend and Portal builds and the publication/local secret scan passed. Chrome Timeline acceptance passed five groups covering history/evidence links, filters/keyboard interaction, database outage/recovery, EN/LO and 320/375/768/1440 layouts without business writes. Consolidated results and private receipt references are recorded in `current.md`.
+
+This review does not independently re-audit all 104 requirements, the Mobile repository or real deployment/device/source environments. No updated completion percentage is assigned.

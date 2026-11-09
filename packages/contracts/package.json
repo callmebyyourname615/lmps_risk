@@ -46,6 +46,9 @@
       "import": "./dist/intake-observation.js"
     },
     "./source-publication": { "types": "./dist/source-publication.d.ts", "import": "./dist/source-publication.js" },
+    "./intake-source-contract": { "types": "./dist/intake-source-contract.d.ts", "import": "./dist/intake-source-contract.js" },
+    "./account-identity": { "types": "./dist/account-identity.d.ts", "import": "./dist/account-identity.js" },
+    "./observed-mask": { "types": "./dist/observed-mask.d.ts", "import": "./dist/observed-mask.js" },
     "./risk-policy": {
       "types": "./dist/risk-policy.d.ts",
       "import": "./dist/risk-policy.js"
@@ -62,6 +65,7 @@
       "types": "./dist/bulk-dataset.d.ts",
       "import": "./dist/bulk-dataset.js"
     },
+    "./risk-reference": { "types": "./dist/risk-reference.d.ts", "import": "./dist/risk-reference.js" },
     "./model-signal": {
       "types": "./dist/model-signal.d.ts",
       "import": "./dist/model-signal.js"

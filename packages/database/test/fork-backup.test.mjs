@@ -17,7 +17,10 @@ test('verified database fork has new credentials, independent writes and refuses
     writer = createTransactionRevisions(dsn(source,'intake')); await writer.append(revision());
     const backup = await createBackup(source,join(temporary,'backups'));
     const result = await forkBackup(backup.directory,join(temporary,'target'),await availablePort()); target=result.state;
-    assert.equal(result.tables,35); assert.notEqual(source.port,target.port);
+    assert.equal(result.tables,38); assert.notEqual(source.port,target.port);
+    const verified=await verifyBackup(backup.directory);
+    for(const table of ['core_identity_keys','core_identity_mappings','core_detection_checkpoints'])
+      assert.ok(Object.hasOwn(verified.tables,'platform.'+table));
     assert.notEqual(source.passwords.intake,target.passwords.intake);
     sourceRead=createDatabase(dsn(source)); forkRead=createDatabase(dsn(target));
     const count=async db=>(await db.pool.query('SELECT count(*)::int AS n FROM platform.local_transaction_revisions')).rows[0].n;

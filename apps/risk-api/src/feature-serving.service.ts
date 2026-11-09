@@ -5,6 +5,8 @@ import { validateFeatureStoreScope, featureStoreScopeIdentity, type FeatureStore
 import { validateFeatureApiQuery, FEATURE_API_LIMITS, type FeatureApiResponse, type FeatureApiReason } from '../../../packages/contracts/dist/feature-api.js';
 import { serveFeatureSnapshot } from '@lmps/risk';
 import type { Principal } from './local-auth.js';
+import type { DetectionFeatureEvidence } from '@lmps/database';
+import type { RiskTarget } from '@lmps/risk';
 export const FEATURE_READS = Symbol('FEATURE_READS');
 /** Structural US1002 capability; not a cache address or launch instruction. */
 export interface FeatureCacheRuntime {
@@ -50,6 +52,22 @@ export class FeatureServingService {
     try { this.config = fixture(input); }
     catch { throw Error('Invalid private local feature configuration.'); }
   }
+  private publication(): unknown {
+    if (this.unitIO?.publication) return this.unitIO.publication();
+    const envelope = privateJson(join(this.config.store_directory, 'publication.json'), 1048576) as { version: number; owner: string; scope: unknown; publication: unknown };
+    const owner = privateJson(join(this.config.store_directory, 'owner.json'), 200) as {version: number; owner: string};
+    if (Object.keys(envelope).sort().join(',') !== 'owner,publication,scope,version' || Object.keys(owner).sort().join(',') !== 'owner,version' || envelope.version !== 1 || owner.version !== 1 || !/^[0-9a-f-]{36}$/.test(owner.owner) || envelope.owner !== owner.owner || featureStoreScopeIdentity(envelope.scope) !== featureStoreScopeIdentity(this.config.scope)) throw Error();
+    return envelope.publication;
+  }
+  /** Explicit local no-cache binding; never fall back from a required cache. */
+  detectionEvidence(target: RiskTarget, signal: AbortSignal, now = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')): DetectionFeatureEvidence {
+    const scope = this.config.scope;
+    if (signal.aborted || this.config.cache_policy !== 'no_cache' || scope.plan.namespace !== target.namespace) throw Error('FEATURE_CONTEXT_UNAVAILABLE');
+    const queries = scope.plan.queries.filter(query => query.target === target.transaction_id);
+    if (queries.length !== 1) throw Error('FEATURE_CONTEXT_UNAVAILABLE');
+    const query = queries[0]!;
+    return { publication: this.publication(), scope, serving_request: { version: 'synthetic-feature-serving-1', workspace_key: scope.workspace_key, plan: scope.plan, query, currency: query.currency, policy: scope.policy, now } };
+  }
   async read(principal: Principal, input: unknown): Promise<FeatureApiResponse> {
     const scope = this.config.scope;
     if (!principal || principal.workspace !== scope.workspace_key) throw new ForbiddenException({ code: 'FORBIDDEN' });
@@ -73,14 +91,7 @@ export class FeatureServingService {
           result = await (await this.cache).serve(request);
         }
       } else {
-        let publication: unknown;
-        if (this.unitIO?.publication) publication = this.unitIO.publication();
-        else {
-          const envelope = privateJson(join(this.config.store_directory, 'publication.json'), 1048576) as { version: number; owner: string; scope: unknown; publication: unknown };
-          const owner = privateJson(join(this.config.store_directory, 'owner.json'), 200) as {version: number; owner: string};
-          if (Object.keys(envelope).sort().join(',') !== 'owner,publication,scope,version' || Object.keys(owner).sort().join(',') !== 'owner,version' || envelope.version !== 1 || owner.version !== 1 || !/^[0-9a-f-]{36}$/.test(owner.owner) || envelope.owner !== owner.owner || featureStoreScopeIdentity(envelope.scope) !== featureStoreScopeIdentity(scope)) throw Error();
-          publication = envelope.publication;
-        }
+        const publication = this.publication();
         result = serveFeatureSnapshot(publication, scope, request);
       }
       if (result.status !== 'available') return unavailable(result.reason);

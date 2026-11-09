@@ -3,6 +3,7 @@ export interface TimelineTarget { namespace: string; transaction_id: string }
 export interface TimelineRevision {
   revision_number: number; recorded_at: string; observed_at: string; occurred_at: null; amount: string; currency: string; status: string;
   revision_sha256: string; reversal_code: string | null; reversed_amount: string | null; executed_amount: string | null;
+  legacy_revision_sha256?: string;
   normalization: 'known' | 'unknown' | 'invalid' | 'not_normalized'; reasons: string[]; changes: string[];
   source: null | { capture_id: string; snapshot_sha256: string; evidence_sha256: string; event_key: string };
 }

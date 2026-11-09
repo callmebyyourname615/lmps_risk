@@ -9,8 +9,8 @@ export class FeatureCatalogError extends Error {
   constructor(readonly code: 'FEATURE_MALFORMED' | 'FEATURE_LIMIT' = 'FEATURE_MALFORMED') { super(code); this.name = 'FeatureCatalogError'; }
 }
 function check(v: unknown, code: 'FEATURE_MALFORMED' | 'FEATURE_LIMIT' = 'FEATURE_MALFORMED'): asserts v { if (!v) throw new FeatureCatalogError(code); }
-/** Descriptor-only detached JSON. No getters, toJSON, exotic prototypes or lossy encoding. */
-export function detachFeatureJSON(value: unknown, maxBytes: number = FEATURE_LIMITS.bytes): any {
+/** Descriptor-only detached JSON. Fractions require explicit opt-in; no getters, exotic prototypes or lossy encoding. */
+export function detachFeatureJSON(value: unknown, maxBytes: number = FEATURE_LIMITS.bytes, allowFiniteFractions = false): any {
   check(Number.isSafeInteger(maxBytes) && maxBytes > 0 && maxBytes <= FEATURE_LIMITS.bytes);
   const seen = new Set<object>();
   let encodedBytes = 0;
@@ -19,7 +19,7 @@ export function detachFeatureJSON(value: unknown, maxBytes: number = FEATURE_LIM
     check(depth <= 32);
     if (v === null || typeof v === 'boolean') { charge(JSON.stringify(v).length); return v; }
     if (typeof v === 'string') { check(!/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(v)); charge(Buffer.byteLength(JSON.stringify(v))); return v; }
-    if (typeof v === 'number') { check(Number.isSafeInteger(v) && !Object.is(v, -0)); charge(JSON.stringify(v).length); return v; }
+    if (typeof v === 'number') { check(!Object.is(v, -0) && (Number.isSafeInteger(v) || (allowFiniteFractions === true && Number.isFinite(v) && !Number.isInteger(v) && Math.abs(v) <= Number.MAX_SAFE_INTEGER))); charge(JSON.stringify(v).length); return v; }
     check(typeof v === 'object' && !types.isProxy(v) && !seen.has(v)); const array = Array.isArray(v);
     check(Object.getPrototypeOf(v) === (array ? Array.prototype : Object.prototype)); seen.add(v);
     const keys = Reflect.ownKeys(v), out: any = array ? [] : {};

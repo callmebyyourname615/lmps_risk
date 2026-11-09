@@ -4,6 +4,8 @@ Status: local baseline inventory — 2026-10-19. This records exact pins and pai
 
 Target update — 2026-10-20: the user confirmed **Ubuntu x64 for Production**. The prepared CI target is ubuntu-24.04 x64. The Production Ubuntu release, deployment runtime/resources and patch/support owner remain TBD; hosted/Linux execution is still NOT_RUN. macOS arm64 remains the locally exercised development platform. Missing inputs are tracked in [the foundation summary](../../../plan/09-missing-inputs-and-foundation-readiness.md).
 
+Foundation review — 2026-11-04: current lock-bound SBOM check passes at 226 components / zero UNKNOWN licenses. Core regression no longer requires sibling Portal source; operator Intake commands still read the canonical Portal policy explicitly. The ML row below is historical bootstrap evidence: the current local/synthetic implementation also includes pinned Isolation Forest, Logistic Regression, LightGBM and MLflow/shadow serving, as recorded in implementation status. These updates do not establish hosted Ubuntu, real-source accuracy, production adoption or legal approval.
+
 ## Pinned local baseline
 
 | Area | Exact current pin | Evidence and boundary |

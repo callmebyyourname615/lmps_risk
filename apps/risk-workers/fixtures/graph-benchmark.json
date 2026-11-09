@@ -1,0 +1,1051 @@
+{
+  "version": "local_synthetic_graph_fixture_v1",
+  "oracle_role": "Independent hand-computed expectations only; never candidate observations or native evidence.",
+  "cases": [
+    {
+      "name": "fan",
+      "ts_overlap": true,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "fan_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "in1",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_H",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "in2",
+              "revision_number": 1,
+              "sender": "synthetic_B",
+              "receiver": "synthetic_H",
+              "occurred_at": "2026-01-01T11:02:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 3,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "out1",
+              "revision_number": 1,
+              "sender": "synthetic_H",
+              "receiver": "synthetic_C",
+              "occurred_at": "2026-01-01T11:03:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 4,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "out2",
+              "revision_number": 1,
+              "sender": "synthetic_H",
+              "receiver": "synthetic_D",
+              "occurred_at": "2026-01-01T11:04:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "fan_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "in1",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 4,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "in1",
+          "in2",
+          "out1",
+          "out2"
+        ],
+        "net_cents": "4000",
+        "fan_in_H": 2,
+        "fan_out_H": 2,
+        "paths_2": [
+          [
+            "in1",
+            "out1"
+          ],
+          [
+            "in1",
+            "out2"
+          ],
+          [
+            "in2",
+            "out1"
+          ],
+          [
+            "in2",
+            "out2"
+          ]
+        ],
+        "cycles": []
+      }
+    },
+    {
+      "name": "chain_cycle",
+      "ts_overlap": true,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "chain_cycle_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "b",
+              "revision_number": 1,
+              "sender": "synthetic_B",
+              "receiver": "synthetic_C",
+              "occurred_at": "2026-01-01T11:02:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 3,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "c",
+              "revision_number": 1,
+              "sender": "synthetic_C",
+              "receiver": "synthetic_A",
+              "occurred_at": "2026-01-01T11:03:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "chain_cycle_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 3,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a",
+          "b",
+          "c"
+        ],
+        "net_cents": "3000",
+        "paths_2": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "b",
+            "c"
+          ]
+        ],
+        "cycles": [
+          [
+            "a",
+            "b",
+            "c"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "equal_time",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "equal_time_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "b",
+              "revision_number": 1,
+              "sender": "synthetic_B",
+              "receiver": "synthetic_C",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "equal_time_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 2,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a",
+          "b"
+        ],
+        "net_cents": "2000",
+        "paths_2": [],
+        "cycles": []
+      }
+    },
+    {
+      "name": "lifecycle",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "lifecycle_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 3,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 2,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "20.00",
+              "status": "partially_reversed",
+              "reversed_amount": "5.00"
+            }
+          },
+          {
+            "source_position": 4,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "full",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "reversed",
+              "reversed_amount": "10.00"
+            }
+          },
+          {
+            "source_position": 5,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "failed",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "failed",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 6,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "pending",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "pending",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 7,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "zero",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "0.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "lifecycle_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 2
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 7,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a"
+        ],
+        "net_cents": "1500",
+        "paths_2": [],
+        "cycles": []
+      }
+    },
+    {
+      "name": "isolation",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "isolation_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "eur",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "EUR",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 3,
+            "event": {
+              "namespace": "synthetic_other",
+              "transaction_id": "other",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "isolation_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 3,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a"
+        ],
+        "net_cents": "1000",
+        "paths_2": [],
+        "cycles": []
+      }
+    },
+    {
+      "name": "future_revision",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "future_revision_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 2,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:01:00.000Z",
+              "currency": "USD",
+              "amount": "99.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "future_revision_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 2,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a"
+        ],
+        "net_cents": "1000",
+        "paths_2": [],
+        "cycles": []
+      }
+    },
+    {
+      "name": "prefix_revision",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "prefix_revision_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 2,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "99.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "prefix_revision_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 1,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "a"
+        ],
+        "net_cents": "1000",
+        "paths_2": [],
+        "cycles": []
+      }
+    },
+    {
+      "name": "future_only",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "future_only_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:01:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "future_only_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 1,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "unavailable",
+        "reason": "target_unavailable"
+      }
+    },
+    {
+      "name": "identity",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "identity_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "identity_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 1,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "unverified",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "unavailable",
+        "reason": "identity_unverified"
+      }
+    },
+    {
+      "name": "partial_history",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "partial_history_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "partial_history_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 1,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": false
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "unavailable",
+        "reason": "history_incomplete"
+      }
+    },
+    {
+      "name": "missing_history",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "missing_history_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "missing_history_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 1,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T12:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "unavailable",
+        "reason": "history_incomplete"
+      }
+    },
+    {
+      "name": "window",
+      "ts_overlap": false,
+      "corpus": {
+        "version": "local_synthetic_graph_v1",
+        "mode": "local_synthetic",
+        "corpus_id": "window_v1",
+        "workspace_key": "synthetic_local",
+        "deliveries": [
+          {
+            "source_position": 1,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T11:00:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 2,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "end",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T12:00:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          },
+          {
+            "source_position": 3,
+            "event": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "after",
+              "revision_number": 1,
+              "sender": "synthetic_A",
+              "receiver": "synthetic_B",
+              "occurred_at": "2026-01-01T12:01:00.000Z",
+              "available_at": "2026-01-01T12:00:00.000Z",
+              "currency": "USD",
+              "amount": "10.00",
+              "status": "succeeded",
+              "reversed_amount": "0.00"
+            }
+          }
+        ],
+        "queries": [
+          {
+            "id": "window_q1",
+            "namespace": "synthetic_graph",
+            "target": {
+              "namespace": "synthetic_graph",
+              "transaction_id": "a",
+              "revision_number": 1
+            },
+            "currency": "USD",
+            "as_of": "2026-01-01T12:00:00.000Z",
+            "anchor_at": "2026-01-01T12:00:00.000Z",
+            "source_prefix": 3,
+            "window_seconds": 3600,
+            "max_hops": 4,
+            "identity_status": "synthetic_declared",
+            "coverage": {
+              "start": "2026-01-01T11:00:00.000Z",
+              "complete": true
+            }
+          }
+        ]
+      },
+      "oracle": {
+        "status": "available",
+        "edge_ids": [
+          "end"
+        ],
+        "net_cents": "1000",
+        "paths_2": [],
+        "cycles": []
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "burst",
+      "records": 128,
+      "nodes": 129,
+      "edges": 128,
+      "hops": 2,
+      "paths_upper_bound": 128,
+      "recipe": "128 equal-time disjoint incoming senders to one hub"
+    },
+    {
+      "id": "skew",
+      "records": 2000,
+      "nodes": 2,
+      "edges": 1,
+      "hops": 4,
+      "paths_upper_bound": 1,
+      "recipe": "2000 exact positioned replays of one edge"
+    },
+    {
+      "id": "dense",
+      "records": 64,
+      "nodes": 16,
+      "edges": 64,
+      "hops": 2,
+      "paths_upper_bound": 64,
+      "recipe": "complete directed bipartite 8 by 8, equal-time edges; no temporal continuations"
+    }
+  ]
+}

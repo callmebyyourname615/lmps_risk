@@ -1,5 +1,5 @@
 import type { DetectionWorkerStatus } from '@lmps/contracts/detection-health';
-import { createDetectionHandoff } from '@lmps/database';
+import { createDetectionHandoff, type DetectionFeatureReader } from '@lmps/database';
 
 export const DETECTION_RUNTIME = Symbol('DETECTION_RUNTIME');
 export class DetectionRuntime {
@@ -8,8 +8,8 @@ export class DetectionRuntime {
   private active: Promise<void> | null = null;
   private stopped = false;
   private status: DetectionWorkerStatus;
-  constructor(dsn?: string, private readonly enabled = false, private readonly interval = 2000) {
-    this.service = dsn ? createDetectionHandoff(dsn) : null;
+  constructor(dsn?: string, private readonly enabled = false, private readonly interval = 2000, featureReader?: DetectionFeatureReader) {
+    this.service = dsn ? createDetectionHandoff(dsn, featureReader) : null;
     this.status = { configured: !!dsn, enabled: !!dsn && enabled, state: dsn && enabled ? 'starting' : 'disabled',
       last_completed_at: null, last_enqueued: null, last_processed: null, interval_seconds: interval / 1000 };
   }

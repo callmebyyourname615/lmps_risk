@@ -2,6 +2,20 @@ import { createHash } from 'node:crypto';
 import { createDatabase, createOfflineDatasets, createSourceIntake, createTransactionRevisions } from '@lmps/database';
 import { DATASET_UUID, DATASET_DIGEST } from '@lmps/contracts/offline-dataset';
 import { makeSourcePublication, sourceTransactionId, sourceContentHash } from '@lmps/contracts/source-publication';
+import { analyzeIntakeSourceContract } from './intake-source-contract.js';
+
+/** Reads an existing verified batch; no source, revision, policy or job writes. */
+export async function inspectOfflineSourceContract(dsn: string, input: {
+  source_workspace: string; batch_ref: string; dataset_sha256: string;
+}, policy: unknown = null) {
+  const staging = createOfflineDatasets(dsn);
+  try {
+    const snapshot = await staging.readComplete(input.source_workspace, input.batch_ref, input.dataset_sha256);
+    if (snapshot.manifest.source_table !== 'transfer') throw Error();
+    return { ...analyzeIntakeSourceContract(snapshot.rows, policy), dataset_sha256: snapshot.manifest.dataset_sha256 };
+  } catch { throw Error('INTAKE_SOURCE_CONTRACT_INVALID; source values withheld.'); }
+  finally { await staging.close(); }
+}
 
 export interface OfflinePublicationInput {
   format:1; source_workspace:string; batch_ref:string; dataset_sha256:string;
@@ -29,12 +43,14 @@ export async function publishOfflineBatch(dsn:string,input:OfflinePublicationInp
       const event={schema_version:1,provenance:'user_supplied_file',execution_mode:'test',workspace_key:input.workspace,source_namespace:input.namespace,
         source_generation:input.generation,capture_epoch:input.batch_ref,event_key:`transfer:${index+1}`,source_table:'transfer',source_key:{id:values[0],requesttime:values[1]},operation:'snapshot',
         observed_at:input.observed_at,fields:{amount:values[2],ccy:values[3],result:values[4],txtime:values[5]}};
-      stage='source';await source.append(event);
+      let duplicate=false;
       if(latest){
         if(latest.publication?.provenance!=='user_supplied_file')throw Error();
-        if(sourceContentHash(latest.publication.origin.values)===sourceContentHash(values)){counts.duplicates++;continue;}
-        if(Date.parse(input.observed_at)<=Date.parse(latest.publication.source.observed_at)){stage='stale';throw Error();}
+        duplicate=sourceContentHash(latest.publication.origin.values)===sourceContentHash(values);
+        if(!duplicate&&Date.parse(input.observed_at)<=Date.parse(latest.publication.source.observed_at)){stage='stale';throw Error();}
       }
+      stage='source';await source.append(event);
+      if(duplicate){counts.duplicates++;continue;}
       let projected;
       try{projected=makeSourcePublication({workspace:input.workspace,namespace:input.namespace,generation:input.generation,batch:input.batch_ref,
         dataset_sha256:input.dataset_sha256,rows_sha256:snapshot.manifest.rows_sha256,source_namespace:snapshot.manifest.source_namespace,row_number:index+1,values,

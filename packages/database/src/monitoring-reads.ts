@@ -5,7 +5,7 @@ import { MONITORING_VERSION, MONITORING_LIMIT, MONITORING_ASSESSMENTS, MONITORIN
   parseMonitoringFilters, isMonitoringSummary, type MonitoringFilters, type MonitoringSummary, type MonitoringReadSnapshot, type MonitoringRecord, type MonitoringEvidence } from '@lmps/contracts/monitoring';
 import { riskHash, type TransactionRiskResult } from '@lmps/risk';
 import { validateTransactionRevision } from './transaction-revisions.js';
-import { validateFrozenTransactionRisk } from './transaction-risks.js';
+import { validateFrozenTransactionRisk, observationMatchesRevision } from './transaction-risks.js';
 import { readLocalAlert } from './alerts.js';
 import type { NetworkTransfer } from '@lmps/contracts/monitoring-network';
 import type { RiskContext } from '@lmps/contracts/transaction-risk';
@@ -100,7 +100,7 @@ export async function readMonitoringSnapshot(pool: Pool, workspace: string, filt
         if (!frozen) throw new Error();
         const validated = validateFrozenTransactionRisk(frozen.snapshot, frozen.snapshot_sha256);
         reversedAmount = validated.observation.reversed_amount;
-        if (validated.observation.revision_sha256 !== null && validated.observation.revision_sha256 !== riskHash(revision)) throw new Error();
+        if (validated.observation.revision_sha256 !== null && !observationMatchesRevision(validated.observation, revision)) throw new Error();
         assessment = validated.result;
         if (assessment.workspace_key !== workspace || assessment.run_id !== row.run_id || assessment.target.namespace !== row.namespace
           || assessment.target.transaction_id !== row.transaction_id || assessment.target.revision_number !== row.revision_number) throw new Error();

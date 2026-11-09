@@ -28,6 +28,9 @@ test('descriptor JSON rejects dangerous or lossy inputs without executing access
   const array=[1];array.extra=1;
   for(const x of [getter,hidden,symbol,cycle,array,new Date(),Object.create(null),Object.create({x:1}),[,,],undefined,NaN,Infinity,-0,1.5,9007199254740992,1n,()=>1,'\ud800','\udc00',{toJSON(){calls++;return 1;}}]) invalid(()=>c.detachFeatureJSON(x));
   assert.equal(calls,0); assert.equal(c.detachFeatureJSON('😀'),'😀');
+  assert.deepEqual(c.detachFeatureJSON({score:0.666667},undefined,true),{score:0.666667});
+  for(const value of [NaN,Infinity,-Infinity,-0,9007199254740992]) invalid(()=>c.detachFeatureJSON(value,undefined,true));
+  invalid(()=>c.detachFeatureJSON(0.5,undefined,'true'));
   const a=JSON.parse('{"__proto__":{"polluted":true}}'); assert.deepEqual(c.detachFeatureJSON(a),a); assert.equal({}.polluted,undefined);
 });
 test('real UTC, identity, currency, money and safe bounds',()=>{

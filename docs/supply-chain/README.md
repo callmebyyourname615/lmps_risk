@@ -1,5 +1,7 @@
 # Local SBOM and license inventory
 
+Foundation review 2026-11-04: `ci/sbom.py --check` verifies the current tracked inventory at **226 components / zero UNKNOWN licenses**. Earlier counts below are dated history. No lockfile, dependency, license evidence or legal/release approval was changed by this review.
+
 `pnpm sbom:write` renders `local-sbom.cdx.json` from the current locked Node/Python dependencies, their installed package metadata and the workspace manifests. `pnpm sbom:check` regenerates it in memory and fails if it differs. Local verification runs the check after frozen installation.
 
 The inventory is a CycloneDX 1.6 component list using installed Node package roots and locked Python packages. It excludes nested benchmark/test-fixture manifests; their files remain part of the parent distribution. Python metadata prefers License-Expression/License, ignores the placeholder UNKNOWN and then checks license classifiers. If no installed metadata is available, only the exact artifacts recorded in python-license-evidence.json supply reviewed license evidence. Their URLs and SHA-256 hashes must still occur under the exact package/version in uv.lock; other missing licenses remain UNKNOWN. UNLICENSED describes the private workspace packages.

@@ -2,13 +2,13 @@ import { randomUUID } from 'node:crypto';
 import type { Pool, PoolClient } from 'pg';
 import type { AlertPolicy } from '@lmps/contracts/local-alert';
 import { DETECTION_STATES, parseDetectionFilters, type DetectionFilters, type DetectionHealth, type DetectionWorkerStatus } from '@lmps/contracts/detection-health';
-import { alertLocalMode, riskHash, validateAlertPolicy, type TransactionRiskResult } from '@lmps/risk';
+import { alertLocalMode, riskHash, validateAlertPolicy, bindFeatureRiskRequest, type TransactionRiskResult, type TransactionRiskRequest } from '@lmps/risk';
 import { createDatabase } from './index.js';
 import { createRiskJobs, riskJobInputHash, validateRiskJobInput, RiskJobError } from './risk-jobs.js';
 import { enqueueApprovedRiskJob } from './risk-policy-jobs.js';
-import { policyVersion } from './risk-policies.js';
+import { policyVersion, readRiskPolicy } from './risk-policies.js';
 import { validateTransactionRevision } from './transaction-revisions.js';
-import { validateFrozenTransactionRisk } from './transaction-risks.js';
+import { validateFrozenTransactionRisk, readRiskObservation, observationMatchesRevision } from './transaction-risks.js';
 
 export class DetectionError extends Error {
   constructor(readonly code: 'DETECTION_INVALID_QUERY' | 'DETECTION_UNAVAILABLE' | 'DETECTION_SCOPE_TOO_LARGE' | 'DETECTION_RETRY_CONFLICT' = 'DETECTION_UNAVAILABLE') { super(code); }
@@ -82,7 +82,7 @@ export async function readDetectionHealth(pool: Pool, workspace: string, filters
       if (row.run_id) {
         const stored = byRun.get(row.run_id), value = validateFrozenTransactionRisk(stored.snapshot, stored.snapshot_sha256);
         if (value.observation.revision_sha256 !== null) {
-          if (value.observation.revision_sha256 !== riskHash(revision) || value.result.target.namespace !== row.namespace || value.result.target.transaction_id !== row.transaction_id
+          if (!observationMatchesRevision(value.observation, revision) || value.result.target.namespace !== row.namespace || value.result.target.transaction_id !== row.transaction_id
             || value.result.target.revision_number !== row.revision_number || value.result.workspace_key !== workspace) throw new DetectionError();
           assessment = value.result;
         }
@@ -112,7 +112,20 @@ export async function readDetectionHealth(pool: Pool, workspace: string, filters
     throw new DetectionError();
   } finally { client.release(true); }
 }
-export function createDetectionHandoff(dsn: string) {
+export interface DetectionFeatureEvidence {
+  publication: unknown; scope: unknown; serving_request: unknown;
+}
+export type DetectionFeatureReader = (target: TransactionRiskRequest['target'], signal: AbortSignal) => Promise<DetectionFeatureEvidence>;
+async function readDetectionFeatures(reader: DetectionFeatureReader, target: TransactionRiskRequest['target']) {
+  const controller = new AbortController(); let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([reader(structuredClone(target), controller.signal), new Promise<never>((_resolve, reject) => {
+      timer = setTimeout(() => { controller.abort(); reject(new DetectionError()); }, 2000);
+    })]);
+  } finally { clearTimeout(timer); controller.abort(); }
+}
+/** Optional host-owned synthetic reader; no browser-supplied paths or context. */
+export function createDetectionHandoff(dsn: string, featureReader?: DetectionFeatureReader) {
   const database = createDatabase(dsn, 'intake'), jobs = createRiskJobs(dsn);
   return {
     async close() { await jobs.close(); await database.close(); },
@@ -136,9 +149,23 @@ export function createDetectionHandoff(dsn: string) {
             attempted++;
             await client.query('BEGIN');
             try {
+              // Freeze the first handoff for a revision before reading a mutable feature source.
+              await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,364))', [riskHash(target)]);
+              const existing = await client.query("SELECT 1 FROM platform.local_risk_jobs WHERE workspace_key='synthetic_local' AND namespace=$1 AND transaction_id=$2 AND revision_number=$3 LIMIT 1", [target.namespace, target.transaction_id, target.revision_number]);
+              if (existing.rows.length) { await client.query('COMMIT'); continue; }
               const job = randomUUID();
+              let riskRequest: TransactionRiskRequest = { format: 1, provenance: provenance==='user_supplied_file'?'user_supplied_file':'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', run_id: job, target, policy: null, context: null };
+              if (featureReader && riskRequest.provenance === 'local_synthetic') {
+                const pinned = await readRiskPolicy(client, 'synthetic_local', policy);
+                if (!pinned || pinned.state !== 'approved') throw new DetectionError();
+                const evidence = await readDetectionFeatures(featureReader, target);
+                const observation = await readRiskObservation(client, riskRequest);
+                riskRequest = bindFeatureRiskRequest(evidence.publication, evidence.scope, evidence.serving_request, { ...riskRequest, policy: pinned.policy }, observation);
+                // The approved-job transaction independently selects and pins the active policy.
+                riskRequest.policy = null;
+              }
               const receipt = await enqueueApprovedRiskJob(client, { format: 1, provenance: 'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', job_ref: job,
-                risk_request: { format: 1, provenance: provenance==='user_supplied_file'?'user_supplied_file':'local_synthetic', execution_mode: 'test', workspace_key: 'synthetic_local', run_id: job, target, policy: null, context: null },
+                risk_request: riskRequest,
                 alert_policy: policy.alert_policy }, { namespace: policy.namespace, currency: policy.currency, policy_id: policy.policy_id, policy_version: policy.policy_version, expected_generation: policy.generation });
               await client.query('COMMIT'); if (receipt.status === 'inserted') inserted++;
             } catch (error) { await client.query('ROLLBACK'); throw error; }
